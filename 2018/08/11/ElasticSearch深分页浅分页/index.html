@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>ElasticSearch Scroll | CrowleyBlog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="ElasticSearch">
+    
+    <meta name="description" content="ElasticSearch Scroll##深分页 比如pageIndex=10，pageSize=20，{“start”: 180, “size”: 20}，相当于每个分片召回了200条数据，排序之后截断前20条返回。但是如果pageIndex=1000，每个分片需要召回20000条数据，排序，最后仍然是取前20条，扔掉19980条。深分页的实现方式代价是很大的。 Scroll为了解决以上深分页">
+<meta name="keywords" content="ElasticSearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticSearch Scroll">
+<meta property="og:url" content="http://yoursite.com/2018/08/11/ElasticSearch深分页浅分页/index.html">
+<meta property="og:site_name" content="CrowleyBlog">
+<meta property="og:description" content="ElasticSearch Scroll##深分页 比如pageIndex=10，pageSize=20，{“start”: 180, “size”: 20}，相当于每个分片召回了200条数据，排序之后截断前20条返回。但是如果pageIndex=1000，每个分片需要召回20000条数据，排序，最后仍然是取前20条，扔掉19980条。深分页的实现方式代价是很大的。 Scroll为了解决以上深分页">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-09T02:30:07.780Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ElasticSearch Scroll">
+<meta name="twitter:description" content="ElasticSearch Scroll##深分页 比如pageIndex=10，pageSize=20，{“start”: 180, “size”: 20}，相当于每个分片召回了200条数据，排序之后截断前20条返回。但是如果pageIndex=1000，每个分片需要召回20000条数据，排序，最后仍然是取前20条，扔掉19980条。深分页的实现方式代价是很大的。 Scroll为了解决以上深分页">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item">
+                                    <a class="main-nav-list-link" href="/index.html">主页</a>
+                                </li>
+                            
+                                        <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Java/">Java</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/大数据技术/">大数据技术</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/开发工具/">开发工具</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/搜索/">搜索</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/机器学习/">机器学习</a></li></ul>
+                                    
+                                <li class="main-nav-list-item">
+                                    <a class="main-nav-list-link" href="/about/index.html">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Java/">Java</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-ElasticSearch深分页浅分页" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        ElasticSearch Scroll
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+    <div class="article-date">
+        <a href="/2018/08/11/ElasticSearch深分页浅分页/" class="article-date">
+            <time datetime="2018-08-11T15:33:16.000Z" itemprop="datePublished">2018-08-11</time>
+        </a>
+    </div>
+
+		
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/ElasticSearch/">ElasticSearch</a>
+    </div>
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="ElasticSearch-Scroll"><a href="#ElasticSearch-Scroll" class="headerlink" title="ElasticSearch Scroll"></a>ElasticSearch Scroll</h1><p>##深分页</p>
+<p>比如pageIndex=10，pageSize=20，{“start”: 180, “size”: 20}，相当于每个分片召回了200条数据，排序之后截断前20条返回。但是如果pageIndex=1000，每个分片需要召回20000条数据，排序，最后仍然是取前20条，扔掉19980条。深分页的实现方式代价是很大的。</p>
+<h2 id="Scroll"><a href="#Scroll" class="headerlink" title="Scroll"></a>Scroll</h2><p>为了解决以上深分页，在页码太大情况下性能的问题，ES提供了Scroll方式。</p>
+<p>scroll 查询 可以用来对 Elasticsearch 有效地执行大批量的文档查询，而又不用付出深度分页那种代价。</p>
+<p>游标查询允许我们 先做查询初始化，然后再批量地拉取结果。 这有点儿像传统数据库中的 cursor 。</p>
+<p>游标查询会取某个时间点的快照数据。 查询初始化之后索引上的任何变化会被它忽略。 它通过保存旧的数据文件来实现这个特性，结果就像保留初始化时的索引 视图 一样。</p>
+<p>深度分页的代价根源是结果集全局排序，如果去掉全局排序的特性的话查询结果的成本就会很低。 游标查询用字段 _doc 来排序。 这个指令让 Elasticsearch 仅仅从还有结果的分片返回下一批结果。</p>
+<p>启用游标查询可以通过在查询的时候设置参数 scroll 的值为我们期望的游标查询的过期时间。 游标查询的过期时间会在每次做查询的时候刷新，所以这个时间只需要足够处理当前批的结果就可以了，而不是处理查询结果的所有文档的所需时间。 这个过期时间的参数很重要，因为保持这个游标查询窗口需要消耗资源，所以我们期望如果不再需要维护这种资源就该早点儿释放掉。 设置这个超时能够让 Elasticsearch 在稍后空闲的时候自动释放这部分资源。</p>
+<p>例如：依据查询条件开启滚动，镜像有效期为5分钟。这个查询结果中包含scroll_id</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST 'http://localhost:9200/es_cluster/goods_index/goods/_search?scroll=5m' -d '&#123;</span><br><span class="line">  "size": 20,</span><br><span class="line">  "query": &#123;</span><br><span class="line">    "bool": &#123;</span><br><span class="line">      "filter": [</span><br><span class="line">        &#123;</span><br><span class="line">          "exists": &#123;</span><br><span class="line">            "field": "skuUpTime"</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
+<p>下次查询的时候，就可以直接用scroll_id来查询了</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST 'http://localhost:9200/es_cluster/scroll' -d '&#123;</span><br><span class="line">  "scroll": "5m",</span><br><span class="line">  "scroll_id": "DnF1ZXJ5VGhlbkZldGNoJgAAAAA8lsqeFjRwN19JcDBKVFd1cy04dkZucUZ4dHcAAAAAPlQH_BZIMUU1VFA2dVIxMk10M0xoWW1sSEtRAAAAADtYOdcWUVBlYXZCNmRTSEtXV2llZTE4dkEwZwAAAAA6dfbHFkdEMS1VY21CVHFhSFpFS1ZrVnBwSVEAAAAAPaL6vBZsZmRFeHRBeFFJaWlVOXNWV2xnZlB3AAAAADy6UDUWRU9NVVRadG5STnV4cThrb2VMdHhqUQAAAAA9V-f6FnNYSV83SHZVVHpDTHVLZWFiNmVwcVEAAAAAPMlOFhY5Zk5ESlBZdFI5bVVEclI4b2paTld3AAAAADn6zjwWZEJ5RU9VOThTUW1HUnB5UzlOT18xUQAAAAA9EBaGFmM4Ykh6SHkxU3JPYkFFRFZMWVRiQUEAAAAAPSKSJxZVUlRzY0luTFJTQzQ3WTZydUxoQVN3AAAAADyw6E4WS21DZHdWX21TRXlkdzVvYUpRcVBKUQAAAAA7sX3BFnh4UC1rMGhDU1FlZFFSdjVDVVc0d3cAAAAAPMIY9RZla0lLajhFQlMtYUVOZDE1U0tXekRnAAAAADtYOdgWUVBlYXZCNmRTSEtXV2llZTE4dkEwZwAAAAA5-s49FmRCeUVPVTk4U1FtR1JweVM5Tk9fMVEAAAAAPMlOFxY5Zk5ESlBZdFI5bVVEclI4b2paTld3AAAAADzjiUkWMll6VHRaUDRUV2VjNXA4LUxfMlFxdwAAAAA8cKq6FndTQ2JfOWlWUXlHNHdNMUZ3ejZVZUEAAAAAPHCquRZ3U0NiXzlpVlF5RzR3TTFGd3o2VWVBAAAAADzx948Wdlk0dzdJWnBRWHEyRWFsVEhsVUdiQQAAAAA9cxFHFnpwdy1EaXFXUmR5REM5ZW5CYTB0ZEEAAAAAPXMRSBZ6cHctRGlxV1JkeURDOWVuQmEwdGRBAAAAAD1DIxMWM0E3dW1PbkVUQzZMSUJXV21LaHNiZwAAAAA9QyMUFjNBN3VtT25FVEM2TElCV1dtS2hzYmcAAAAAPPeZ9hZyY0luUVRFb1RsNmF1YWhZaVEwWUFBAAAAADz3mfcWcmNJblFURW9UbDZhdWFoWWlRMFlBQQAAAAA6pq_PFjRDZjN6XzBSU25DRE5PWlA2RFRUR2cAAAAAOqavzhY0Q2Yzel8wUlNuQ0ROT1pQNkRUVEdnAAAAADzcYCcWQ2xwZk15U01RNk9oelRQR2w2bTRmdwAAAAA84x3vFk8wYjdmdV9aU2E2QzREc045bUx4UUEAAAAAPPTj5RZoYlctclkyblM3cXpDeEZTa05FNlNnAAAAADzrVQEWLU9xeUFOVHRUQTZtd2R2eG5MTF96UQAAAAA861UAFi1PcXlBTlR0VEE2bXdkdnhuTExfelEAAAAAO1D_vBZheEpkUFp4UFNXS19BWDdvMTNkS1BnAAAAADuxfcIWeHhQLWswaENTUWVkUVJ2NUNVVzR3dwAAAAA7ungNFlpqWVViMnZsVDU2LXg4VzBlTlZ0cWcAAAAAPaL6vRZsZmRFeHRBeFFJaWlVOXNWV2xnZlB3"</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://yoursite.com/2018/08/11/ElasticSearch深分页浅分页/" data-id="cju976gtr0000pv9v7c9uuny3" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "crowley"
+        },
+        "headline": "ElasticSearch Scroll",
+        "image": "http://yoursite.com",
+        "keywords": "ElasticSearch",
+        "genre": "Java",
+        "datePublished": "2018-08-11",
+        "dateCreated": "2018-08-11",
+        "dateModified": "2019-04-09",
+        "url": "http://yoursite.com/2018/08/11/ElasticSearch深分页浅分页/",
+        "description": "ElasticSearch Scroll##深分页
+比如pageIndex=10，pageSize=20，{“start”: 180, “size”: 20}，相当于每个分片召回了200条数据，排序之后截断前20条返回。但是如果pageIndex=1000，每个分片需要召回20000条数据，排序，最后仍然是取前20条，扔掉19980条。深分页的实现方式代价是很大的。
+Scroll为了解决以上深分页"
+        "wordCount": 175
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/siyuanWang" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/12/11/java动态代理/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Java动态代理
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2018/08/11/JVM内存区域/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">JVM内存区域</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/04/09/charles搭建网络抓包环境/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/开发工具/">开发工具</a></p>
+                            <p class="item-title"><a href="/2019/04/09/charles搭建网络抓包环境/" class="title">Charles搭建网络抓包环境</a></p>
+                            <p class="item-date"><time datetime="2019-04-09T02:33:16.000Z" itemprop="datePublished">2019-04-09</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/04/09/elasticSearch-初体验/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2019/04/09/elasticSearch-初体验/" class="title">elasticSearch系列笔记(1)-Hello ElasticSearch</a></p>
+                            <p class="item-date"><time datetime="2019-04-09T02:30:07.783Z" itemprop="datePublished">2019-04-09</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/01/21/Hbase系列1-Hbase适用场景/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/大数据技术/">大数据技术</a></p>
+                            <p class="item-title"><a href="/2019/01/21/Hbase系列1-Hbase适用场景/" class="title">Hbase系列1-Hbase适用场景</a></p>
+                            <p class="item-date"><time datetime="2019-01-21T08:33:16.000Z" itemprop="datePublished">2019-01-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/01/21/阿里巴巴LTR Qcon分享笔记/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/机器学习/">机器学习</a></p>
+                            <p class="item-title"><a href="/2019/01/21/阿里巴巴LTR Qcon分享笔记/" class="title">阿里巴巴LTR Qcon分享笔记</a></p>
+                            <p class="item-date"><time datetime="2019-01-21T08:33:16.000Z" itemprop="datePublished">2019-01-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/01/21/Hbase系列4-rowkey设计技巧/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/%E5%B8%B8%E7%94%A8ascll%E7%A0%81.png)" alt="Hbase系列4-rowkey设计技巧" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/大数据技术/">大数据技术</a></p>
+                            <p class="item-title"><a href="/2019/01/21/Hbase系列4-rowkey设计技巧/" class="title">Hbase系列4-rowkey设计技巧</a></p>
+                            <p class="item-date"><time datetime="2019-01-21T08:33:16.000Z" itemprop="datePublished">2019-01-21</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据技术/">大数据技术</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搜索/">搜索</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BM25/">BM25</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/">ElasticSearch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hbase/">Hbase</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LTR/">LTR</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TF-IDF/">TF-IDF</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lucene/">lucene</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/倒排索引/">倒排索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/向量空间模型/">向量空间模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布尔模型/">布尔模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相关性/">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a><span class="tag-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/Hbase/" style="font-size: 16.67px;">Hbase</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/Spring/" style="font-size: 13.33px;">Spring</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/lucene/" style="font-size: 10px;">lucene</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/设计模式/" style="font-size: 13.33px;">设计模式</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2019 crowley</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'http://yoursite.com/2018/08/11/ElasticSearch深分页浅分页/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
