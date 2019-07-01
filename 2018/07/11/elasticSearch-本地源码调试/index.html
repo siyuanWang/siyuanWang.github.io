@@ -21,7 +21,7 @@
 <meta property="og:description" content="ElasticSearch本地源码调试转自：https://www.felayman.com/articles/2017/11/10/1510291087246.html Elasticsearch版本为 5.5.1 1. 源码下载 git clone https://github.com/elastic/elasticsearch  2. 分支切换 git checkout v5.5.1  3">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://syxtt.xin/elastic%E8%BF%9C%E7%A8%8Bdebug.png">
-<meta property="og:updated_time" content="2019-06-25T03:10:10.982Z">
+<meta property="og:updated_time" content="2019-07-01T11:27:12.439Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="elasticSearch系列笔记(3)-elastic本地源码调试">
 <meta name="twitter:description" content="ElasticSearch本地源码调试转自：https://www.felayman.com/articles/2017/11/10/1510291087246.html Elasticsearch版本为 5.5.1 1. 源码下载 git clone https://github.com/elastic/elasticsearch  2. 分支切换 git checkout v5.5.1  3">
@@ -218,6 +218,8 @@
 <p>点击 debug，浏览器访问 <code>http://localhost:9200/</code>，即可看到ES返回的信息</p>
 <p>随机调试一下， 打开 <code>elasticsearch/server/src/main/org/elasticsearch/rest/action/cat</code> 下的 <code>RestHealthAction</code> 类，在第 54 行出设置一个断点，然后浏览器访问 <code>http://localhost:9200/_cat/health</code>，可以看到断点已经捕获到该请求了</p>
 <p>运行成功，可以开始设置断点进行其他调试</p>
+<h3 id="源码本地编译工程包"><a href="#源码本地编译工程包" class="headerlink" title="源码本地编译工程包"></a>源码本地编译工程包</h3><p>在es源码根目录，执行 gradle assemble 命令，编译好之后工程ZIP包位于下图位置。</p>
+<p><img src="http://syxtt.xin/es%E6%BA%90%E7%A0%81%E6%9C%AC%E5%9C%B0%E7%BC%96%E8%AF%91.png" alt="img"></p>
 <h3 id="其他可能遇到的问题"><a href="#其他可能遇到的问题" class="headerlink" title="其他可能遇到的问题"></a>其他可能遇到的问题</h3><p><strong>1. 错误信息如下</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA8_HOME required to run tasks gradle</span><br></pre></td></tr></table></figure>
 <p>配置环境变量 <code>JAVA8_HOME</code>，值为 JDK8 的安装目录</p>
@@ -234,7 +236,7 @@
 
 
 
-    <a data-url="http://yoursite.com/2018/07/11/elasticSearch-本地源码调试/" data-id="cjxk32suo0037u79vevh5kfch" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/2018/07/11/elasticSearch-本地源码调试/" data-id="cjxkauao80036o19v9wr2efvg" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -310,7 +312,7 @@
         "genre": "搜索",
         "datePublished": "2018-07-11",
         "dateCreated": "2018-07-11",
-        "dateModified": "2019-06-25",
+        "dateModified": "2019-07-01",
         "url": "http://yoursite.com/2018/07/11/elasticSearch-本地源码调试/",
         "description": "ElasticSearch本地源码调试转自：https://www.felayman.com/articles/2017/11/10/1510291087246.html
 Elasticsearch版本为 5.5.1
@@ -321,7 +323,7 @@ git clone https://github.com/elastic/elasticsearch
 git checkout v5.5.1
 
 3 "
-        "wordCount": 1153
+        "wordCount": 1162
     }
 </script>
 
