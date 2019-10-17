@@ -461,6 +461,54 @@ Scroll为了解决以上深分页
         <article class="article article-summary">
     <div class="article-summary-inner">
         
+        <a href="/2018/08/11/ThreadLocal原理/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+        
+<span class="comment-counter">
+    <i class="fa fa-comments-o"></i>
+    
+        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/ThreadLocal原理/">0</span>
+    
+</span>
+
+
+    
+</a>
+
+        
+        <div class="article-meta">
+            <div class="category">
+            <a class="article-category-link" href="/categories/Java/">Java</a>
+            </div>
+            <div class="date"><time datetime="2018-08-11T15:33:16.000Z" itemprop="datePublished">2018-08-11</time></div>
+        </div>
+        
+    
+        <h1 class="article-title" itemprop="name">
+        <a href="/2018/08/11/ThreadLocal原理/">ThreadLocal原理分析</a>
+        </h1>
+    
+
+        <p class="article-excerpt">
+            ThreadLocal总体介绍​        ThreadLocal类在并发编程中，每个线程实例，都有一份独立的副本，采用以空间换时间的方式，处理并发。
+在Thread类中，ThreadLocal.ThreadLocalMap threadLocals = null;ThreadLocal.ThreadLocalMap就是线程变量的容器。
+1234567891011121314151617181
+        </p>
+    </div>
+</article>
+    
+
+    
+    
+    
+    
+        <article class="article article-summary">
+    <div class="article-summary-inner">
+        
         <a href="/2018/08/11/MAC下搭建大数据开发环境/" class="thumbnail">
     
     
@@ -503,10 +551,14 @@ Java HotSpot(TM) 64-Bit Server VM (build 2
     </div>
 </article>
     
+        </div>
+    
 
     
     
     
+    
+        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -552,29 +604,25 @@ Java HotSpot(TM) 64-Bit Server VM (build 2
     </div>
 </article>
     
-        </div>
-    
 
     
     
     
     
-        <div class="article-row">
-    
         <article class="article article-summary">
     <div class="article-summary-inner">
         
-        <a href="/2018/08/11/Spring初始化/" class="thumbnail">
+        <a href="/2018/08/11/WeekHashMap原理分析/" class="thumbnail">
     
     
-        <span style="background-image:url(https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LR60TqiCDATv8ALplRv%2F-LR60l8Jm5M7R4z_NK44%2Fimage.png?alt=media&amp;token=05a40745-ac36-447d-97d4-6af519a8ebfc)" alt="Spring初始化源码分析" class="thumbnail-image"></span>
+        <span style="background-image:url(http://syxtt.xin/%E8%99%9A%E5%BC%95%E7%94%A8.png)" alt="WeakHashMap原理分析" class="thumbnail-image"></span>
     
     
         
 <span class="comment-counter">
     <i class="fa fa-comments-o"></i>
     
-        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/Spring初始化/">0</span>
+        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/WeekHashMap原理分析/">0</span>
     
 </span>
 
@@ -592,63 +640,13 @@ Java HotSpot(TM) 64-Bit Server VM (build 2
         
     
         <h1 class="article-title" itemprop="name">
-        <a href="/2018/08/11/Spring初始化/">Spring初始化源码分析</a>
+        <a href="/2018/08/11/WeekHashMap原理分析/">WeakHashMap原理分析</a>
         </h1>
     
 
         <p class="article-excerpt">
-            本文主要介绍下Spring的初始化过程。
-
-​                                    XML方式Spring应用入口
-首先，在web容器启动之后，会加载org.springframework.web.servlet.DispatcherServlet，作为容器的一个Servlet实例，该Servlet也是Spring WEB应用的唯一一个Servlet实例。Serv
-        </p>
-    </div>
-</article>
-    
-
-    
-    
-    
-    
-        <article class="article article-summary">
-    <div class="article-summary-inner">
-        
-        <a href="/2018/08/11/ThreadLocal原理/" class="thumbnail">
-    
-    
-        <span class="thumbnail-image thumbnail-none"></span>
-    
-    
-        
-<span class="comment-counter">
-    <i class="fa fa-comments-o"></i>
-    
-        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/ThreadLocal原理/">0</span>
-    
-</span>
-
-
-    
-</a>
-
-        
-        <div class="article-meta">
-            <div class="category">
-            <a class="article-category-link" href="/categories/Java/">Java</a>
-            </div>
-            <div class="date"><time datetime="2018-08-11T15:33:16.000Z" itemprop="datePublished">2018-08-11</time></div>
-        </div>
-        
-    
-        <h1 class="article-title" itemprop="name">
-        <a href="/2018/08/11/ThreadLocal原理/">ThreadLocal原理分析</a>
-        </h1>
-    
-
-        <p class="article-excerpt">
-            ThreadLocal总体介绍​        ThreadLocal类在并发编程中，每个线程实例，都有一份独立的副本，采用以空间换时间的方式，处理并发。
-在Thread类中，ThreadLocal.ThreadLocalMap threadLocals = null;ThreadLocal.ThreadLocalMap就是线程变量的容器。
-1234567891011121314151617181
+            WeakHashMap总体介绍​        WeakHashMap继承自AbstractMap，实现了Map接口，拥有了Map的基础功能。但是与常用的Map（比如HashMap）不同的是，WeakHashMap底层的存储单元Entry采用WeakReference，在GC的时候，会回收K,V。所以WeakHashMap天然比较适合用作缓存，即使K,V丢失，也不会对业务造成影响。
+1234567
         </p>
     </div>
 </article>
