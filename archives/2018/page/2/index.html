@@ -147,17 +147,17 @@
         <article class="article article-summary">
     <div class="article-summary-inner">
         
-        <a href="/2018/08/11/Spring初始化/" class="thumbnail">
+        <a href="/2018/08/11/ThreadLocal原理/" class="thumbnail">
     
     
-        <span style="background-image:url(https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LR60TqiCDATv8ALplRv%2F-LR60l8Jm5M7R4z_NK44%2Fimage.png?alt=media&amp;token=05a40745-ac36-447d-97d4-6af519a8ebfc)" alt="Spring初始化源码分析" class="thumbnail-image"></span>
+        <span class="thumbnail-image thumbnail-none"></span>
     
     
         
 <span class="comment-counter">
     <i class="fa fa-comments-o"></i>
     
-        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/Spring初始化/">0</span>
+        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/ThreadLocal原理/">0</span>
     
 </span>
 
@@ -175,15 +175,14 @@
         
     
         <h1 class="article-title" itemprop="name">
-        <a href="/2018/08/11/Spring初始化/">Spring初始化源码分析</a>
+        <a href="/2018/08/11/ThreadLocal原理/">ThreadLocal原理分析</a>
         </h1>
     
 
         <p class="article-excerpt">
-            本文主要介绍下Spring的初始化过程。
-
-​                                    XML方式Spring应用入口
-首先，在web容器启动之后，会加载org.springframework.web.servlet.DispatcherServlet，作为容器的一个Servlet实例，该Servlet也是Spring WEB应用的唯一一个Servlet实例。Serv
+            ThreadLocal总体介绍​        ThreadLocal类在并发编程中，每个线程实例，都有一份独立的副本，采用以空间换时间的方式，处理并发。
+在Thread类中，ThreadLocal.ThreadLocalMap threadLocals = null;ThreadLocal.ThreadLocalMap就是线程变量的容器。
+1234567891011121314151617181
         </p>
     </div>
 </article>
@@ -247,17 +246,17 @@
         <article class="article article-summary">
     <div class="article-summary-inner">
         
-        <a href="/2018/08/11/ThreadLocal原理/" class="thumbnail">
+        <a href="/2018/08/11/java引用/" class="thumbnail">
     
     
-        <span class="thumbnail-image thumbnail-none"></span>
+        <span style="background-image:url(https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LWQP5HoONfXjt8cwLXh%2F-LWQP7Jau58ATJphzewW%2Fimage.png?alt=media&amp;token=62ca5af6-55c2-4549-bd4a-96412b9029f8)" alt="java引用详解" class="thumbnail-image"></span>
     
     
         
 <span class="comment-counter">
     <i class="fa fa-comments-o"></i>
     
-        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/ThreadLocal原理/">0</span>
+        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/java引用/">0</span>
     
 </span>
 
@@ -275,14 +274,15 @@
         
     
         <h1 class="article-title" itemprop="name">
-        <a href="/2018/08/11/ThreadLocal原理/">ThreadLocal原理分析</a>
+        <a href="/2018/08/11/java引用/">java引用详解</a>
         </h1>
     
 
         <p class="article-excerpt">
-            ThreadLocal总体介绍​        ThreadLocal类在并发编程中，每个线程实例，都有一份独立的副本，采用以空间换时间的方式，处理并发。
-在Thread类中，ThreadLocal.ThreadLocalMap threadLocals = null;ThreadLocal.ThreadLocalMap就是线程变量的容器。
-1234567891011121314151617181
+            一般情况下，java开发中用的都是强引用。例如如下代码所示。
+1Object ref = new Object();
+实际上在java中，还有一种不太常用的“弱引用”类型。弱引用中分为了软引用（SoftReference），弱引用（WeakReference），虚引用（PhantomReference）。所谓的强引用，其实就是FinalReference。
+问题随之而来，为什么引用要分为强弱？弱引
         </p>
     </div>
 </article>
@@ -345,17 +345,17 @@
         <article class="article article-summary">
     <div class="article-summary-inner">
         
-        <a href="/2018/08/11/java引用/" class="thumbnail">
+        <a href="/2018/08/11/Spring初始化/" class="thumbnail">
     
     
-        <span style="background-image:url(https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LWQP5HoONfXjt8cwLXh%2F-LWQP7Jau58ATJphzewW%2Fimage.png?alt=media&amp;token=62ca5af6-55c2-4549-bd4a-96412b9029f8)" alt="java引用详解" class="thumbnail-image"></span>
+        <span style="background-image:url(https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LR60TqiCDATv8ALplRv%2F-LR60l8Jm5M7R4z_NK44%2Fimage.png?alt=media&amp;token=05a40745-ac36-447d-97d4-6af519a8ebfc)" alt="Spring初始化源码分析" class="thumbnail-image"></span>
     
     
         
 <span class="comment-counter">
     <i class="fa fa-comments-o"></i>
     
-        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/java引用/">0</span>
+        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/08/11/Spring初始化/">0</span>
     
 </span>
 
@@ -373,15 +373,15 @@
         
     
         <h1 class="article-title" itemprop="name">
-        <a href="/2018/08/11/java引用/">java引用详解</a>
+        <a href="/2018/08/11/Spring初始化/">Spring初始化源码分析</a>
         </h1>
     
 
         <p class="article-excerpt">
-            一般情况下，java开发中用的都是强引用。例如如下代码所示。
-1Object ref = new Object();
-实际上在java中，还有一种不太常用的“弱引用”类型。弱引用中分为了软引用（SoftReference），弱引用（WeakReference），虚引用（PhantomReference）。所谓的强引用，其实就是FinalReference。
-问题随之而来，为什么引用要分为强弱？弱引
+            本文主要介绍下Spring的初始化过程。
+
+​                                    XML方式Spring应用入口
+首先，在web容器启动之后，会加载org.springframework.web.servlet.DispatcherServlet，作为容器的一个Servlet实例，该Servlet也是Spring WEB应用的唯一一个Servlet实例。Serv
         </p>
     </div>
 </article>
@@ -542,53 +542,6 @@ ElasticSearch简介回忆时光&nbsp;&nbsp;&nbsp;&nb
         <article class="article article-summary">
     <div class="article-summary-inner">
         
-        <a href="/2018/07/11/elasticSearch-term_vector/" class="thumbnail">
-    
-    
-        <span class="thumbnail-image thumbnail-none"></span>
-    
-    
-        
-<span class="comment-counter">
-    <i class="fa fa-comments-o"></i>
-    
-        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/07/11/elasticSearch-term_vector/">0</span>
-    
-</span>
-
-
-    
-</a>
-
-        
-        <div class="article-meta">
-            <div class="category">
-            <a class="article-category-link" href="/categories/搜索/">搜索</a>
-            </div>
-            <div class="date"><time datetime="2018-07-11T15:33:16.000Z" itemprop="datePublished">2018-07-11</time></div>
-        </div>
-        
-    
-        <h1 class="article-title" itemprop="name">
-        <a href="/2018/07/11/elasticSearch-term_vector/">elasticSearch系列笔记(4)-term_vector</a>
-        </h1>
-    
-
-        <p class="article-excerpt">
-            term_vectorhttps://www.elastic.co/guide/en/elasticsearch/reference/2.0/term-vector.html#term-vector
-
-        </p>
-    </div>
-</article>
-    
-
-    
-    
-    
-    
-        <article class="article article-summary">
-    <div class="article-summary-inner">
-        
         <a href="/2018/07/11/elasticSearch-搜索类型(query type)/" class="thumbnail">
     
     
@@ -626,6 +579,57 @@ ElasticSearch简介回忆时光&nbsp;&nbsp;&nbsp;&nb
 es在查询时，可以指定搜索类型为QUERY_THEN_FETCH,QUERY_AND_FEATCH,DFS_QUERY_THEN_FEATCH和DFS_QUERY_AND_FEATCH。那么这4种搜索类型有什么区别？
 分布式搜索背景介绍：
 ES天生就是为分布式而生，但分布式
+        </p>
+    </div>
+</article>
+    
+
+    
+    
+    
+    
+        <article class="article article-summary">
+    <div class="article-summary-inner">
+        
+        <a href="/2018/07/11/mac安装mysql指南/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+        
+<span class="comment-counter">
+    <i class="fa fa-comments-o"></i>
+    
+        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2018/07/11/mac安装mysql指南/">0</span>
+    
+</span>
+
+
+    
+</a>
+
+        
+        <div class="article-meta">
+            <div class="category">
+            <a class="article-category-link" href="/categories/搜索/">搜索</a>
+            </div>
+            <div class="date"><time datetime="2018-07-11T15:33:16.000Z" itemprop="datePublished">2018-07-11</time></div>
+        </div>
+        
+    
+        <h1 class="article-title" itemprop="name">
+        <a href="/2018/07/11/mac安装mysql指南/">mac安装mysql记录</a>
+        </h1>
+    
+
+        <p class="article-excerpt">
+            1brew install mysql
+CREATE USER ‘test‘@’%’ IDENTIFIED BY ‘root@12’;
+grant all privileges on . to ‘test‘@’%’;
+Flush privileges;
+下载Sequel Pro开始使用
+
         </p>
     </div>
 </article>
