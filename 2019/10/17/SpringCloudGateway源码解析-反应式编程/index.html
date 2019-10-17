@@ -6,17 +6,26 @@
     
 
     
-    <title>标签：: Nginx | CrowleyBlog</title>
+    <title>SpringCloudGateway源码解析(2)-反应式编程 | CrowleyBlog</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
-    <meta property="og:type" content="website">
-<meta property="og:title" content="CrowleyBlog">
-<meta property="og:url" content="http://yoursite.com/tags/Nginx/index.html">
+        <meta name="keywords" content="设计模式,SpringCloud,网关,反应式编程,webFlux">
+    
+    <meta name="description" content="前言为了应对 高并发环境下 的服务端编程，微软提出了一个实现 异步编程 的方案 - Reactive Programming，中文名称 反应式编程。Java也汲取了反应式编程的思想，Spring Reactor应势而生。Spring5.0以WebFlux为代表全面拥抱了Reactor的编程模式。Spring Cloud Gateway底层是webFlux，而webFlux就是基于Spring Re">
+<meta name="keywords" content="设计模式,SpringCloud,网关,反应式编程,webFlux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloudGateway源码解析(2)-反应式编程">
+<meta property="og:url" content="http://yoursite.com/2019/10/17/SpringCloudGateway源码解析-反应式编程/index.html">
 <meta property="og:site_name" content="CrowleyBlog">
+<meta property="og:description" content="前言为了应对 高并发环境下 的服务端编程，微软提出了一个实现 异步编程 的方案 - Reactive Programming，中文名称 反应式编程。Java也汲取了反应式编程的思想，Spring Reactor应势而生。Spring5.0以WebFlux为代表全面拥抱了Reactor的编程模式。Spring Cloud Gateway底层是webFlux，而webFlux就是基于Spring Re">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://syxtt.xin/flux.png">
+<meta property="og:updated_time" content="2019-10-17T09:33:51.379Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CrowleyBlog">
+<meta name="twitter:title" content="SpringCloudGateway源码解析(2)-反应式编程">
+<meta name="twitter:description" content="前言为了应对 高并发环境下 的服务端编程，微软提出了一个实现 异步编程 的方案 - Reactive Programming，中文名称 反应式编程。Java也汲取了反应式编程的思想，Spring Reactor应势而生。Spring5.0以WebFlux为代表全面拥抱了Reactor的编程模式。Spring Cloud Gateway底层是webFlux，而webFlux就是基于Spring Re">
+<meta name="twitter:image" content="http://syxtt.xin/flux.png">
     
 
     
@@ -123,75 +132,169 @@
                         <div class="main-body-header">
     <h1 class="header">
     
-    <i class="icon fa fa-tag"></i>标签：: <em>Nginx</em>
+    <a class="page-title-link" href="/categories/SpringCloud/">SpringCloud</a>
     </h1>
 </div>
 
                         <div class="main-body-content">
-                            
-
-    
-    
+                            <article id="post-SpringCloudGateway源码解析-反应式编程" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
         
-        
-        <section class="archives-wrap">
-            <div class="archive-year-wrap">
-                <a href="/archives/2019" class="archive-year"><i class="icon fa fa-calendar-o"></i>2019</a>
-            </div>
-            <div class="archives">
-    
-    
-    
-        <div class="article-row">
-    
-        <article class="article article-summary">
-    <div class="article-summary-inner">
-        
-        <a href="/2019/08/19/Nginx:LVS:HAProxy负载均衡软件的优缺点详解/" class="thumbnail">
-    
-    
-        <span style="background-image:url(http://www.ha97.com/wp-content/uploads/2014/07/nginx-300x191.jpg)" alt="Nginx/LVS/HAProxy负载均衡软件的优缺点详解(转)" class="thumbnail-image"></span>
-    
-    
-        
-<span class="comment-counter">
-    <i class="fa fa-comments-o"></i>
-    
-        <span class="disqus-comment-count" data-disqus-identifier data-disqus-url="http://yoursite.com/2019/08/19/Nginx:LVS:HAProxy负载均衡软件的优缺点详解/">0</span>
-    
-</span>
-
-
-    
-</a>
-
-        
-        <div class="article-meta">
-            <div class="category">
-            <a class="article-category-link" href="/categories/软件架构/">软件架构</a>
-            </div>
-            <div class="date"><time datetime="2019-08-19T15:33:16.000Z" itemprop="datePublished">2019-08-19</time></div>
-        </div>
-        
+            <header class="article-header">
+                
     
         <h1 class="article-title" itemprop="name">
-        <a href="/2019/08/19/Nginx:LVS:HAProxy负载均衡软件的优缺点详解/">Nginx/LVS/HAProxy负载均衡软件的优缺点详解(转)</a>
+        SpringCloudGateway源码解析(2)-反应式编程
         </h1>
     
 
-        <p class="article-excerpt">
-            Nginx/LVS/HAProxy负载均衡软件的优缺点详解(转)原文链接：http://www.ha97.com/5646.html，由于工作中遇到负载均衡系统的实现，记录笔记。
-PS：Nginx/LVS/HAProxy是目前使用最广泛的三种负载均衡软件，本人都在多个项目中实施过，参考了一些资料，结合自己的一些使用经验，总结一下。
-一般对负载均衡的使用是随着网站规模的提升根据不同的阶段来使用不同的
-        </p>
+            </header>
+        
+        
+            <div class="article-meta">
+                
+    <div class="article-date">
+        <a href="/2019/10/17/SpringCloudGateway源码解析-反应式编程/" class="article-date">
+            <time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time>
+        </a>
     </div>
-</article>
-    
+
+		
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/SpringCloud/">SpringCloud</a>, <a class="tag-link" href="/tags/webFlux/">webFlux</a>, <a class="tag-link" href="/tags/反应式编程/">反应式编程</a>, <a class="tag-link" href="/tags/网关/">网关</a>, <a class="tag-link" href="/tags/设计模式/">设计模式</a>
+    </div>
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>为了应对 <strong>高并发环境下</strong> 的服务端编程，微软提出了一个实现 <strong>异步编程</strong> 的方案 - <code>Reactive Programming</code>，中文名称 <strong>反应式编程</strong>。Java也汲取了反应式编程的思想，Spring Reactor应势而生。Spring5.0以WebFlux为代表全面拥抱了Reactor的编程模式。Spring Cloud Gateway底层是webFlux，而webFlux就是基于Spring Reactor构建的新一代WEB框架。</p>
+<h1 id="想读懂Spring-Cloud-Gateway，先学Reactor"><a href="#想读懂Spring-Cloud-Gateway，先学Reactor" class="headerlink" title="想读懂Spring Cloud Gateway，先学Reactor"></a>想读懂Spring Cloud Gateway，先学Reactor</h1><p>博主在读Spring Cloud Gateway源码之前，对Reactor技术不了解，在看Gateway源码时候不知道所谓了Flux和Mono是个啥概念。比如如下这段代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Mono&lt;Void&gt; <span class="title">filter</span><span class="params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> Mono.defer(() -&gt; &#123;</span><br><span class="line">				<span class="keyword">if</span> (<span class="keyword">this</span>.index &lt; filters.size()) &#123;</span><br><span class="line">					GatewayFilter filter = filters.get(<span class="keyword">this</span>.index);</span><br><span class="line">					DefaultGatewayFilterChain chain = <span class="keyword">new</span> DefaultGatewayFilterChain(<span class="keyword">this</span>,</span><br><span class="line">							<span class="keyword">this</span>.index + <span class="number">1</span>);</span><br><span class="line">					<span class="keyword">return</span> filter.filter(exchange, chain);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="keyword">return</span> Mono.empty(); <span class="comment">// complete</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure>
+<p>所以想读懂Gateway的源码，Reactor技术也是要掌握的，至少能了解Reactor的思想，知道它API的含义。接下来会带着大家对Reactor入个门，为后续的学习Gateway源码打好基础。</p>
+<p><strong>Flux原理</strong></p>
+<p>Flux表示的是包含0到N个元素的异步序列。下图中，operator上面共有6个元素，时间轴从左到右，分边进入到operator容器中进行处理，处理之后的结果流入到result flux中，有些情况下某些元素在处理过程中会出现错误。</p>
+<p><img src="http://syxtt.xin/flux.png" alt="img"></p>
+<p>​    </p>
+<p><strong>Mono原理</strong></p>
+<p>Mono表示的是包含0-1个元素的异步序列，是一个特殊的Flux。原理和Flux一致，只是Mono限制了元素的数量。</p>
+<p><img src="http://syxtt.xin/mono.png" alt></p>
+<p>反应式编程的所有API都在Flux和Mono中体现。</p>
+<h1 id="Reactor示例代码"><a href="#Reactor示例代码" class="headerlink" title="Reactor示例代码"></a>Reactor示例代码</h1><p>Flux 可以根据fromIterable，just，fromArray 三种API创建异步序列。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">private static List&lt;String&gt; strs =    Arrays.asList(&quot;the&quot;,&quot;quick&quot;,&quot;brown&quot;,&quot;fox&quot;,&quot;jumped&quot;,&quot;over&quot;,&quot;the&quot;,&quot;lazy&quot;,&quot;dog&quot;);</span><br><span class="line"></span><br><span class="line">public static void test0() &#123;</span><br><span class="line"></span><br><span class="line">    Flux.fromIterable(strs).subscribe(System.out::println);</span><br><span class="line">    Flux.just(strs).subscribe(System.out::println);</span><br><span class="line">    String[] strArray = &#123;&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;&#125;;</span><br><span class="line">    Flux.fromArray(strArray).subscribe(System.out::println);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">the</span><br><span class="line">quick</span><br><span class="line">brown</span><br><span class="line">fox</span><br><span class="line">jumped</span><br><span class="line">over</span><br><span class="line">the</span><br><span class="line">lazy</span><br><span class="line">dog</span><br><span class="line">[the, quick, brown, fox, jumped, over, the, lazy, dog]</span><br><span class="line">a</span><br><span class="line">b</span><br><span class="line">c</span><br><span class="line">d</span><br></pre></td></tr></table></figure>
+<p>创建一个Flux和一个Mono，flatMap函数按空字符串把happy字符串拆分成h,a,p,p,y这些子字符串，concatWith融合了s字符串，然后调用distinct和sort函数，完成了去重和排序，最终通过zipWith拼接数字.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; list = Arrays.asList(<span class="string">"happy"</span>);</span><br><span class="line">        Mono&lt;String&gt; missting = Mono.just(<span class="string">"s"</span>);</span><br><span class="line">        Flux.fromIterable(list).flatMap(word -&gt; 	   Flux.fromArray(word.split(<span class="string">""</span>))).concatWith(missting)</span><br><span class="line">                .distinct().sort().zipWith(Flux.range(<span class="number">1</span>, Integer.MAX_VALUE), (string, count) -&gt; String.format(<span class="string">"%d. %s"</span>, count, string)).subscribe(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"> <span class="number">1</span>. a</span><br><span class="line"> <span class="number">2</span>. h</span><br><span class="line"> <span class="number">3</span>. p</span><br><span class="line"> <span class="number">4</span>. y</span><br><span class="line"> <span class="number">5</span>. s</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>反应式编程范式对于习惯了传统编程范式的开发人员来说，既是一个需要进行思维方式转变的挑战，也是一个充满了更多可能的机会。Reactor 作为一个基于反应式流规范的新的 Java 库，可以作为反应式应用的基础。但是Reactor还不算成熟，以后的发展还需拭目以待，至少Spring已经全面拥抱。</p>
+<p>#参考文档</p>
+<p><a href="https://juejin.im/post/5b3a22a16fb9a024db5ff13e" target="_blank" rel="noopener">聊聊Spring Reactor反应式编程</a></p>
+<p><a href="https://mercyblitz.github.io/2018/07/25/Reactive-Programming-%E4%B8%80%E7%A7%8D%E6%8A%80%E6%9C%AF-%E5%90%84%E8%87%AA%E8%A1%A8%E8%BF%B0/" target="_blank" rel="noopener">Reactive programming 一种技术 各自表述</a></p>
+<p><a href="https://colobu.com/2014/10/28/secrets-of-java-8-functional-interface/#JDK_8%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%9C%89%E7%9A%84%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3" target="_blank" rel="noopener">Java 8函数式接口functional interface的秘密</a></p>
+<p><a href="https://projectreactor.io/docs/core/release/reference/" target="_blank" rel="noopener">Reactor官方文档</a></p>
+<p><a href="https://www.ibm.com/developerworks/cn/java/j-cn-with-reactor-response-encode/index.html" target="_blank" rel="noopener">使用 Reactor 进行反应式编程</a></p>
+
         </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://yoursite.com/2019/10/17/SpringCloudGateway源码解析-反应式编程/" data-id="ck1uicw4c000w969vylt916ri" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "crowley"
+        },
+        "headline": "SpringCloudGateway源码解析(2)-反应式编程",
+        "image": "http://yoursite.comhttp://syxtt.xin/flux.png",
+        "keywords": "设计模式 SpringCloud 网关 反应式编程 webFlux",
+        "genre": "SpringCloud",
+        "datePublished": "2019-10-17",
+        "dateCreated": "2019-10-17",
+        "dateModified": "2019-10-17",
+        "url": "http://yoursite.com/2019/10/17/SpringCloudGateway源码解析-反应式编程/",
+        "description": "前言为了应对 高并发环境下 的服务端编程，微软提出了一个实现 异步编程 的方案 - Reactive Programming，中文名称 反应式编程。Java也汲取了反应式编程的思想，Spring Reactor应势而生。Spring5.0以WebFlux为代表全面拥抱了Reactor的编程模式。Spring Cloud Gateway底层是webFlux，而webFlux就是基于Spring Re"
+        "wordCount": 363
+    }
+</script>
+
+</article>
+
+    <section id="comments">
     
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
 
-
-    </div></section>
+    
+    </section>
 
 
 
@@ -213,6 +316,19 @@ PS：Nginx/LVS/HAProxy是目前使用最广泛的三种负载均衡软件，本�
             
         </ul>
     </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
     
     <div class="widgets-container">
         
@@ -421,11 +537,13 @@ PS：Nginx/LVS/HAProxy是目前使用最广泛的三种负载均衡软件，本�
     var disqus_shortname = 'hexo-theme-hueman';
     
     
+    var disqus_url = 'http://yoursite.com/2019/10/17/SpringCloudGateway源码解析-反应式编程/';
+    
     (function() {
     var dsq = document.createElement('script');
     dsq.type = 'text/javascript';
     dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
     </script>
