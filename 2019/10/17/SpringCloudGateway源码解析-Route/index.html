@@ -21,7 +21,7 @@
 <meta property="og:description" content="前言在文章《SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱》中，我们从宏观上了解了Spring Cloud Gateway的整体架构和思想，本篇文章就是要带着大家了解网关的一等公民”路由”的前世和今生。 路由什么是路由？维基百科中定义。路由（routing）就是通过互联的网络把信息从源地址传输到目的地址的活动。路由发生在OSI网络参考模型中的第三层即">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://syxtt.xin/RouteDefinition%E8%BD%AC%E6%8D%A2%E6%88%90Route.png">
-<meta property="og:updated_time" content="2019-10-18T07:54:47.017Z">
+<meta property="og:updated_time" content="2019-10-18T08:23:15.753Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringCloudGateway源码解析(3)- 路由的装配">
 <meta name="twitter:description" content="前言在文章《SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱》中，我们从宏观上了解了Spring Cloud Gateway的整体架构和思想，本篇文章就是要带着大家了解网关的一等公民”路由”的前世和今生。 路由什么是路由？维基百科中定义。路由（routing）就是通过互联的网络把信息从源地址传输到目的地址的活动。路由发生在OSI网络参考模型中的第三层即">
@@ -209,14 +209,26 @@
 <ul>
 <li>DiscoveryClientRouteDefinitionLocator在GatewayDiscoveryClientAutoConfiguration中加载，目的是集成SpringCloud的注册中心(例如Eureka，Zookeeper，Nacos等)，DiscoveryClientRouteDefinitionLocator依赖DiscoveryClient对象，所有的路由信息均是通过DiscoveryClient获得，然后转换成RouteDefinition对象。</li>
 </ul>
-<h2 id="RouteLocator"><a href="#RouteLocator" class="headerlink" title="RouteLocator"></a>RouteLocator</h2>
+<p>##RouteLocator</p>
+<p>RouteLocator只包含一个函数getRoutes()获取所有的Route对象。它有三个实现类，但是真正干活的实现类是RouteDefinitionRouteLocator，</p>
+<p><img src="http://syxtt.xin/RouteLocator%E7%B1%BB%E5%9B%BE.png" alt="RouteLocator依赖关系图"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RouteLocator</span> </span>&#123;</span><br><span class="line">	<span class="function">Flux&lt;Route&gt; <span class="title">getRoutes</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Flux&lt;Route&gt; <span class="title">getRoutes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="comment">//获取RouteDefinition集合，调用convertToRoute转换成Route对象</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">this</span>.routeDefinitionLocator.getRouteDefinitions().map(<span class="keyword">this</span>::convertToRoute)</span><br><span class="line">			.map(route -&gt; &#123;</span><br><span class="line">				<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(<span class="string">"RouteDefinition matched: "</span> + route.getId());</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">return</span> route;</span><br><span class="line">			&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Route <span class="title">convertToRoute</span><span class="params">(RouteDefinition routeDefinition)</span> </span>&#123;</span><br><span class="line">   <span class="comment">//断言</span></span><br><span class="line">	AsyncPredicate&lt;ServerWebExchange&gt; predicate = combinePredicates(routeDefinition);</span><br><span class="line">   <span class="comment">//过滤器</span></span><br><span class="line">	List&lt;GatewayFilter&gt; gatewayFilters = getFilters(routeDefinition);</span><br><span class="line">   <span class="comment">//构建Route</span></span><br><span class="line">	<span class="keyword">return</span> Route.async(routeDefinition).asyncPredicate(predicate)</span><br><span class="line">			.replaceFilters(gatewayFilters).build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>#设计模式</p>
+<p>在Route包下，Spencer Gibb采用了模板模式和建造者模式。</p>
+<h2 id="模板模式"><a href="#模板模式" class="headerlink" title="模板模式"></a>模板模式</h2><p>在模板模式（Template Pattern）中，一个抽象类公开定义了执行它的方法的方式/模板。它的子类可以按需要重写方法实现，但调用将以抽象类中定义的方式进行。这种类型的设计模式属于行为型模式。其实我个人理解模板模式就是面向接口编程。RouteLocator和RouteDefinitionLocator都采用了模板模式</p>
+<h2 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h2><p>建造者模式（Builder Pattern）使用多个简单的对象一步一步构建成一个复杂的对象。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
+<p>一个 Builder 类会一步一步构造最终的对象。该 Builder 类是独立于其他对象的。</p>
+<p>FluentAPI就是一个很经典的建造者模式的应用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">builder.routes().route(r -&gt; r.path(<span class="string">"/anything/png"</span>).uri(<span class="string">"https://www.jd.com"</span>)).build();</span><br></pre></td></tr></table></figure>
+
         </div>
         <footer class="article-footer">
             
 
 
 
-    <a data-url="http://yoursite.com/2019/10/17/SpringCloudGateway源码解析-Route/" data-id="ck1vu956o000o3v9vk00lndk2" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/2019/10/17/SpringCloudGateway源码解析-Route/" data-id="ck1vvajld00519v9vh57d35un" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -296,7 +308,7 @@
         "url": "http://yoursite.com/2019/10/17/SpringCloudGateway源码解析-Route/",
         "description": "前言在文章《SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱》中，我们从宏观上了解了Spring Cloud Gateway的整体架构和思想，本篇文章就是要带着大家了解网关的一等公民”路由”的前世和今生。
 路由什么是路由？维基百科中定义。路由（routing）就是通过互联的网络把信息从源地址传输到目的地址的活动。路由发生在OSI网络参考模型中的第三层即"
-        "wordCount": 752
+        "wordCount": 899
     }
 </script>
 
@@ -336,10 +348,20 @@
         
 <nav id="article-nav">
     
+        <a href="/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
     
-        <a href="/2019/10/17/SpringCloudGateway源码解析-反应式编程/" id="article-nav-older" class="article-nav-link-wrap">
+    
+        <a href="/2019/09/15/Spring-cloud技术栈学习-第二章-配置文件映射/" id="article-nav-older" class="article-nav-link-wrap">
         <strong class="article-nav-caption">上一篇</strong>
-        <p class="article-nav-title">SpringCloudGateway源码解析(2)-反应式编程</p>
+        <p class="article-nav-title">SpringCloud-第二章-配置文件</p>
         <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
         </a>
     
@@ -357,26 +379,6 @@
         <h3 class="widget-title">最新文章</h3>
         <div class="widget">
             <ul id="recent-post" class>
-                
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2019/10/17/SpringCloudGateway源码解析-Route/" class="thumbnail">
-    
-    
-        <span style="background-image:url(http://syxtt.xin/RouteDefinition%E8%BD%AC%E6%8D%A2%E6%88%90Route.png)" alt="SpringCloudGateway源码解析(3)- 路由的装配" class="thumbnail-image"></span>
-    
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
-                            <p class="item-title"><a href="/2019/10/17/SpringCloudGateway源码解析-Route/" class="title">SpringCloudGateway源码解析(3)- 路由的装配</a></p>
-                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
-                        </div>
-                    </li>
                 
                     <li>
                         
@@ -414,6 +416,26 @@
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
                             <p class="item-title"><a href="/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/" class="title">SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/SpringCloudGateway源码解析-Route/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/RouteDefinition%E8%BD%AC%E6%8D%A2%E6%88%90Route.png)" alt="SpringCloudGateway源码解析(3)- 路由的装配" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/SpringCloudGateway源码解析-Route/" class="title">SpringCloudGateway源码解析(3)- 路由的装配</a></p>
                             <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
                         </div>
                     </li>
