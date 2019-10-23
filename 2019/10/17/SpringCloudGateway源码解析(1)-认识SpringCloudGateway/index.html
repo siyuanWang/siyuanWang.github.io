@@ -6,24 +6,24 @@
     
 
     
-    <title>SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱 | CrowleyBlog</title>
+    <title>SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱 | CrowleyBlog</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
-        <meta name="keywords" content="java,设计模式,Spring,SpringCloud,网关,反应式编程,webFlux">
+        <meta name="keywords" content="Spring Cloud Gateway,Spring Cloud,网关,反应式编程,webFlux">
     
     <meta name="description" content="前言​    最近工作中，使用到了Spring Cloud Gateway，由于它相关的文档较少，工作中又需要用到一些高级特性，决定对它的源码进行学习，版本为v2.1.3.RELEASE。通过对源码的学习，不仅对Spring Cloud Gateway的原理，有了更深的了解，还对Spencer Gibb大师的编码深深吸引，本系列博文不仅带大家了解Spring Cloud Gateway的工作原理，">
-<meta name="keywords" content="java,设计模式,Spring,SpringCloud,网关,反应式编程,webFlux">
+<meta name="keywords" content="Spring Cloud Gateway,Spring Cloud,网关,反应式编程,webFlux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱">
-<meta property="og:url" content="http://yoursite.com/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/index.html">
+<meta property="og:title" content="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
+<meta property="og:url" content="http://yoursite.com/2019/10/17/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/index.html">
 <meta property="og:site_name" content="CrowleyBlog">
 <meta property="og:description" content="前言​    最近工作中，使用到了Spring Cloud Gateway，由于它相关的文档较少，工作中又需要用到一些高级特性，决定对它的源码进行学习，版本为v2.1.3.RELEASE。通过对源码的学习，不仅对Spring Cloud Gateway的原理，有了更深的了解，还对Spencer Gibb大师的编码深深吸引，本系列博文不仅带大家了解Spring Cloud Gateway的工作原理，">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://syxtt.xin/springCloudGateway%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C.png">
-<meta property="og:updated_time" content="2019-10-17T08:07:53.231Z">
+<meta property="og:updated_time" content="2019-10-23T02:09:26.393Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱">
+<meta name="twitter:title" content="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
 <meta name="twitter:description" content="前言​    最近工作中，使用到了Spring Cloud Gateway，由于它相关的文档较少，工作中又需要用到一些高级特性，决定对它的源码进行学习，版本为v2.1.3.RELEASE。通过对源码的学习，不仅对Spring Cloud Gateway的原理，有了更深的了解，还对Spencer Gibb大师的编码深深吸引，本系列博文不仅带大家了解Spring Cloud Gateway的工作原理，">
 <meta name="twitter:image" content="http://syxtt.xin/springCloudGateway%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C.png">
     
@@ -137,14 +137,14 @@
 </div>
 
                         <div class="main-body-content">
-                            <article id="post-跟我学SpringCloudGateway-认识SpringCloudGateway" class="article article-single article-type-post" itemscope itemprop="blogPost">
+                            <article id="post-SpringCloudGateway源码解析(1)-认识SpringCloudGateway" class="article article-single article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             <header class="article-header">
                 
     
         <h1 class="article-title" itemprop="name">
-        SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱
+        SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱
         </h1>
     
 
@@ -154,7 +154,7 @@
             <div class="article-meta">
                 
     <div class="article-date">
-        <a href="/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/" class="article-date">
+        <a href="/2019/10/17/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="article-date">
             <time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time>
         </a>
     </div>
@@ -164,7 +164,7 @@
                 
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/Spring/">Spring</a>, <a class="tag-link" href="/tags/SpringCloud/">SpringCloud</a>, <a class="tag-link" href="/tags/java/">java</a>, <a class="tag-link" href="/tags/webFlux/">webFlux</a>, <a class="tag-link" href="/tags/反应式编程/">反应式编程</a>, <a class="tag-link" href="/tags/网关/">网关</a>, <a class="tag-link" href="/tags/设计模式/">设计模式</a>
+        <a class="tag-link" href="/tags/Spring-Cloud/">Spring Cloud</a>, <a class="tag-link" href="/tags/Spring-Cloud-Gateway/">Spring Cloud Gateway</a>, <a class="tag-link" href="/tags/webFlux/">webFlux</a>, <a class="tag-link" href="/tags/反应式编程/">反应式编程</a>, <a class="tag-link" href="/tags/网关/">网关</a>
     </div>
 
             </div>
@@ -222,7 +222,7 @@
 <p><a href="https://colobu.com/2014/10/28/secrets-of-java-8-functional-interface/#JDK_8%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%9C%89%E7%9A%84%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3" target="_blank" rel="noopener">Java 8函数式接口functional interface的秘密</a></p>
 <p><a href="https://projectreactor.io/docs/core/release/reference/" target="_blank" rel="noopener">Reactor官方文档</a></p>
 <p><a href="https://www.ibm.com/developerworks/cn/java/j-cn-with-reactor-response-encode/index.html" target="_blank" rel="noopener">使用 Reactor 进行反应式编程</a></p>
-<p><a href="https://juejin.im/post/5ba8daa56fb9a05cfe486ebf" target="_blank" rel="noopener">微服务网关Zuul迁移到Spring Cloud Gateway</a></p>
+<p><a href="https://juejin.im/post/5ba8daa56fb9a05cfe486ebf" target="_blank" rel="noopener">微服务网关Zuul迁移到Spring Cloud Gateway</a> </p>
 
         </div>
         <footer class="article-footer">
@@ -230,7 +230,7 @@
 
 
 
-    <a data-url="http://yoursite.com/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/" data-id="ck1vvajk9002x9v9vyyskxf0r" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/2019/10/17/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" data-id="ck22nmor9001bhn9vll8qk64b" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -300,16 +300,16 @@
             "@type": "Person",
             "name": "crowley"
         },
-        "headline": "SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱",
+        "headline": "SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱",
         "image": "http://yoursite.comhttp://syxtt.xin/springCloudGateway%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C.png",
-        "keywords": "java 设计模式 Spring SpringCloud 网关 反应式编程 webFlux",
+        "keywords": "Spring Cloud Gateway Spring Cloud 网关 反应式编程 webFlux",
         "genre": "SpringCloud",
         "datePublished": "2019-10-17",
         "dateCreated": "2019-10-17",
-        "dateModified": "2019-10-17",
-        "url": "http://yoursite.com/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/",
+        "dateModified": "2019-10-23",
+        "url": "http://yoursite.com/2019/10/17/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/",
         "description": "前言​    最近工作中，使用到了Spring Cloud Gateway，由于它相关的文档较少，工作中又需要用到一些高级特性，决定对它的源码进行学习，版本为v2.1.3.RELEASE。通过对源码的学习，不仅对Spring Cloud Gateway的原理，有了更深的了解，还对Spencer Gibb大师的编码深深吸引，本系列博文不仅带大家了解Spring Cloud Gateway的工作原理，"
-        "wordCount": 162
+        "wordCount": 163
     }
 </script>
 
@@ -349,20 +349,10 @@
         
 <nav id="article-nav">
     
-        <a href="/2019/10/17/SpringCloudGateway源码解析-反应式编程/" id="article-nav-newer" class="article-nav-link-wrap">
-        <strong class="article-nav-caption">下一篇</strong>
-        <p class="article-nav-title">
-        
-            SpringCloudGateway源码解析(2)-反应式编程
-        
-        </p>
-        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
-    </a>
     
-    
-        <a href="/2019/10/17/SpringCloudGateway源码解析-Route/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2019/10/17/SpringCloudGateway源码解析(2)-反应式编程/" id="article-nav-older" class="article-nav-link-wrap">
         <strong class="article-nav-caption">上一篇</strong>
-        <p class="article-nav-title">SpringCloudGateway源码解析(3)- 路由的装配</p>
+        <p class="article-nav-title">SpringCloudGateway源码解析(2)-反应式编程</p>
         <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
         </a>
     
@@ -384,7 +374,27 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2019/10/17/SpringCloudGateway源码解析-反应式编程/" class="thumbnail">
+                            <a href="/2019/10/17/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/springCloudGateway%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C.png)" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="title">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/SpringCloudGateway源码解析(2)-反应式编程/" class="thumbnail">
     
     
         <span style="background-image:url(http://syxtt.xin/flux.png)" alt="SpringCloudGateway源码解析(2)-反应式编程" class="thumbnail-image"></span>
@@ -396,7 +406,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
-                            <p class="item-title"><a href="/2019/10/17/SpringCloudGateway源码解析-反应式编程/" class="title">SpringCloudGateway源码解析(2)-反应式编程</a></p>
+                            <p class="item-title"><a href="/2019/10/17/SpringCloudGateway源码解析(2)-反应式编程/" class="title">SpringCloudGateway源码解析(2)-反应式编程</a></p>
                             <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
                         </div>
                     </li>
@@ -404,10 +414,10 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/" class="thumbnail">
+                            <a href="/2019/10/17/SpringCloudGateway源码解析(3)-路由/" class="thumbnail">
     
     
-        <span style="background-image:url(http://syxtt.xin/springCloudGateway%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C.png)" alt="SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱" class="thumbnail-image"></span>
+        <span style="background-image:url(http://syxtt.xin/RouteDefinition%E8%BD%AC%E6%8D%A2%E6%88%90Route.png)" alt="SpringCloudGateway源码解析(3)- 路由" class="thumbnail-image"></span>
     
     
 </a>
@@ -416,7 +426,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
-                            <p class="item-title"><a href="/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/" class="title">SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱</a></p>
+                            <p class="item-title"><a href="/2019/10/17/SpringCloudGateway源码解析(3)-路由/" class="title">SpringCloudGateway源码解析(3)- 路由</a></p>
                             <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
                         </div>
                     </li>
@@ -424,10 +434,10 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2019/10/17/SpringCloudGateway源码解析-Route/" class="thumbnail">
+                            <a href="/2019/10/17/SpringCloudGateway源码解析(4)-核心流程/" class="thumbnail">
     
     
-        <span style="background-image:url(http://syxtt.xin/RouteDefinition%E8%BD%AC%E6%8D%A2%E6%88%90Route.png)" alt="SpringCloudGateway源码解析(3)- 路由的装配" class="thumbnail-image"></span>
+        <span style="background-image:url(http://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png)" alt="SpringCloudGateway源码解析(4)- 核心流程" class="thumbnail-image"></span>
     
     
 </a>
@@ -436,7 +446,7 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
-                            <p class="item-title"><a href="/2019/10/17/SpringCloudGateway源码解析-Route/" class="title">SpringCloudGateway源码解析(3)- 路由的装配</a></p>
+                            <p class="item-title"><a href="/2019/10/17/SpringCloudGateway源码解析(4)-核心流程/" class="title">SpringCloudGateway源码解析(4)- 核心流程</a></p>
                             <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
                         </div>
                     </li>
@@ -461,26 +471,6 @@
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2019/09/15/Spring-cloud技术栈学习/" class="thumbnail">
-    
-    
-        <span style="background-image:url(http://syxtt.xin/eureka.png)" alt="SpringCloud-第一章 入门" class="thumbnail-image"></span>
-    
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
-                            <p class="item-title"><a href="/2019/09/15/Spring-cloud技术栈学习/" class="title">SpringCloud-第一章 入门</a></p>
-                            <p class="item-date"><time datetime="2019-09-15T15:33:16.000Z" itemprop="datePublished">2019-09-15</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -490,7 +480,7 @@
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据技术/">大数据技术</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搜索/">搜索</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件架构/">软件架构</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据技术/">大数据技术</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搜索/">搜索</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件架构/">软件架构</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -500,7 +490,7 @@
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">7</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">7</span></li></ul>
         </div>
     </div>
 
@@ -510,7 +500,7 @@
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BM25/">BM25</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/">ElasticSearch</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HAProxy/">HAProxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hbase/">Hbase</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/">IK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LTR/">LTR</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LVS/">LVS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TF-IDF/">TF-IDF</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jmeter/">jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lucene/">lucene</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring-boot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring-cloud</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/webFlux/">webFlux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/倒排索引/">倒排索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分词/">分词</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反应式编程/">反应式编程</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/向量空间模型/">向量空间模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布尔模型/">布尔模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/建造者模式/">建造者模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/微服务/">微服务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搜索/">搜索</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相关性/">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网关/">网关</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自动部署/">自动部署</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/负载均衡/">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/路由/">路由</a><span class="tag-list-count">1</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BM25/">BM25</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/">ElasticSearch</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HAProxy/">HAProxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hbase/">Hbase</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/">IK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LTR/">LTR</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LVS/">LVS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Gateway/">Spring Cloud Gateway</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TF-IDF/">TF-IDF</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jmeter/">jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lucene/">lucene</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactor/">reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring-boot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring-cloud</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/webFlux/">webFlux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/倒排索引/">倒排索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分词/">分词</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反应式编程/">反应式编程</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/向量空间模型/">向量空间模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/工厂模式/">工厂模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布尔模型/">布尔模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/建造者模式/">建造者模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/微服务/">微服务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搜索/">搜索</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相关性/">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网关/">网关</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自动部署/">自动部署</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/负载均衡/">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/责任链模式/">责任链模式</a><span class="tag-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -520,7 +510,7 @@
     <div class="widget-wrap widget-float">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.33px;">ElasticSearch</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 16.67px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 13.33px;">Spring</a> <a href="/tags/SpringCloud/" style="font-size: 13.33px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 13.33px;">lucene</a> <a href="/tags/spring/" style="font-size: 11.67px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.67px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.67px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.67px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 11.67px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.67px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 13.33px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 15px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/路由/" style="font-size: 10px;">路由</a>
+            <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.33px;">ElasticSearch</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 16.67px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 11.67px;">Spring</a> <a href="/tags/Spring-Cloud/" style="font-size: 13.33px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 15px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 13.33px;">lucene</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.67px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.67px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.67px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.67px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 11.67px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.67px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 10px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 16.67px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a>
         </div>
     </div>
 
@@ -576,7 +566,7 @@
     var disqus_shortname = 'hexo-theme-hueman';
     
     
-    var disqus_url = 'http://yoursite.com/2019/10/17/跟我学SpringCloudGateway-认识SpringCloudGateway/';
+    var disqus_url = 'http://yoursite.com/2019/10/17/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/';
     
     (function() {
     var dsq = document.createElement('script');
