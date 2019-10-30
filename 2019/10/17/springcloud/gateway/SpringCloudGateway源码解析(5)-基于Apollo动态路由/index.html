@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>SpringCloudGateway源码解析(5)- 基于配置中心的动态路由 - Mr.Crowley博客</title>
+<title>SpringCloudGateway源码解析(5)- 基于配置中心的动态路由 - CrowleyBlog</title>
 
 
 
@@ -42,7 +42,7 @@
                 
                 
                 
-                <a class="navbar-item search" title="Search" href="javascript:;">
+                <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
                 </a>
                 
@@ -71,7 +71,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    11 minutes read (About 1702 words)
+                    11 分钟 读完 (大约 1702 个字)
                 </span>
                 
                 
@@ -86,7 +86,7 @@
         <div class="content">
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​        微服务网关，是一个微服务体系的门户，是多有流量的入口和出口。这样重要的地位就代表了网关需要很高的稳定性。通过前四章对Spring Cloud Gateway的学习，我们了解到框架提供了通过配置文件、FluentAPI和Restful接口三种定义路由的方式。前两种方式是通过配置文件或者硬编码的方式来实现，这种方式虽然简单易用，但是如果路由信息变更，则必须重新发布或者重启网关应用，这会对网关服务的稳定性带来挑战（任何一次发布，都有可能引入新的Bug，都会导致JIT的优化丢失，需要重新预热，导致系统抖动），通过Restful接口修改，虽然可以做到实时更新路由，但是缺少了持久化策略，网关一旦重启，则所有的修改都会丢失，而且也较难维护。基于以上分析，Spring Cloud Gateway如果想做到高可用，需要引入一套<strong>可维护的动态路由</strong>功能。结合<strong>配置中心</strong>实现动态路由，就是一个很好的解决方案。</p>
 <h1 id="配置中心是什么？"><a href="#配置中心是什么？" class="headerlink" title="配置中心是什么？"></a>配置中心是什么？</h1><p>​        随着程序功能的日益复杂，程序的<strong>配置日益增多</strong>，各种功能的开关、参数的配置、服务器的地址。对<strong>程序配置的期望值</strong>也越来越高，配置修改后实时生效，灰度发布，分环境、分集群管理配置，完善的权限、审核机制。在这样的大环境下，传统的通过配置文件、数据库等方式已经越来越无法满足开发人员对配置管理的需求。配置中心，就是为了解决如上的问题的。</p>
-<p>​        常用的配置中心，如Spring Cloud Config、Apollo、Nacos等，比较了众多的配置中心组建，我选择Apollo作为配置中心，它的功能很强大。接下来对Apollo的基本功能做一个讲解。环境列表包括了DEV、QA、SIM、PRO四个环境，AppId是Apollo的一个重要配置，是项目的主键。右侧是application、gateway、auth、route四个命名空间(namespace)。根据AppId和nameSpace可以定位到一组配置。想进一步了解Apollo的同学，请参考<a href="https://github.com/ctripcorp/apollo">官网</a>。</p>
+<p>​        常用的配置中心，如Spring Cloud Config、Apollo、Nacos等，比较了众多的配置中心组建，我选择Apollo作为配置中心，它的功能很强大。接下来对Apollo的基本功能做一个讲解。环境列表包括了DEV、QA、SIM、PRO四个环境，AppId是Apollo的一个重要配置，是项目的主键。右侧是application、gateway、auth、route四个命名空间(namespace)。根据AppId和nameSpace可以定位到一组配置。想进一步了解Apollo的同学，请参考<a href="https://github.com/ctripcorp/apollo" target="_blank" rel="noopener">官网</a>。</p>
 <p><img src="http://syxtt.xin/Apollo.png" alt="apollo界面"></p>
 <p>​    客户端向 Spring Cloud Gateway 发出请求。如果 Gateway Handler Mapping 中找到与请求相匹配的路由，将其发送到 Gateway Web Handler。Handler 再通过指定的过滤器链来将请求发送到我们实际的服务执行业务逻辑，然后返回。 过滤器之间用虚线分开是因为过滤器可能会在发送代理请求之前（“pre”）或之后（“post”）执行业务逻辑。</p>
 <h1 id="动态配置理论基础"><a href="#动态配置理论基础" class="headerlink" title="动态配置理论基础"></a>动态配置理论基础</h1><p>​        Spring Cloud Gateway中，有一个RefreshRoutesEvent类，顾名思义它是刷新路由的事件类。CachingRouteLocator实现了对RefreshRoutesEvent的监听，一旦RefreshRoutesEvent被publish，refresh函数就会被调用。refresh函数的作用是把cache清除，因为CacheFlux.lookup监听cache是否丢失，如果cache丢失则onCacheMissResume触发重新根据routeDefinition转化为Route。</p>
@@ -124,7 +124,7 @@
 
 <div class="card">
     <div class="card-content">
-        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
         <div class="buttons is-centered">
             
                 
@@ -132,8 +132,8 @@
     <span class="icon is-small">
         <i class="fab fa-weixin"></i>
     </span>
-    <span>Wechat</span>
-    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="Wechat"></div>
+    <span>微信</span>
+    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="微信"></div>
 </a>
 
                 
@@ -147,16 +147,16 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">SpringCloudGateway源码解析(4)- 核心流程</span>
+                <span class="level-item">SpringCloudGateway源码解析(6)- 常用功能实现</span>
             </a>
         </div>
         
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/">
-                <span class="level-item">SpringCloudGateway源码解析(6)- 常用功能实现</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/">
+                <span class="level-item">SpringCloudGateway源码解析(4)- 核心流程</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -168,7 +168,7 @@
 
 <div class="card">
     <div class="card-content">
-        <h3 class="title is-5 has-text-weight-normal">Comments</h3>
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
         
 <div id="SOHUCS" sid="2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/"></div>
 <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
@@ -197,7 +197,7 @@ window.changyan.api.config({
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 Mr.Crowley&nbsp;
+                &copy; 2019 crowley&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
@@ -211,7 +211,7 @@ window.changyan.api.config({
 </footer>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("zh-Hans");</script>
+<script>moment.locale("zh-CN");</script>
 
 <script>
 var IcarusThemeSettings = {
@@ -236,7 +236,7 @@ var IcarusThemeSettings = {
     <div class="searchbox ins-search">
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -248,11 +248,11 @@ var IcarusThemeSettings = {
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
             },
             CONTENT_URL: '/content.json',
         };

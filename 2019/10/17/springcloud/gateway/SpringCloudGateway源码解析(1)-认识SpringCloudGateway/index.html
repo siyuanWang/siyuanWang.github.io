@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱 - Mr.Crowley博客</title>
+<title>SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱 - CrowleyBlog</title>
 
 
 
@@ -42,7 +42,7 @@
                 
                 
                 
-                <a class="navbar-item search" title="Search" href="javascript:;">
+                <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
                 </a>
                 
@@ -71,7 +71,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    9 minutes read (About 1282 words)
+                    9 分钟 读完 (大约 1282 个字)
                 </span>
                 
                 
@@ -95,7 +95,7 @@
 <p><strong>工作流程</strong></p>
 <p><img src="http://syxtt.xin/springCloudGateway%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C.png" alt="img"></p>
 <p>​    客户端向 Spring Cloud Gateway 发出请求。如果 Gateway Handler Mapping 中找到与请求相匹配的路由，将其发送到 Gateway Web Handler。Handler 再通过指定的过滤器链来将请求发送到我们实际的服务执行业务逻辑，然后返回。 过滤器之间用虚线分开是因为过滤器可能会在发送代理请求之前（“pre”）或之后（“post”）执行业务逻辑。</p>
-<h1 id="源码准备"><a href="#源码准备" class="headerlink" title="源码准备"></a>源码准备</h1><p>克隆源码到本地：git clone <a href="https://github.com/spring-cloud/spring-cloud-gateway.git">https://github.com/spring-cloud/spring-cloud-gateway.git</a></p>
+<h1 id="源码准备"><a href="#源码准备" class="headerlink" title="源码准备"></a>源码准备</h1><p>克隆源码到本地：git clone <a href="https://github.com/spring-cloud/spring-cloud-gateway.git" target="_blank" rel="noopener">https://github.com/spring-cloud/spring-cloud-gateway.git</a></p>
 <p>切换到v2.1.3.RELEASE: git checkout tag_name ,验证是否切换成功，git branch，显示如下已切换成功。</p>
 <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">* (HEAD detached at v2.1.3.RELEASE)</span><br><span class="line">  master</span><br></pre></td></tr></table></figure>
 <p>把代码导入到IDEA IDE。看到Spring Cloud Gateway的工程结构，spring-cloud-gateway-core就是接下来主要学习的网关核心模块，上一个章节讲到的所有内容，都在Core模块中，Core模块中最核心的包，就是</p>
@@ -128,7 +128,7 @@
 </ul>
 <p>#参考文档</p>
 <p><a href="https://cloud.spring.io/spring-cloud-gateway/reference/html" target="_blank" rel="noopener">Spring Cloud Gateway官方文档</a></p>
-<p><a href="https://github.com/spring-cloud/spring-cloud-gateway/tree/v2.1.3.RELEASE">Spring Cloud Gateway源码</a></p>
+<p><a href="https://github.com/spring-cloud/spring-cloud-gateway/tree/v2.1.3.RELEASE" target="_blank" rel="noopener">Spring Cloud Gateway源码</a></p>
 <p><a href="http://www.ityouknow.com/springcloud/2018/12/12/spring-cloud-gateway-start.html" target="_blank" rel="noopener">服务网关 Spring Cloud Gateway入门</a></p>
 <p><a href="http://www.iocoder.cn/Spring-Cloud-Gateway/init/" target="_blank" rel="noopener">Spring Cloud Gateway源码解析</a></p>
 <p><a href="https://mercyblitz.github.io/2018/07/25/Reactive-Programming-%E4%B8%80%E7%A7%8D%E6%8A%80%E6%9C%AF-%E5%90%84%E8%87%AA%E8%A1%A8%E8%BF%B0/" target="_blank" rel="noopener">Reactive programming 一种技术 各自表述</a></p>
@@ -157,7 +157,7 @@
 
 <div class="card">
     <div class="card-content">
-        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
         <div class="buttons is-centered">
             
                 
@@ -165,8 +165,8 @@
     <span class="icon is-small">
         <i class="fab fa-weixin"></i>
     </span>
-    <span>Wechat</span>
-    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="Wechat"></div>
+    <span>微信</span>
+    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="微信"></div>
 </a>
 
                 
@@ -180,16 +180,16 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/28/reactor/reactive&rector 简介/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">reactive&amp;reactor简介</span>
+                <span class="level-item">SpringCloudGateway源码解析(2)-反应式编程</span>
             </a>
         </div>
         
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/">
-                <span class="level-item">SpringCloudGateway源码解析(2)-反应式编程</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/">
+                <span class="level-item">SpringCloudGateway源码解析(6)- 常用功能实现</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -201,7 +201,7 @@
 
 <div class="card">
     <div class="card-content">
-        <h3 class="title is-5 has-text-weight-normal">Comments</h3>
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
         
 <div id="SOHUCS" sid="2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/"></div>
 <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
@@ -230,7 +230,7 @@ window.changyan.api.config({
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 Mr.Crowley&nbsp;
+                &copy; 2019 crowley&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
@@ -244,7 +244,7 @@ window.changyan.api.config({
 </footer>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("zh-Hans");</script>
+<script>moment.locale("zh-CN");</script>
 
 <script>
 var IcarusThemeSettings = {
@@ -269,7 +269,7 @@ var IcarusThemeSettings = {
     <div class="searchbox ins-search">
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -281,11 +281,11 @@ var IcarusThemeSettings = {
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
             },
             CONTENT_URL: '/content.json',
         };

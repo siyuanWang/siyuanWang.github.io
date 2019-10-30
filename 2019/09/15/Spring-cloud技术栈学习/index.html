@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>SpringCloud-第一章 入门 - Mr.Crowley博客</title>
+<title>SpringCloud-第一章 入门 - CrowleyBlog</title>
 
 
 
@@ -42,7 +42,7 @@
                 
                 
                 
-                <a class="navbar-item search" title="Search" href="javascript:;">
+                <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
                 </a>
                 
@@ -71,7 +71,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    11 minutes read (About 1713 words)
+                    11 分钟 读完 (大约 1713 个字)
                 </span>
                 
                 
@@ -97,7 +97,7 @@
 <h2 id="SpringCloud"><a href="#SpringCloud" class="headerlink" title="SpringCloud"></a>SpringCloud</h2><p>​    上一章讲述了微服务的产生背景和微服务的优势和劣势，本章讲述应用SpringCloud生态，如何合理的搭建一套健壮，好维护的微服务的系统。</p>
 <h3 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h3><p>​    SpringCloud是基于SpringBoot构建的，因此它延续了SpringBoot的契约模式以及开发方式。SpringBoot的出现，解决了Java应用配置繁杂的缺点，整合了最优秀的中间件，使得基于Java的应用开发和部署十分简单。</p>
 <h3 id="Eureka-服务中心"><a href="#Eureka-服务中心" class="headerlink" title="Eureka 服务中心"></a>Eureka 服务中心</h3><p>​    没有服务中心，那么服务的调用必须采用硬编码的模式，那么每次服务的扩容，缩容，新的服务上线，都需要所有的服务上线，这显然是不合理的。</p>
-<p>​    Eureka是一款开源的服务发现组件，<a href="https://github.com/Netflix/eureka">https://github.com/Netflix/eureka</a></p>
+<p>​    Eureka是一款开源的服务发现组件，<a href="https://github.com/Netflix/eureka" target="_blank" rel="noopener">https://github.com/Netflix/eureka</a></p>
 <p>​    Eureka的功能：</p>
 <p>​    1、Eureka集群</p>
 <p>​    2、Eureka用户认证</p>
@@ -110,13 +110,13 @@
 <p>Ceneral Info:最重要的是registered-replicas,available-replicas, 正常情况下unavailable-replicas是不应该有值的，如果有值，说明有replica不能使用。</p>
 <p><img src="http://syxtt.xin/eureka.png" alt="eureka最佳实践"></p>
 <figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-attr">server:</span></span><br><span class="line"><span class="hljs-attr">  port:</span> <span class="hljs-number">8760</span></span><br><span class="line"><span class="hljs-attr">spring:</span></span><br><span class="line"><span class="hljs-attr">  profiles:</span></span><br><span class="line"><span class="hljs-attr">    active:</span> <span class="hljs-string">peer0</span></span><br><span class="line"><span class="hljs-attr">  application:</span></span><br><span class="line"><span class="hljs-attr">    name:</span> <span class="hljs-string">eureka-server</span></span><br><span class="line"><span class="hljs-attr">eureka:</span></span><br><span class="line"><span class="hljs-attr">  server:</span></span><br><span class="line"><span class="hljs-attr">    eviction-interval-timer-in-ms:</span> <span class="hljs-number">3000</span> <span class="hljs-comment">#eureka server清理无效节点的时间间隔，默认60000毫秒，即60秒</span></span><br><span class="line"><span class="hljs-attr">    responseCacheUpdateIntervalMs:</span> <span class="hljs-number">3000</span> <span class="hljs-comment">#eureka server刷新readCacheMap的时间，注意，client读取的是readCacheMap，这个时间决定了多久会把readWriteCacheMap的缓存更新到readCacheMap上</span></span><br><span class="line"><span class="hljs-attr">    enable-self-preservation:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#是否开启自我保护，默认为true</span></span><br><span class="line"><span class="hljs-attr">  client:</span></span><br><span class="line"><span class="hljs-attr">    registry-fetch-interval-seconds:</span> <span class="hljs-number">5</span> <span class="hljs-comment">#表示eureka client间隔多久去拉取服务注册信息，默认为30秒</span></span><br><span class="line"><span class="hljs-attr">    healthcheck:</span></span><br><span class="line"><span class="hljs-attr">      enabled:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#开启健康检查（依赖spring-boot-starter-actuator）</span></span><br><span class="line"><span class="hljs-attr">    serviceUrl:</span></span><br><span class="line"><span class="hljs-attr">      defaultZone:</span> <span class="hljs-attr">http://eureka1:8761/eureka/,http://eureka2:8762/eureka/</span></span><br><span class="line"><span class="hljs-attr">  dashboard:</span></span><br><span class="line"><span class="hljs-attr">    path:</span> <span class="hljs-string">/eurekaui</span> <span class="hljs-comment">#eureka ui的路径</span></span><br><span class="line"><span class="hljs-attr">  instance:</span></span><br><span class="line"><span class="hljs-attr">    hostname:</span> <span class="hljs-string">eureka0</span></span><br><span class="line"><span class="hljs-attr">    lease-expiration-duration-in-seconds:</span> <span class="hljs-number">15</span> <span class="hljs-comment">#该值至少应该大于leaseRenewalIntervalInSeconds，目前设置的是leaseRenewalIntervalInSeconds三倍，相当于三次心跳如果都没有则进行服务摘除</span></span><br><span class="line"><span class="hljs-attr">    lease-renewal-interval-in-seconds:</span> <span class="hljs-number">5</span> <span class="hljs-comment">#表示eureka client发送心跳给server端的频率</span></span><br><span class="line"><span class="hljs-attr">    preferIpAddress:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-attr">ribbon:</span></span><br><span class="line"><span class="hljs-attr">  ServerListRefreshInterval:</span> <span class="hljs-number">1000</span></span><br><span class="line"><span class="hljs-comment">##prometheusj</span></span><br><span class="line"><span class="hljs-attr">management:</span></span><br><span class="line"><span class="hljs-attr">  metrics:</span></span><br><span class="line"><span class="hljs-attr">    export:</span></span><br><span class="line"><span class="hljs-attr">      prometheus:</span></span><br><span class="line"><span class="hljs-attr">        enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">        step:</span> <span class="hljs-number">1</span><span class="hljs-string">m</span></span><br><span class="line"><span class="hljs-attr">        descriptions:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">  endpoint:</span></span><br><span class="line"><span class="hljs-attr">    metrics:</span></span><br><span class="line"><span class="hljs-attr">      enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">    prometheus:</span></span><br><span class="line"><span class="hljs-attr">      enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">    health:</span></span><br><span class="line"><span class="hljs-attr">      show-details:</span> <span class="hljs-string">always</span></span><br><span class="line"><span class="hljs-attr">  endpoints:</span></span><br><span class="line"><span class="hljs-attr">    web:</span></span><br><span class="line"><span class="hljs-attr">      exposure:</span></span><br><span class="line"><span class="hljs-attr">        include:</span> <span class="hljs-string">"*"</span></span><br></pre></td></tr></table></figure>
-<h3 id="Ribbon-实现客户端负载均衡"><a href="#Ribbon-实现客户端负载均衡" class="headerlink" title="Ribbon 实现客户端负载均衡"></a>Ribbon 实现客户端负载均衡</h3><p>​    Ribbon是Netflix发布的负载均衡器。Ribbon的github地址，<a href="https://github.com/Netflix/ribbon">https://github.com/Netflix/ribbon</a></p>
+<h3 id="Ribbon-实现客户端负载均衡"><a href="#Ribbon-实现客户端负载均衡" class="headerlink" title="Ribbon 实现客户端负载均衡"></a>Ribbon 实现客户端负载均衡</h3><p>​    Ribbon是Netflix发布的负载均衡器。Ribbon的github地址，<a href="https://github.com/Netflix/ribbon" target="_blank" rel="noopener">https://github.com/Netflix/ribbon</a></p>
 <p>​    在Spring Cloud中，当Ribbon与Eureka配合使用时，Ribbon可自动从Eureka Server获取服务提供者地址列表，并基于负载均衡算法，请求其中一个服务提供者实例。</p>
-<h3 id="Feign-实现声明式REST调用"><a href="#Feign-实现声明式REST调用" class="headerlink" title="Feign 实现声明式REST调用"></a>Feign 实现声明式REST调用</h3><p>Feign是Netflix开发的声明式、模板化的HTTP客户端，其灵感来自Retrofit，JAXRS-2.0以及WebSocket。Feign可帮助我们更加便捷、优雅的调用HTTP API。<a href="https://github.com/OpenFeign/feign">https://github.com/OpenFeign/feign</a></p>
+<h3 id="Feign-实现声明式REST调用"><a href="#Feign-实现声明式REST调用" class="headerlink" title="Feign 实现声明式REST调用"></a>Feign 实现声明式REST调用</h3><p>Feign是Netflix开发的声明式、模板化的HTTP客户端，其灵感来自Retrofit，JAXRS-2.0以及WebSocket。Feign可帮助我们更加便捷、优雅的调用HTTP API。<a href="https://github.com/OpenFeign/feign" target="_blank" rel="noopener">https://github.com/OpenFeign/feign</a></p>
 <h3 id="Hystrix-微服务容错处理"><a href="#Hystrix-微服务容错处理" class="headerlink" title="Hystrix 微服务容错处理"></a>Hystrix 微服务容错处理</h3><p>Hystrix是Netflix开源的一个延迟和容错库，用于隔离访问远程系统、服务或者第三方库，防止级联失败，从而提升系统的可用性和容错性。</p>
-<h3 id="SpringCloudGateway-网关服务"><a href="#SpringCloudGateway-网关服务" class="headerlink" title="SpringCloudGateway 网关服务"></a>SpringCloudGateway 网关服务</h3><p><a href="https://github.com/spring-cloud/spring-cloud-gateway">https://github.com/spring-cloud/spring-cloud-gateway</a></p>
-<h3 id="Apollo-配置中心"><a href="#Apollo-配置中心" class="headerlink" title="Apollo 配置中心"></a>Apollo 配置中心</h3><p><a href="https://github.com/ctripcorp/apollo">https://github.com/ctripcorp/apollo</a></p>
-<h3 id="Sleuth和Zipkin实现微服务跟踪"><a href="#Sleuth和Zipkin实现微服务跟踪" class="headerlink" title="Sleuth和Zipkin实现微服务跟踪"></a>Sleuth和Zipkin实现微服务跟踪</h3><p><a href="https://github.com/spring-cloud/spring-cloud-sleuth">https://github.com/spring-cloud/spring-cloud-sleuth</a></p>
+<h3 id="SpringCloudGateway-网关服务"><a href="#SpringCloudGateway-网关服务" class="headerlink" title="SpringCloudGateway 网关服务"></a>SpringCloudGateway 网关服务</h3><p><a href="https://github.com/spring-cloud/spring-cloud-gateway" target="_blank" rel="noopener">https://github.com/spring-cloud/spring-cloud-gateway</a></p>
+<h3 id="Apollo-配置中心"><a href="#Apollo-配置中心" class="headerlink" title="Apollo 配置中心"></a>Apollo 配置中心</h3><p><a href="https://github.com/ctripcorp/apollo" target="_blank" rel="noopener">https://github.com/ctripcorp/apollo</a></p>
+<h3 id="Sleuth和Zipkin实现微服务跟踪"><a href="#Sleuth和Zipkin实现微服务跟踪" class="headerlink" title="Sleuth和Zipkin实现微服务跟踪"></a>Sleuth和Zipkin实现微服务跟踪</h3><p><a href="https://github.com/spring-cloud/spring-cloud-sleuth" target="_blank" rel="noopener">https://github.com/spring-cloud/spring-cloud-sleuth</a></p>
 
         </div>
         
@@ -138,7 +138,7 @@
 
 <div class="card">
     <div class="card-content">
-        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
         <div class="buttons is-centered">
             
                 
@@ -146,8 +146,8 @@
     <span class="icon is-small">
         <i class="fab fa-weixin"></i>
     </span>
-    <span>Wechat</span>
-    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="Wechat"></div>
+    <span>微信</span>
+    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="微信"></div>
 </a>
 
                 
@@ -182,7 +182,7 @@
 
 <div class="card">
     <div class="card-content">
-        <h3 class="title is-5 has-text-weight-normal">Comments</h3>
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
         
 <div id="SOHUCS" sid="2019/09/15/Spring-cloud技术栈学习/"></div>
 <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
@@ -211,7 +211,7 @@ window.changyan.api.config({
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 Mr.Crowley&nbsp;
+                &copy; 2019 crowley&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
@@ -225,7 +225,7 @@ window.changyan.api.config({
 </footer>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("zh-Hans");</script>
+<script>moment.locale("zh-CN");</script>
 
 <script>
 var IcarusThemeSettings = {
@@ -250,7 +250,7 @@ var IcarusThemeSettings = {
     <div class="searchbox ins-search">
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -262,11 +262,11 @@ var IcarusThemeSettings = {
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
             },
             CONTENT_URL: '/content.json',
         };

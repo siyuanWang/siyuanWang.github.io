@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>SpringCloudGateway源码解析(6)- 常用功能实现 - Mr.Crowley博客</title>
+<title>SpringCloudGateway源码解析(6)- 常用功能实现 - CrowleyBlog</title>
 
 
 
@@ -42,7 +42,7 @@
                 
                 
                 
-                <a class="navbar-item search" title="Search" href="javascript:;">
+                <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
                 </a>
                 
@@ -71,7 +71,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    10 minutes read (About 1495 words)
+                    10 分钟 读完 (大约 1495 个字)
                 </span>
                 
                 
@@ -123,7 +123,7 @@
 
 <div class="card">
     <div class="card-content">
-        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
         <div class="buttons is-centered">
             
                 
@@ -131,8 +131,8 @@
     <span class="icon is-small">
         <i class="fab fa-weixin"></i>
     </span>
-    <span>Wechat</span>
-    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="Wechat"></div>
+    <span>微信</span>
+    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="微信"></div>
 </a>
 
                 
@@ -146,16 +146,16 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</span>
+                <span class="level-item">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</span>
             </a>
         </div>
         
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/09/15/Spring-cloud技术栈学习-第二章-配置文件映射/">
-                <span class="level-item">SpringCloud-第二章-配置文件</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/">
+                <span class="level-item">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -167,7 +167,7 @@
 
 <div class="card">
     <div class="card-content">
-        <h3 class="title is-5 has-text-weight-normal">Comments</h3>
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
         
 <div id="SOHUCS" sid="2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/"></div>
 <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
@@ -196,7 +196,7 @@ window.changyan.api.config({
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 Mr.Crowley&nbsp;
+                &copy; 2019 crowley&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
@@ -210,7 +210,7 @@ window.changyan.api.config({
 </footer>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("zh-Hans");</script>
+<script>moment.locale("zh-CN");</script>
 
 <script>
 var IcarusThemeSettings = {
@@ -235,7 +235,7 @@ var IcarusThemeSettings = {
     <div class="searchbox ins-search">
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -247,11 +247,11 @@ var IcarusThemeSettings = {
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
             },
             CONTENT_URL: '/content.json',
         };

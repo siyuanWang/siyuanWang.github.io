@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>Tag: Spring - Mr.Crowley博客</title>
+<title>标签: Spring - CrowleyBlog</title>
 
 
 
@@ -32,7 +32,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="Mr.Crowley博客" height="28">
+                <img src="/images/logo.svg" alt="CrowleyBlog" height="28">
             
             </a>
         </div>
@@ -42,7 +42,7 @@
                 
                 
                 
-                <a class="navbar-item search" title="Search" href="javascript:;">
+                <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
                 </a>
                 
@@ -58,7 +58,7 @@
     <div class="card-content">
         <nav class="breadcrumb" aria-label="breadcrumbs">
         <ul>
-            <li><a href="/tags">Tags</a></li>
+            <li><a href="/tags">标签</a></li>
             <li class="is-active"><a href="#" aria-current="page">Spring</a></li>
         </ul>
         </nav>
@@ -82,64 +82,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    a minute read (About 211 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/08/11/Spring的配置文件管理/">Spring初始化源码分析</a>
-            
-        </h1>
-        <div class="content">
-            <p>spring配置文件，需要关注如下两个类。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.beans.factory.config.PropertiesFactoryBean</span><br><span class="line">org.springframework.context.support.PropertySourcesPlaceholderConfigurer</span><br></pre></td></tr></table></figure>
-<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAo9UxSWkxnmNCy8xB%2Fimage.png?alt=media&amp;token=709211c5-2130-444b-908f-55e5dba42072" alt="img"></p>
-<p>​                                PropertiesFactoryBean类图</p>
-<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAoO5fKKIeQCNgJdpk%2Fimage.png?alt=media&amp;token=ba3e75b1-89f6-477e-8170-effa329b2e29" alt="img"></p>
-<p>​                            PropertySourcesPlaceholderConfigurer</p>
-<p>如下是配置方式</p>
-<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">context:property-placeholder</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">util:properties</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig1"</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"spc"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.context.support.PropertySourcesPlaceholderConfigurer"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"ignoreResourceNotFound"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span>/&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>​                                    使用方式上，用@Value注解</p>
-<p>PropertiesFactoryBean用#{}的方式</p>
-<p>PropertySourcesPlaceholderConfigurer用${}的方式</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Value</span>(value = <span class="hljs-string">"$&#123;driveClass&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String driveClass;</span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"$&#123;url&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String url;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['userName']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String userName;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['config1']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String password;</span><br></pre></td></tr></table></figure>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    5 minutes read (About 776 words)
+                    5 分钟 读完 (大约 776 个字)
                 </span>
                 
                 
@@ -182,6 +125,63 @@
 
 
 
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 分钟 读完 (大约 211 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/Spring的配置文件管理/">Spring初始化源码分析</a>
+            
+        </h1>
+        <div class="content">
+            <p>spring配置文件，需要关注如下两个类。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.beans.factory.config.PropertiesFactoryBean</span><br><span class="line">org.springframework.context.support.PropertySourcesPlaceholderConfigurer</span><br></pre></td></tr></table></figure>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAo9UxSWkxnmNCy8xB%2Fimage.png?alt=media&amp;token=709211c5-2130-444b-908f-55e5dba42072" alt="img"></p>
+<p>​                                PropertiesFactoryBean类图</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAoO5fKKIeQCNgJdpk%2Fimage.png?alt=media&amp;token=ba3e75b1-89f6-477e-8170-effa329b2e29" alt="img"></p>
+<p>​                            PropertySourcesPlaceholderConfigurer</p>
+<p>如下是配置方式</p>
+<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">context:property-placeholder</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">util:properties</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig1"</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"spc"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.context.support.PropertySourcesPlaceholderConfigurer"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"ignoreResourceNotFound"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span>/&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​                                    使用方式上，用@Value注解</p>
+<p>PropertiesFactoryBean用#{}的方式</p>
+<p>PropertySourcesPlaceholderConfigurer用${}的方式</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Value</span>(value = <span class="hljs-string">"$&#123;driveClass&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String driveClass;</span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"$&#123;url&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String url;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['userName']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String userName;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['config1']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String password;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
 </div>
                 
                 
@@ -194,11 +194,11 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="Mr.Crowley博客" height="28">
+                    <img src="/images/logo.svg" alt="CrowleyBlog" height="28">
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 Mr.Crowley&nbsp;
+                &copy; 2019 crowley&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
@@ -212,7 +212,7 @@
 </footer>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("zh-Hans");</script>
+<script>moment.locale("zh-CN");</script>
 
 <script>
 var IcarusThemeSettings = {
@@ -237,7 +237,7 @@ var IcarusThemeSettings = {
     <div class="searchbox ins-search">
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -249,11 +249,11 @@ var IcarusThemeSettings = {
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
             },
             CONTENT_URL: '/content.json',
         };
@@ -265,14 +265,14 @@ var IcarusThemeSettings = {
 <link rel="stylesheet" href="/css/insight.css">
     
 </body>
-</html>�心跳给server端的频率</span></span><br><span class="line"><span class="hljs-attr">    preferIpAddress:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-attr">ribbon:</span></span><br><span class="line"><span class="hljs-attr">  ServerListRefreshInterval:</span> <span class="hljs-number">1000</span></span><br><span class="line"><span class="hljs-comment">##prometheusj</span></span><br><span class="line"><span class="hljs-attr">management:</span></span><br><span class="line"><span class="hljs-attr">  metrics:</span></span><br><span class="line"><span class="hljs-attr">    export:</span></span><br><span class="line"><span class="hljs-attr">      prometheus:</span></span><br><span class="line"><span class="hljs-attr">        enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">        step:</span> <span class="hljs-number">1</span><span class="hljs-string">m</span></span><br><span class="line"><span class="hljs-attr">        descriptions:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">  endpoint:</span></span><br><span class="line"><span class="hljs-attr">    metrics:</span></span><br><span class="line"><span class="hljs-attr">      enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">    prometheus:</span></span><br><span class="line"><span class="hljs-attr">      enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">    health:</span></span><br><span class="line"><span class="hljs-attr">      show-details:</span> <span class="hljs-string">always</span></span><br><span class="line"><span class="hljs-attr">  endpoints:</span></span><br><span class="line"><span class="hljs-attr">    web:</span></span><br><span class="line"><span class="hljs-attr">      exposure:</span></span><br><span class="line"><span class="hljs-attr">        include:</span> <span class="hljs-string">"*"</span></span><br></pre></td></tr></table></figure>
-<h3 id="Ribbon-实现客户端负载均衡"><a href="#Ribbon-实现客户端负载均衡" class="headerlink" title="Ribbon 实现客户端负载均衡"></a>Ribbon 实现客户端负载均衡</h3><p>​    Ribbon是Netflix发布的负载均衡器。Ribbon的github地址，<a href="https://github.com/Netflix/ribbon">https://github.com/Netflix/ribbon</a></p>
+</html>-comment">#表示eureka client发送心跳给server端的频率</span></span><br><span class="line"><span class="hljs-attr">    preferIpAddress:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-attr">ribbon:</span></span><br><span class="line"><span class="hljs-attr">  ServerListRefreshInterval:</span> <span class="hljs-number">1000</span></span><br><span class="line"><span class="hljs-comment">##prometheusj</span></span><br><span class="line"><span class="hljs-attr">management:</span></span><br><span class="line"><span class="hljs-attr">  metrics:</span></span><br><span class="line"><span class="hljs-attr">    export:</span></span><br><span class="line"><span class="hljs-attr">      prometheus:</span></span><br><span class="line"><span class="hljs-attr">        enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">        step:</span> <span class="hljs-number">1</span><span class="hljs-string">m</span></span><br><span class="line"><span class="hljs-attr">        descriptions:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">  endpoint:</span></span><br><span class="line"><span class="hljs-attr">    metrics:</span></span><br><span class="line"><span class="hljs-attr">      enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">    prometheus:</span></span><br><span class="line"><span class="hljs-attr">      enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-attr">    health:</span></span><br><span class="line"><span class="hljs-attr">      show-details:</span> <span class="hljs-string">always</span></span><br><span class="line"><span class="hljs-attr">  endpoints:</span></span><br><span class="line"><span class="hljs-attr">    web:</span></span><br><span class="line"><span class="hljs-attr">      exposure:</span></span><br><span class="line"><span class="hljs-attr">        include:</span> <span class="hljs-string">"*"</span></span><br></pre></td></tr></table></figure>
+<h3 id="Ribbon-实现客户端负载均衡"><a href="#Ribbon-实现客户端负载均衡" class="headerlink" title="Ribbon 实现客户端负载均衡"></a>Ribbon 实现客户端负载均衡</h3><p>​    Ribbon是Netflix发布的负载均衡器。Ribbon的github地址，<a href="https://github.com/Netflix/ribbon" target="_blank" rel="noopener">https://github.com/Netflix/ribbon</a></p>
 <p>​    在Spring Cloud中，当Ribbon与Eureka配合使用时，Ribbon可自动从Eureka Server获取服务提供者地址列表，并基于负载均衡算法，请求其中一个服务提供者实例。</p>
-<h3 id="Feign-实现声明式REST调用"><a href="#Feign-实现声明式REST调用" class="headerlink" title="Feign 实现声明式REST调用"></a>Feign 实现声明式REST调用</h3><p>Feign是Netflix开发的声明式、模板化的HTTP客户端，其灵感来自Retrofit，JAXRS-2.0以及WebSocket。Feign可帮助我们更加便捷、优雅的调用HTTP API。<a href="https://github.com/OpenFeign/feign">https://github.com/OpenFeign/feign</a></p>
+<h3 id="Feign-实现声明式REST调用"><a href="#Feign-实现声明式REST调用" class="headerlink" title="Feign 实现声明式REST调用"></a>Feign 实现声明式REST调用</h3><p>Feign是Netflix开发的声明式、模板化的HTTP客户端，其灵感来自Retrofit，JAXRS-2.0以及WebSocket。Feign可帮助我们更加便捷、优雅的调用HTTP API。<a href="https://github.com/OpenFeign/feign" target="_blank" rel="noopener">https://github.com/OpenFeign/feign</a></p>
 <h3 id="Hystrix-微服务容错处理"><a href="#Hystrix-微服务容错处理" class="headerlink" title="Hystrix 微服务容错处理"></a>Hystrix 微服务容错处理</h3><p>Hystrix是Netflix开源的一个延迟和容错库，用于隔离访问远程系统、服务或者第三方库，防止级联失败，从而提升系统的可用性和容错性。</p>
-<h3 id="SpringCloudGateway-网关服务"><a href="#SpringCloudGateway-网关服务" class="headerlink" title="SpringCloudGateway 网关服务"></a>SpringCloudGateway 网关服务</h3><p><a href="https://github.com/spring-cloud/spring-cloud-gateway">https://github.com/spring-cloud/spring-cloud-gateway</a></p>
-<h3 id="Apollo-配置中心"><a href="#Apollo-配置中心" class="headerlink" title="Apollo 配置中心"></a>Apollo 配置中心</h3><p><a href="https://github.com/ctripcorp/apollo">https://github.com/ctripcorp/apollo</a></p>
-<h3 id="Sleuth和Zipkin实现微服务跟踪"><a href="#Sleuth和Zipkin实现微服务跟踪" class="headerlink" title="Sleuth和Zipkin实现微服务跟踪"></a>Sleuth和Zipkin实现微服务跟踪</h3><p><a href="https://github.com/spring-cloud/spring-cloud-sleuth">https://github.com/spring-cloud/spring-cloud-sleuth</a></p>
+<h3 id="SpringCloudGateway-网关服务"><a href="#SpringCloudGateway-网关服务" class="headerlink" title="SpringCloudGateway 网关服务"></a>SpringCloudGateway 网关服务</h3><p><a href="https://github.com/spring-cloud/spring-cloud-gateway" target="_blank" rel="noopener">https://github.com/spring-cloud/spring-cloud-gateway</a></p>
+<h3 id="Apollo-配置中心"><a href="#Apollo-配置中心" class="headerlink" title="Apollo 配置中心"></a>Apollo 配置中心</h3><p><a href="https://github.com/ctripcorp/apollo" target="_blank" rel="noopener">https://github.com/ctripcorp/apollo</a></p>
+<h3 id="Sleuth和Zipkin实现微服务跟踪"><a href="#Sleuth和Zipkin实现微服务跟踪" class="headerlink" title="Sleuth和Zipkin实现微服务跟踪"></a>Sleuth和Zipkin实现微服务跟踪</h3><p><a href="https://github.com/spring-cloud/spring-cloud-sleuth" target="_blank" rel="noopener">https://github.com/spring-cloud/spring-cloud-sleuth</a></p>
 
         </div>
         
@@ -300,11 +300,11 @@ var IcarusThemeSettings = {
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="Mr.Crowley博客" height="28">
+                    <img src="/images/logo.svg" alt="CrowleyBlog" height="28">
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 Mr.Crowley&nbsp;
+                &copy; 2019 crowley&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
@@ -318,7 +318,7 @@ var IcarusThemeSettings = {
 </footer>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("zh-Hans");</script>
+<script>moment.locale("zh-CN");</script>
 
 <script>
 var IcarusThemeSettings = {
@@ -343,7 +343,7 @@ var IcarusThemeSettings = {
     <div class="searchbox ins-search">
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -355,11 +355,11 @@ var IcarusThemeSettings = {
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
             },
             CONTENT_URL: '/content.json',
         };
