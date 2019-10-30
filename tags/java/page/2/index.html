@@ -38,6 +38,25 @@
         </div>
         <div class="navbar-menu">
             
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">Home</a>
+                
+                <a class="navbar-item"
+                href="/archives">archive</a>
+                
+                <a class="navbar-item"
+                href="/categories">category</a>
+                
+                <a class="navbar-item"
+                href="/tags">tag</a>
+                
+                <a class="navbar-item"
+                href="/about">about</a>
+                
+            </div>
+            
             <div class="navbar-end">
                 
                 
@@ -64,63 +83,6 @@
         </nav>
     </div>
 </div>
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    3 分钟 读完 (大约 456 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/08/11/WeekHashMap原理分析/">WeakHashMap原理分析</a>
-            
-        </h1>
-        <div class="content">
-            <h1 id="WeakHashMap总体介绍"><a href="#WeakHashMap总体介绍" class="headerlink" title="WeakHashMap总体介绍"></a>WeakHashMap总体介绍</h1><p>​        WeakHashMap继承自AbstractMap，实现了Map接口，拥有了Map的基础功能。但是与常用的Map（比如HashMap）不同的是，WeakHashMap底层的存储单元Entry采用WeakReference，在GC的时候，会回收K,V。所以WeakHashMap天然比较适合用作缓存，即使K,V丢失，也不会对业务造成影响。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Entry</span>&lt;<span class="hljs-title">K</span>,<span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">WeakReference</span>&lt;<span class="hljs-title">Object</span>&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title">Map</span>.<span class="hljs-title">Entry</span>&lt;<span class="hljs-title">K</span>,<span class="hljs-title">V</span>&gt; </span>&#123;</span><br><span class="line">    V value;</span><br><span class="line">    <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> hash;</span><br><span class="line">    Entry&lt;K,V&gt; next;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * Creates new entry.</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    Entry(Object key, V value,</span><br><span class="line">          ReferenceQueue&lt;Object&gt; queue,</span><br><span class="line">          <span class="hljs-keyword">int</span> hash, Entry&lt;K,V&gt; next) &#123;</span><br><span class="line">        <span class="hljs-keyword">super</span>(key, queue);</span><br><span class="line">        <span class="hljs-keyword">this</span>.value = value;</span><br><span class="line">        <span class="hljs-keyword">this</span>.hash  = hash;</span><br><span class="line">        <span class="hljs-keyword">this</span>.next  = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​    如上代码可以看到Entry继承了WeakReference，在构造函数中<code>super(key, queue)</code>传入了key和ReferenceQueue。</p>
-<p>​    在调用get(),put(),size()等方法的时候，会执行一个私有方法expungeStaleEntries，如下所示。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">expungeStaleEntries</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">//迭代弱引用队列中要被回收的对象</span></span><br><span class="line">    <span class="hljs-keyword">for</span> (Object x; (x = queue.poll()) != <span class="hljs-keyword">null</span>; ) &#123;</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (queue) &#123;</span><br><span class="line">            <span class="hljs-meta">@SuppressWarnings</span>(<span class="hljs-string">"unchecked"</span>)</span><br><span class="line">                Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) x;</span><br><span class="line">            <span class="hljs-keyword">int</span> i = indexFor(e.hash, table.length);</span><br><span class="line">			<span class="hljs-comment">//操作链表</span></span><br><span class="line">            Entry&lt;K,V&gt; prev = table[i];</span><br><span class="line">            Entry&lt;K,V&gt; p = prev;</span><br><span class="line">            <span class="hljs-keyword">while</span> (p != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                Entry&lt;K,V&gt; next = p.next;</span><br><span class="line">                <span class="hljs-keyword">if</span> (p == e) &#123;</span><br><span class="line">                    <span class="hljs-keyword">if</span> (prev == e)</span><br><span class="line">                        table[i] = next;</span><br><span class="line">                    <span class="hljs-keyword">else</span></span><br><span class="line">                        prev.next = next;</span><br><span class="line">                    <span class="hljs-comment">// Must not null out e.next;</span></span><br><span class="line">                    <span class="hljs-comment">// stale entries may be in use by a HashIterator</span></span><br><span class="line">                    <span class="hljs-comment">//敲黑板，这行代码很重要，如果不执行e.value = null，map的value会泄漏。</span></span><br><span class="line">                    e.value = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// Help GC</span></span><br><span class="line">                    size--;</span><br><span class="line">                    <span class="hljs-keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                prev = p;</span><br><span class="line">                p = next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>#图解WeakHashMap原理</p>
-<p><img src="http://syxtt.xin/%E8%99%9A%E5%BC%95%E7%94%A8.png" alt="img"></p>
-<p>​    </p>
-<p>​                                                    图1</p>
-<p>​    如图1所示，key1,key2,key3虚引用指向Entry1,Entry2,Entry3，每个entry又分别指向v1,v2,v3。GC之后，key2虚引用被垃圾回收。通过执行expungeStaleEntries方法，使得Entry2变成游离态，Entry2也和v2脱离了引用关系。所以Entry2,v2都变成了可被垃圾回收的状态。</p>
-<p><img src="http://syxtt.xin/%E8%99%9A%E5%BC%95%E7%94%A82.png" alt="img"></p>
-<p>​                                                图2</p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
 
     
 <div class="card">
@@ -299,6 +261,72 @@
 <h2 id="JDK如何判定Class相同"><a href="#JDK如何判定Class相同" class="headerlink" title="JDK如何判定Class相同"></a>JDK如何判定Class相同</h2><p><strong>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的</strong>。只有两者同时满足的情况下，JVM才认为这两个class是相同的。</p>
 <h1 id="如何定义CustomClassLoader"><a href="#如何定义CustomClassLoader" class="headerlink" title="如何定义CustomClassLoader"></a>如何定义CustomClassLoader</h1><p>如下代码，展示了本地目录的类加载器。</p>
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FileSystemClassLoader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClassLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> String rootDir;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">FileSystemClassLoader</span><span class="hljs-params">(String rootDir)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.rootDir = rootDir;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="hljs-keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        <span class="hljs-keyword">byte</span>[] classData = getClassData(name);</span><br><span class="line">        <span class="hljs-keyword">if</span> (classData == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ClassNotFoundException();</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> defineClass(name, classData, <span class="hljs-number">0</span>, classData.length);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">byte</span>[] getClassData(String className) &#123;</span><br><span class="line">        String path = classNameToPath(className);</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            InputStream ins = <span class="hljs-keyword">new</span> FileInputStream(path);</span><br><span class="line">            ByteArrayOutputStream baos = <span class="hljs-keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">            <span class="hljs-keyword">int</span> bufferSize = <span class="hljs-number">4096</span>;</span><br><span class="line">            <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[bufferSize];</span><br><span class="line">            <span class="hljs-keyword">int</span> bytesNumRead = <span class="hljs-number">0</span>;</span><br><span class="line">            <span class="hljs-keyword">while</span> ((bytesNumRead = ins.read(buffer)) != -<span class="hljs-number">1</span>) &#123;</span><br><span class="line">                baos.write(buffer, <span class="hljs-number">0</span>, bytesNumRead);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">return</span> baos.toByteArray();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> String <span class="hljs-title">classNameToPath</span><span class="hljs-params">(String className)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> rootDir + File.separatorChar + className.replace(<span class="hljs-string">'.'</span>, File.separatorChar) + <span class="hljs-string">".class"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    9 分钟 读完 (大约 1380 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/JVM内存区域/">JVM内存区域</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="JVM内存区域总体介绍​"><a href="#JVM内存区域总体介绍​" class="headerlink" title="JVM内存区域总体介绍​"></a>JVM内存区域总体介绍​</h1><p>其中VM Stack（虚拟机栈），Native Method Stack（本地方法栈），Program Counter Register（程序计数器），是线程私有的。Method Area（方法区），Heap（堆）是线程共享的。</p>
+<p><strong>注意</strong>：没有特殊说明，本文中所讲的都是基于HotSpot虚拟机。</p>
+<p><img src="http://syxtt.xin/JVM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="img"></p>
+<p>##程序计数器</p>
+<p>程序计数器是线程私有的，是一块较小的内存空间，它可以看作是当前线程所执行的字节码的行号指示器。在虚拟机的概念模型中（也仅是概念模型，各个虚拟机可能通过更高效的方式去实现），字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。</p>
+<p>多线程场景下，为了线程切换后能恢复到正确的位置，所以每个线程需要一个独立的程序计数器。</p>
+<p>如果线程执行的是一个Java方法，这个计数器记录的是正在执行的虚拟机字节码指令的地址。如果正在执行的是Native方法，这个计数器值则为空（Undefined）。次内存区域是唯一一个在Java虚拟机规范中没有规定任何OutOfMemoryError情况的区域。</p>
+<h2 id="Java虚拟机栈"><a href="#Java虚拟机栈" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p>Java虚拟机栈，也是线程私有的，它的生命周期和线程相同。虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行的同时会创建一个<strong>栈帧（Stack Frame）</strong>用于存储局部变量表，操作数栈，动态链接，方法出口等信息。每个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中入栈到出栈的过程。</p>
+<p>局部变量表存放了编译器可知的各种<strong>基本数据类型</strong>（boolean，byte，char，short，int，float，long，double）、<strong>对象引用</strong>（reference类型，它不等同于对象本身，可能是指向对象起始地址的引用指针，也可能是代表对象的句柄）。局部变量表所需的内存空间在编译期间完成分配，方法在帧中分配多大的空间，也是完全确定的。</p>
+<p>这个区域存在两种异常情况：</p>
+<ul>
+<li>当栈的深度超过虚拟机所允许的深度的时候，抛出StackOverflowError。</li>
+<li>如果虚拟机栈允许动态扩展，如果无法申请到足够的内存，则会抛出OutOfMemoryError。</li>
+</ul>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>本地方法栈的功能和Java虚拟机栈很接近，它们的区别是Java虚拟机栈是为虚拟机执行Java代码（字节码）服务，本地方法栈则为虚拟机使用到的Native方法服务。本地方法栈，也存在StackOverflowError和OutOfMemoryError。</p>
+<h2 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h2><p>对于大多数应用来说，Java堆是Java虚拟机所管理的内存中最大的一块。<strong>Java堆是被所有线程共享的一块内存区域</strong>，在虚拟机启动的时候创建。此内存区域的唯一目的就是存放对象实例，几乎所有对象实例都在这里分配内存。但是随着JIT编译器的发展与逃逸分析技术逐渐成熟，栈上分配、标量替换优化技术将会导致一些微妙的变化发生，所有对象都分配到堆上也变得不那么绝对了。</p>
+<p><strong>Java堆是垃圾收集器管理的主要区域</strong>，从内存回收角度来看，由于现在收集器基本都采用<strong>分代收集算法</strong>，Java堆中还分为了新生代和老年代。当堆无法继续扩展的时候，将会抛出OutOfMemoryError。</p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>方法区（Method Area）也是线程共享区域，它用于存储被虚拟机加载的类元信息、常量、静态变量、及时编译器编译后的代码等数据。JDK8之前，虚拟机采用<strong>永久代</strong>实现方法区，类元信息、常量、静态变量等都存在堆中，和年轻代、老年代是连续的。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-XX:PermSize</span><br><span class="line">方法区初始大小</span><br><span class="line">-XX:MaxPermSize</span><br><span class="line">方法区最大大小</span><br><span class="line">超过这个值将会抛出OutOfMemoryError异常:java.lang.OutOfMemoryError: PermGen</span><br></pre></td></tr></table></figure>
+<p>Jdk8之后，官方废弃了永久代，在本地内存中开辟了一块空间，叫做元空间（MetaSpace）,专门存储类的元数据信息。常量、静态变量存储到了堆上。</p>
+<h2 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h2><p>很多人忽略了直接内存，举一个例子，JDK NIO中，Buffer调用的Native方法直接分配是堆外内存，也就是直接占用系统内存。所以在调整JVM参数的时候，要给系统留一些Buffer。避免内存动态扩展时出现问题。</p>
 
         </div>
         
@@ -560,25 +588,6 @@
         
         <article class="media">
             
-            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(2)-反应式编程">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
-                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(2)-反应式编程</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
             <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
@@ -598,16 +607,35 @@
         
         <article class="media">
             
-            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(2)-反应式编程">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
-                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(2)-反应式编程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(3)- 路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(3)- 路由</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
                     </p>
@@ -1147,25 +1175,6 @@
         
         <article class="media">
             
-            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(2)-反应式编程">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
-                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(2)-反应式编程</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
             <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
@@ -1185,16 +1194,35 @@
         
         <article class="media">
             
-            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(2)-反应式编程">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
-                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(2)-反应式编程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(3)- 路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(3)- 路由</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
                     </p>
