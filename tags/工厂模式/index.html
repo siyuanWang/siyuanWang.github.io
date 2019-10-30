@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 3.8.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>Etiqueta: 工厂模式 - Mr.Crowley博客</title>
+
+
+
+
+
+
+
+
+<link rel="icon" href="/images/favicon.svg">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-1-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="Mr.Crowley博客" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">首页</a>
+                
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/about">关于</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="Search" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-12 has-order-2 column-main"><div class="card">
+    <div class="card-content">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/tags">Etiquetas</a></li>
+            <li class="is-active"><a href="#" aria-current="page">工厂模式</a></li>
+        </ul>
+        </nav>
+    </div>
+</div>
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    14 minutes read (About 2033 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/">SpringCloudGateway源码解析(4)- 核心流程</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在文章《SpringCloudGateway源码解析(3)- 路由的装配》中，我们了解了网关路由的相关实现，这一章节，主要讲解下SpringCloudGateway中handler包实现，其中最核心的两个类FilteringWebHandler和RoutePredicateHandlerMapping。</p>
+<h1 id="GatewayAutoConfiguration"><a href="#GatewayAutoConfiguration" class="headerlink" title="GatewayAutoConfiguration"></a>GatewayAutoConfiguration</h1><p>首先先看下FilteringWebHandler，RoutePredicateHandlerMapping</p>
+<p>配置类注解含义如下</p>
+<ul>
+<li>@Configuration表示是一个SpringBoot配置类</li>
+<li>@ConditionalOnProperty 监听spring.cloud.gateway.enabled配置，缺少配置默认为true</li>
+<li>@EnableConfigurationProperties @ConfigurationProperties注解的前置条件，@ConfigurationProperties可以自动的将配置文件解析为Bean</li>
+<li>@AutoConfigureBefore 先加载WebFluxAutoConfiguration和HttpHandlerAutoConfiguration，再加载自身</li>
+<li>@AutoConfigureAfter 先加载自身，再加载GatewayLoadBalancerClientAutoConfiguration和GatewayClassPathWarningAutoConfiguration</li>
+<li>@ConditionalOnClass 配置加载依赖DispatcherHandler，即依赖WebFlux组件</li>
+</ul>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Configuration</span></span><br><span class="line"><span class="hljs-meta">@ConditionalOnProperty</span>(name = <span class="hljs-string">"spring.cloud.gateway.enabled"</span>, matchIfMissing = <span class="hljs-keyword">true</span>)</span><br><span class="line"><span class="hljs-meta">@EnableConfigurationProperties</span></span><br><span class="line"><span class="hljs-meta">@AutoConfigureBefore</span>(&#123; HttpHandlerAutoConfiguration.class,</span><br><span class="line">		WebFluxAutoConfiguration.class &#125;)</span><br><span class="line"><span class="hljs-meta">@AutoConfigureAfter</span>(&#123; GatewayLoadBalancerClientAutoConfiguration.class,</span><br><span class="line">		GatewayClassPathWarningAutoConfiguration.class &#125;)</span><br><span class="line"><span class="hljs-meta">@ConditionalOnClass</span>(DispatcherHandler.class)</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GatewayAutoConfiguration</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> FilteringWebHandler <span class="hljs-title">filteringWebHandler</span><span class="hljs-params">(List&lt;GlobalFilter&gt; globalFilters)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> FilteringWebHandler(globalFilters);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> RoutePredicateHandlerMapping <span class="hljs-title">routePredicateHandlerMapping</span><span class="hljs-params">(</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			FilteringWebHandler webHandler, </span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">    	RouteLocator routeLocator,//CachingRouteLocator会优先注入</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			GlobalCorsProperties globalCorsProperties, Environment environment)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RoutePredicateHandlerMapping(webHandler, routeLocator,</span><br><span class="line">				globalCorsProperties, environment);</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> RouteLocator <span class="hljs-title">routeDefinitionRouteLocator</span><span class="hljs-params">(GatewayProperties properties,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			List&lt;GatewayFilterFactory&gt; GatewayFilters,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			List&lt;RoutePredicateFactory&gt; predicates,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			RouteDefinitionLocator routeDefinitionLocator,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			@Qualifier(<span class="hljs-string">"webFluxConversionService"</span>)</span> ConversionService conversionService) </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RouteDefinitionRouteLocator(routeDefinitionLocator, predicates,</span><br><span class="line">				GatewayFilters, properties, conversionService);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-meta">@Primary</span></span><br><span class="line">	<span class="hljs-comment">//重要！！CachingRouteLocator生命了@Primary注解，是优先选择注入的</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> RouteLocator <span class="hljs-title">cachedCompositeRouteLocator</span><span class="hljs-params">(List&lt;RouteLocator&gt; routeLocators)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CachingRouteLocator(</span><br><span class="line">				<span class="hljs-keyword">new</span> CompositeRouteLocator(Flux.fromIterable(routeLocators)));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Gateway源码中，大量运用SpringBoot中autoconfigure的功能。</p>
+<p>#WebFlux入口类DispatcherHandler</p>
+<p>​    <img src="http://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png" alt="DispatcherHandler依赖关系"></p>
+<p>​        要说Spring Cloud Gateway的handler包，就不得不说DispatcherHandler类。DispatcherHandler实现了ApplicationContextAware接口和WebHandler，主要持有handlerMappings，handlerAdapters，resultHandlers这三个对象。在Spring初始化的时候，会调用setApplicationContext函数进行初始化，初始化的步骤就是利用工具函数BeanFactoryUtils#beansOfTypeIncludingAncestors取出其父类的子类，赋值给DispatcherHandler的三个成员变量。赋值之后，handlerMappings和handlerAdapters的集合中，包含如下类，其中RoutePredicateHandlerMapping和SimpleHandlerAdapter是我们的主角，其他的类不在我们的讨论范围内。</p>
+<p><img src="http://syxtt.xin/DispatcherHandler%E6%8C%81%E6%9C%89%E7%9A%84%E5%AF%B9%E8%B1%A1.png" alt="DispatcherHandler持有的对象"></p>
+<p>​        当在网络请求过来时，handle函数会被调用，第一步就是构建handlerMapping Flux，此异步队列的长度为6。再concatMap通过mapping获取handler，这时会走所有的HandlerMapping实现，在Gateway的实现中，对应RoutePredicateHandlerMapping#getHandlerInternal函数，匹配路由的返回Mono<handler>，不匹配的路由返回Mono.empty()，在网关服务中，核心的路由是通过网关的api配置的，所以核心路由都会RoutePredicateHandlerMapping中，不会在其他的HandlerMapping中出现，理论上只有RoutePredicateHandlerMapping能匹配上路由，如果匹配多个，只取第一个，而RoutePredicateHandlerMapping最终返回的是FilteringWebHandler的Mono。</handler></p>
+<p>​        特意验证了Flux这段代码，这端测试代码的逻辑和DispatcherHandler类似，最后返回的结果是3，大家可以参考下。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>);</span><br><span class="line">Flux.fromIterable(list).concatMap(a -&gt; &#123;</span><br><span class="line">  <span class="hljs-keyword">if</span>(a == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> Mono.empty();</span><br><span class="line">  <span class="hljs-keyword">return</span> Mono.just(a + <span class="hljs-number">1</span>);</span><br><span class="line">&#125;).next().subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line">最终输出结果：<span class="hljs-number">3</span></span><br></pre></td></tr></table></figure>
+<p>​        接下来就会执行另外一个核心的函数invokeHandler。invokeHandler中会轮询handlerAdapters中所有的Adapters，用到了<strong>适配器模式</strong>。由于上一个流返回FilteringWebHandler对象，所以FilteringWebHandler#handle会执行。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DispatcherHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">WebHandler</span>, <span class="hljs-title">ApplicationContextAware</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">	<span class="hljs-meta">@Nullable</span></span><br><span class="line">	<span class="hljs-keyword">private</span> List&lt;HandlerMapping&gt; handlerMappings;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Nullable</span></span><br><span class="line">	<span class="hljs-keyword">private</span> List&lt;HandlerAdapter&gt; handlerAdapters;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Nullable</span></span><br><span class="line">	<span class="hljs-keyword">private</span> List&lt;HandlerResultHandler&gt; resultHandlers;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-meta">@Override</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setApplicationContext</span><span class="hljs-params">(ApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">    initStrategies(applicationContext);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initStrategies</span><span class="hljs-params">(ApplicationContext context)</span> </span>&#123;</span><br><span class="line">      Map&lt;String, HandlerMapping&gt; mappingBeans = </span><br><span class="line">      <span class="hljs-comment">//step1，获取  HandlerMapping的所有子类</span></span><br><span class="line">      BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerMapping.class, <span class="hljs-keyword">true</span>, <span class="hljs-keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      ArrayList&lt;HandlerMapping&gt; mappings = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(mappingBeans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(mappings);</span><br><span class="line">      <span class="hljs-keyword">this</span>.handlerMappings = Collections.unmodifiableList(mappings);</span><br><span class="line">      <span class="hljs-comment">//step2，获取  HandlerAdapter的所有子类</span></span><br><span class="line">      Map&lt;String, HandlerAdapter&gt; adapterBeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerAdapter.class, <span class="hljs-keyword">true</span>, <span class="hljs-keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">this</span>.handlerAdapters = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(adapterBeans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(<span class="hljs-keyword">this</span>.handlerAdapters);</span><br><span class="line">      <span class="hljs-comment">//step3，获取  HandlerResultHandler的所有子类</span></span><br><span class="line">      Map&lt;String, HandlerResultHandler&gt; beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerResultHandler.class, <span class="hljs-keyword">true</span>, <span class="hljs-keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">this</span>.resultHandlers = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(beans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(<span class="hljs-keyword">this</span>.resultHandlers);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">handle</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.handlerMappings == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> createNotFoundError();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">return</span> Flux.fromIterable(<span class="hljs-keyword">this</span>.handlerMappings)</span><br><span class="line">        	<span class="hljs-comment">//通过mapping获取handler，对应Gateway中的RoutePredicateHandlerMapping#getHandlerInternal,匹配路由的返回Mono&lt;Handler&gt;，不匹配的路由返回Mono.empty()</span></span><br><span class="line">          .concatMap(mapping -&gt; mapping.getHandler(exchange))</span><br><span class="line">        	<span class="hljs-comment">//理论上只有一个handler能匹配上路由，如果匹配多个，只取第一个</span></span><br><span class="line">          .next()</span><br><span class="line">          .switchIfEmpty(createNotFoundError())</span><br><span class="line">        	<span class="hljs-comment">//调用FilteringWebHandler#handle</span></span><br><span class="line">          .flatMap(handler -&gt; invokeHandler(exchange, handler))</span><br><span class="line">          .flatMap(result -&gt; handleResult(exchange, result));</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> Mono&lt;HandlerResult&gt; <span class="hljs-title">invokeHandler</span><span class="hljs-params">(ServerWebExchange exchange, Object handler)</span> </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.handlerAdapters != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">        <span class="hljs-keyword">for</span> (HandlerAdapter handlerAdapter : <span class="hljs-keyword">this</span>.handlerAdapters) &#123;</span><br><span class="line">          <span class="hljs-keyword">if</span> (handlerAdapter.supports(handler)) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> handlerAdapter.handle(exchange, handler);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">return</span> Mono.error(<span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">"No HandlerAdapter: "</span> + handler));</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://syxtt.xin/Distrapache%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="网关流程图"></p>
+<h1 id="RoutePredicateHandlerMapping"><a href="#RoutePredicateHandlerMapping" class="headerlink" title="RoutePredicateHandlerMapping"></a>RoutePredicateHandlerMapping</h1><p>​        经过对DispatcherHandler源码的分析，相信大家已经摸清RoutePredicateHandlerMapping的定位了，他的作用就是<strong>断言路由，返回FilterWebHandler</strong>，其核心的方法是getHandlerInternal和lookupRoute。</p>
+<p><img src="http://syxtt.xin/RoutePredicateHandlerMapping%E4%BE%9D%E8%B5%96%E5%9B%BE.png" alt="RoutePredicateHandlerMapping依赖关系"></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Override</span></span><br><span class="line"><span class="hljs-keyword">protected</span> Mono&lt;?&gt; getHandlerInternal(ServerWebExchange exchange) &#123;</span><br><span class="line">	<span class="hljs-comment">// don't handle requests on management port if set and different than server port</span></span><br><span class="line">	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.managementPortType == DIFFERENT &amp;&amp; <span class="hljs-keyword">this</span>.managementPort != <span class="hljs-keyword">null</span></span><br><span class="line">			&amp;&amp; exchange.getRequest().getURI().getPort() == <span class="hljs-keyword">this</span>.managementPort) &#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> Mono.empty();</span><br><span class="line">	&#125;</span><br><span class="line">	exchange.getAttributes().put(GATEWAY_HANDLER_MAPPER_ATTR, getSimpleName());</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">return</span> lookupRoute(exchange)</span><br><span class="line">			<span class="hljs-comment">// .log("route-predicate-handler-mapping", Level.FINER) //name this</span></span><br><span class="line">			.flatMap((Function&lt;Route, Mono&lt;?&gt;&gt;) r -&gt; &#123;</span><br><span class="line">				exchange.getAttributes().remove(GATEWAY_PREDICATE_ROUTE_ATTR);</span><br><span class="line">				<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(</span><br><span class="line">							<span class="hljs-string">"Mapping ["</span> + getExchangeDesc(exchange) + <span class="hljs-string">"] to "</span> + r);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				exchange.getAttributes().put(GATEWAY_ROUTE_ATTR, r);</span><br><span class="line">				<span class="hljs-keyword">return</span> Mono.just(webHandler);</span><br><span class="line">			&#125;).switchIfEmpty(Mono.empty().then(Mono.fromRunnable(() -&gt; &#123;</span><br><span class="line">				exchange.getAttributes().remove(GATEWAY_PREDICATE_ROUTE_ATTR);</span><br><span class="line">				<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">					logger.trace(<span class="hljs-string">"No RouteDefinition found for ["</span></span><br><span class="line">							+ getExchangeDesc(exchange) + <span class="hljs-string">"]"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​        通过this.routeLocator是CachingRouteLocator的实例，换句话说是优先从缓存中获取，如果缓存中获取不到，则从RouteDefinitionRouteLocator获取Route。获取所有的Route，从而获取Route对象的predicate属性。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">protected</span> Mono&lt;Route&gt; <span class="hljs-title">lookupRoute</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.routeLocator.getRoutes()</span><br><span class="line">			<span class="hljs-comment">// individually filter routes so that filterWhen error delaying is not a</span></span><br><span class="line">			<span class="hljs-comment">// problem</span></span><br><span class="line">			.concatMap(route -&gt; Mono.just(route).filterWhen(r -&gt; &#123;</span><br><span class="line">				<span class="hljs-comment">// add the current route we are testing</span></span><br><span class="line">				exchange.getAttributes().put(GATEWAY_PREDICATE_ROUTE_ATTR, r.getId());</span><br><span class="line">				<span class="hljs-keyword">return</span> r.getPredicate().apply(exchange);</span><br><span class="line">			&#125;)</span><br><span class="line">					<span class="hljs-comment">// instead of immediately stopping main flux due to error, log and</span></span><br><span class="line">					<span class="hljs-comment">// swallow it</span></span><br><span class="line">					.doOnError(e -&gt; logger.error(</span><br><span class="line">							<span class="hljs-string">"Error applying predicate for route: "</span> + route.getId(),</span><br><span class="line">							e))</span><br><span class="line">					.onErrorResume(e -&gt; Mono.empty()))</span><br><span class="line">			<span class="hljs-comment">// .defaultIfEmpty() put a static Route not found</span></span><br><span class="line">			<span class="hljs-comment">// or .switchIfEmpty()</span></span><br><span class="line">			<span class="hljs-comment">// .switchIfEmpty(Mono.&lt;Route&gt;empty().log("noroute"))</span></span><br><span class="line">			.next()</span><br><span class="line">			<span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> error handling</span></span><br><span class="line">			.map(route -&gt; &#123;</span><br><span class="line">				<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(<span class="hljs-string">"Route matched: "</span> + route.getId());</span><br><span class="line">				&#125;</span><br><span class="line">				validateRoute(route, exchange);</span><br><span class="line">				<span class="hljs-keyword">return</span> route;</span><br><span class="line">			&#125;);</span><br><span class="line"></span><br><span class="line">	<span class="hljs-comment">/*</span></span><br><span class="line"><span class="hljs-comment">	 * <span class="hljs-doctag">TODO:</span> trace logging if (logger.isTraceEnabled()) &#123;</span></span><br><span class="line"><span class="hljs-comment">	 * logger.trace("RouteDefinition did not match: " + routeDefinition.getId()); &#125;</span></span><br><span class="line"><span class="hljs-comment">	 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://syxtt.xin/%E7%BD%91%E5%85%B3%E8%B7%AF%E7%94%B1%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="网关路由处理流程图"></p>
+<h1 id="FilteringWebHandler"><a href="#FilteringWebHandler" class="headerlink" title="FilteringWebHandler"></a>FilteringWebHandler</h1><figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Override</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">handle</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">   <span class="hljs-comment">//step1 获取断言匹配的路由对象</span></span><br><span class="line">	Route route = exchange.getRequiredAttribute(GATEWAY_ROUTE_ATTR);</span><br><span class="line">   <span class="hljs-comment">//step2 获取路由下的过滤器对象</span></span><br><span class="line">	List&lt;GatewayFilter&gt; gatewayFilters = route.getFilters();</span><br><span class="line">	<span class="hljs-comment">//step3 合并全局过滤器和局部过滤器，并按照order排序</span></span><br><span class="line">	List&lt;GatewayFilter&gt; combined = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(<span class="hljs-keyword">this</span>.globalFilters);</span><br><span class="line">	combined.addAll(gatewayFilters);</span><br><span class="line">	AnnotationAwareOrderComparator.sort(combined);</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(<span class="hljs-string">"Sorted gatewayFilterFactories: "</span> + combined);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-comment">//step4 创建过滤器责任链</span></span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DefaultGatewayFilterChain(combined).filter(exchange);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="应用的设计模式"><a href="#应用的设计模式" class="headerlink" title="应用的设计模式"></a>应用的设计模式</h1><h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><p><img src="http://syxtt.xin/RoutePredicateFactory%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.png" alt="RoutePredicateFactory"></p>
+<p>​        Spring Cloud Gateway中，断言采用的是工厂模式。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。</p>
+<p>​        RoutePredicateFactory是一个函数式接口，是负责生产泛型为ServerWebExchange的Predicate的工厂，更进一步说生产的是GatewayPredicate对象。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@FunctionalInterface</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">RoutePredicateFactory</span>&lt;<span class="hljs-title">C</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">ShortcutConfigurable</span>, <span class="hljs-title">Configurable</span>&lt;<span class="hljs-title">C</span>&gt; </span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="hljs-function">Predicate&lt;ServerWebExchange&gt; <span class="hljs-title">apply</span><span class="hljs-params">(C config)</span></span>;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">GatewayPredicate</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Predicate</span>&lt;<span class="hljs-title">ServerWebExchange</span>&gt; </span>&#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="责任链模式"><a href="#责任链模式" class="headerlink" title="责任链模式"></a>责任链模式</h2><p>​        顾名思义，<strong>责任链模式</strong>（Chain of Responsibility Pattern）为请求创建了一个接收者对象的链。这种模式给予请求的类型，对请求的发送者和接收者进行解耦。这种类型的设计模式属于行为型模式。在这种模式中，通常每个接收者都包含对另一个接收者的引用。如果一个对象不能处理该请求，那么它会把相同的请求传给下一个接收者，依此类推。</p>
+<p>​        在Spring Cloud Gateway中，过滤就是采用了责任链模式。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DefaultGatewayFilterChain</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">GatewayFilterChain</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> index;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> List&lt;GatewayFilter&gt; filters;</span><br><span class="line"></span><br><span class="line">		DefaultGatewayFilterChain(List&lt;GatewayFilter&gt; filters) &#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.filters = filters;</span><br><span class="line">			<span class="hljs-keyword">this</span>.index = <span class="hljs-number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">DefaultGatewayFilterChain</span><span class="hljs-params">(DefaultGatewayFilterChain parent, <span class="hljs-keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.filters = parent.getFilters();</span><br><span class="line">			<span class="hljs-keyword">this</span>.index = index;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;GatewayFilter&gt; <span class="hljs-title">getFilters</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">			<span class="hljs-keyword">return</span> filters;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-meta">@Override</span></span><br><span class="line">		<span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">filter</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">			<span class="hljs-keyword">return</span> Mono.defer(() -&gt; &#123;</span><br><span class="line">				<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.index &lt; filters.size()) &#123;</span><br><span class="line">					GatewayFilter filter = filters.get(<span class="hljs-keyword">this</span>.index);</span><br><span class="line">					DefaultGatewayFilterChain chain = <span class="hljs-keyword">new</span> DefaultGatewayFilterChain(<span class="hljs-keyword">this</span>,</span><br><span class="line">							<span class="hljs-keyword">this</span>.index + <span class="hljs-number">1</span>);</span><br><span class="line">					<span class="hljs-keyword">return</span> filter.filter(exchange, chain);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="hljs-keyword">else</span> &#123;</span><br><span class="line">					<span class="hljs-keyword">return</span> Mono.empty(); <span class="hljs-comment">// complete</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+</div>
+                
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Mr.Crowley博客" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Mr.Crowley&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-Hans");</script>
+
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'true'
+        }
+    }
+};
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+
+
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Entradas',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categorias',
+                TAGS: 'Etiquetas',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 3.8.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>Etiqueta: IK - Mr.Crowley博客</title>
+
+
+
+
+
+
+
+
+<link rel="icon" href="/images/favicon.svg">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-1-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="Mr.Crowley博客" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">首页</a>
+                
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/about">关于</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="Search" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-12 has-order-2 column-main"><div class="card">
+    <div class="card-content">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/tags">Etiquetas</a></li>
+            <li class="is-active"><a href="#" aria-current="page">IK</a></li>
+        </ul>
+        </nav>
+    </div>
+</div>
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-07-19T15:33:16.000Z">2019-07-19</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    11 minutes read (About 1721 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/07/19/IK分词器深入学习-第一章/">IK分词器深入学习(1)-分词理论</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>词是表达语义的最小单位，分词是搜索引擎的基石。</p>
+<p>在搜索引擎中，倒排索引就是由一个个Term所构成，分词器通过对自然语言的理解，拆分出Term。分词的输入是一串连续的文字，对于英文”girl is beautiful.boy is handsome.”分词比较容易，可以根据空格和标点符号分割，那最终会分为girl/is/beautiful/boy/is/handsome（一般来说，is作为停用词），是不是很容易？但这种方式在中文中却不行，”女孩美丽，男孩帅气。”这句话应该分为”女孩/美丽/男孩/帅气”,不是简单的靠空格和符号就能实现的。</p>
+<p>上例提出了中文分词的背景，那么总要有理论来解决中文分词的问题。经过几十年的研究，中文分词方法也取得了长足的发展，产生了众多的分词方法，主要分为<strong>基于字符串匹配的分词方法</strong>，<strong>基于统计的分词方法</strong>，<strong>基于理解的分词方法</strong>三大流派。</p>
+<p>##基于字符串匹配的分词方法</p>
+<p>基于字符串匹配的分词算法也叫做机械分词算法，一般都需要事先建立足够大的分词词典，然后将待分词文本中的字符串与分词词典中的词进行匹配，如果匹配成功，该字符串当做一个词从待分词文本中切分出来，否则不切分。</p>
+<p>下面介绍下主流的字符串匹配算法</p>
+<ul>
+<li><p>最大正向匹配分词算法(Forward Maximum Matching，FMM)</p>
+<p>这是字符串匹配分词算法中最基本的一种分词算法，统计结果表明，单纯使用最大正向匹配算法的错误率为1/169。优点是原理简单，切分速度快，易与实现。缺点是歧义处理不精确。</p>
+</li>
+<li><p>最大逆向匹配分词算法(Reverse Maximum Matching，RMM)</p>
+<p>与FMM算法的基本思想相同，不同的是该方法从待切分的汉字串的末位开始处理，每次不匹配时去掉最前面的一个汉字，继续匹配。优点同FMM一样，而且最大逆向匹配算法对交集型歧义字段的处理精度比正向的要高，错误率在1/245左右，缺点是不能完全排除歧义现象。</p>
+</li>
+<li><p>双向最大匹配算法(Bi-directction Matching method，BMM)</p>
+<p>双向匹配算法基本原理是同时进行FMM和RMM扫描，然后分析两种扫描的结果。如果两种扫描结果一致，则认为不存在歧义现象；如果不一致，则需要定位到歧义字段处理。优点是提高了分词的准确率，消除了部分歧义现象。缺点是算法执行要做双向扫描，时间复杂度会有所增加。</p>
+</li>
+<li><p>全切分算法</p>
+<p>全切分算法是指切分出字符串中所有可能的词语，该算法可以大大提高切分的召回率，识别出所有可能的歧义现象。但缺点是算法复杂度比较高。</p>
+</li>
+</ul>
+<p>总结：</p>
+<p>字符串匹配分词方法，逻辑简单清晰，易实现，分词性能较高。但是严重依赖字典，如果某些词在字典中未登陆，则会对分词的精度产生较大的影响。另外算法的效率很大层面体现在字典的数据结构上，如果用Hash表的方式，检索最快但是内存占用大，一般情况下会牺牲部分性能来降低词典的容量比如TRIE索引树词典、逐词二分词典、整词二分词典。</p>
+<h2 id="基于统计的分词方法"><a href="#基于统计的分词方法" class="headerlink" title="基于统计的分词方法"></a>基于统计的分词方法</h2><p>下面介绍下统计分词的常用分词方法</p>
+<ul>
+<li><p>N元文法模型(N-gram)</p>
+<p>令C=C1C2…Cm．C 是待切分的汉字串，W=W1W2…Wn．W 是切分的结果。<br>设P(WlC)是汉字串C切分为W的某种估计概率。Wa，Wb，⋯．Wk是C的所有可能的切分方案。那么，基于统计的切分模型就是这样的一种分词模型，它能够找到目的词串W ，使得W 满足：<br>　　P(W|C)=MAX(P(Wa|C),P(Wb|C)…P(Wk|C))，<br>即估计概率为最大之词串。我们称函数P(W|C)为评价函数。一般的基于统计的分词模型的评价函数，都是根据贝叶斯公式．同时结合系统本身的资源限制，经过一定的简化，近似得来的。</p>
+<p>根据贝叶斯公式， 有：P(W|C)=P(W) P(C|W)/P(C)，对于C的多种切分方案，P(C)是一常数，而P(C|W)是在给定词串的条件下出现字串C的概率，故P(C|W)=1。所以 ，我们用P(W)来代替P(W|C)。那么，如何估计P(W)呢?最直接的估计P(W)的方法利用词的n-gram，即：<br>　　P(W)=P(W1) P(W2lW1) P(W3|W1W2)⋯P(Wk|W1,W2…Wk-1)<br>　　但是，由于当前的计算机技术和我们现有的语料资源所限，这种方法存在致命的缺陷：</p>
+<p>　　①对于有6万词的词典而言，仅词和词的bigram就可能需要60000 x 60000=3600M的统计空间，这是当前的计算机硬件水平所难以接受的，更不要说更大的n-gram 了。<br>　　②需要与上述空间相当的熟语料，否则就会产生训练语料不足所产生的数据稀疏问题。<br>　　③由于不同领域的语料库的用词有所差异，针对某一个领域的语料库统计出来的n-gram，若用于其它领域，其效果难以预料，而目前通过语料库搭配来克服领域差民间的方法尚未成熟。</p>
+<p>　　因此，利用词的n-gram 直接估计P(W)的方法，在目前是不可行的。基于上述的原因，大多数基于统计的分词模型都没有直接采用上述公式，而是采用各种各样的估计方法，从不同的角度，实现对P(W)的近似。</p>
+</li>
+<li><p>隐马尔可夫模型(Hidden Markov Model，HMM)</p>
+</li>
+</ul>
+<p>## </p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+</div>
+                
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Mr.Crowley博客" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Mr.Crowley&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-Hans");</script>
+
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'true'
+        }
+    }
+};
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+
+
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Entradas',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categorias',
+                TAGS: 'Etiquetas',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

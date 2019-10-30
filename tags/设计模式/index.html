@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 3.8.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>Etiqueta: 设计模式 - Mr.Crowley博客</title>
+
+
+
+
+
+
+
+
+<link rel="icon" href="/images/favicon.svg">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-1-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="Mr.Crowley博客" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">首页</a>
+                
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/about">关于</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="Search" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-12 has-order-2 column-main"><div class="card">
+    <div class="card-content">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/tags">Etiquetas</a></li>
+            <li class="is-active"><a href="#" aria-current="page">设计模式</a></li>
+        </ul>
+        </nav>
+    </div>
+</div>
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    6 minutes read (About 841 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/">SpringCloudGateway源码解析(2)-反应式编程</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>为了应对 <strong>高并发环境下</strong> 的服务端编程，微软提出了一个实现 <strong>异步编程</strong> 的方案 - <code>Reactive Programming</code>，中文名称 <strong>反应式编程</strong>。Java也汲取了反应式编程的思想，Spring Reactor应势而生。Spring5.0以WebFlux为代表全面拥抱了Reactor的编程模式。Spring Cloud Gateway底层是webFlux，而webFlux就是基于Spring Reactor构建的新一代WEB框架。</p>
+<h1 id="想读懂Spring-Cloud-Gateway，先学Reactor"><a href="#想读懂Spring-Cloud-Gateway，先学Reactor" class="headerlink" title="想读懂Spring Cloud Gateway，先学Reactor"></a>想读懂Spring Cloud Gateway，先学Reactor</h1><p>博主在读Spring Cloud Gateway源码之前，对Reactor技术不了解，在看Gateway源码时候不知道所谓了Flux和Mono是个啥概念。比如如下这段代码</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">filter</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">			<span class="hljs-keyword">return</span> Mono.defer(() -&gt; &#123;</span><br><span class="line">				<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.index &lt; filters.size()) &#123;</span><br><span class="line">					GatewayFilter filter = filters.get(<span class="hljs-keyword">this</span>.index);</span><br><span class="line">					DefaultGatewayFilterChain chain = <span class="hljs-keyword">new</span> DefaultGatewayFilterChain(<span class="hljs-keyword">this</span>,</span><br><span class="line">							<span class="hljs-keyword">this</span>.index + <span class="hljs-number">1</span>);</span><br><span class="line">					<span class="hljs-keyword">return</span> filter.filter(exchange, chain);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="hljs-keyword">else</span> &#123;</span><br><span class="line">					<span class="hljs-keyword">return</span> Mono.empty(); <span class="hljs-comment">// complete</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure>
+<p>所以想读懂Gateway的源码，Reactor技术也是要掌握的，至少能了解Reactor的思想，知道它API的含义。接下来会带着大家对Reactor入个门，为后续的学习Gateway源码打好基础。</p>
+<p><strong>Flux原理</strong></p>
+<p>Flux表示的是包含0到N个元素的异步序列。下图中，operator上面共有6个元素，时间轴从左到右，分边进入到operator容器中进行处理，处理之后的结果流入到result flux中，有些情况下某些元素在处理过程中会出现错误。</p>
+<p><img src="http://syxtt.xin/flux.png" alt="img"></p>
+<p>​    </p>
+<p><strong>Mono原理</strong></p>
+<p>Mono表示的是包含0-1个元素的异步序列，是一个特殊的Flux。原理和Flux一致，只是Mono限制了元素的数量。</p>
+<p><img src="http://syxtt.xin/mono.png" alt></p>
+<p>反应式编程的所有API都在Flux和Mono中体现。</p>
+<h1 id="Reactor示例代码"><a href="#Reactor示例代码" class="headerlink" title="Reactor示例代码"></a>Reactor示例代码</h1><p>Flux 可以根据fromIterable，just，fromArray 三种API创建异步序列。</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">private static List&lt;String&gt; strs =    Arrays.asList(&quot;the&quot;,&quot;quick&quot;,&quot;brown&quot;,&quot;fox&quot;,&quot;jumped&quot;,&quot;over&quot;,&quot;the&quot;,&quot;lazy&quot;,&quot;dog&quot;);</span><br><span class="line"></span><br><span class="line">public static void test0() &#123;</span><br><span class="line"></span><br><span class="line">    Flux.fromIterable(strs).subscribe(System.out::println);</span><br><span class="line">    Flux.just(strs).subscribe(System.out::println);</span><br><span class="line">    String[] strArray = &#123;&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;&#125;;</span><br><span class="line">    Flux.fromArray(strArray).subscribe(System.out::println);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">the</span><br><span class="line">quick</span><br><span class="line">brown</span><br><span class="line">fox</span><br><span class="line">jumped</span><br><span class="line">over</span><br><span class="line">the</span><br><span class="line">lazy</span><br><span class="line">dog</span><br><span class="line">[the, quick, brown, fox, jumped, over, the, lazy, dog]</span><br><span class="line">a</span><br><span class="line">b</span><br><span class="line">c</span><br><span class="line">d</span><br></pre></td></tr></table></figure>
+<p>创建一个Flux和一个Mono，flatMap函数按空字符串把happy字符串拆分成h,a,p,p,y这些子字符串，concatWith融合了s字符串，然后调用distinct和sort函数，完成了去重和排序，最终通过zipWith拼接数字.</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test3</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; list = Arrays.asList(<span class="hljs-string">"happy"</span>);</span><br><span class="line">        Mono&lt;String&gt; missting = Mono.just(<span class="hljs-string">"s"</span>);</span><br><span class="line">        Flux.fromIterable(list).flatMap(word -&gt; 	   Flux.fromArray(word.split(<span class="hljs-string">""</span>))).concatWith(missting)</span><br><span class="line">                .distinct().sort().zipWith(Flux.range(<span class="hljs-number">1</span>, Integer.MAX_VALUE), (string, count) -&gt; String.format(<span class="hljs-string">"%d. %s"</span>, count, string)).subscribe(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"> <span class="hljs-number">1</span>. a</span><br><span class="line"> <span class="hljs-number">2</span>. h</span><br><span class="line"> <span class="hljs-number">3</span>. p</span><br><span class="line"> <span class="hljs-number">4</span>. y</span><br><span class="line"> <span class="hljs-number">5</span>. s</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>反应式编程范式对于习惯了传统编程范式的开发人员来说，既是一个需要进行思维方式转变的挑战，也是一个充满了更多可能的机会。Reactor 作为一个基于反应式流规范的新的 Java 库，可以作为反应式应用的基础。但是Reactor还不算成熟，以后的发展还需拭目以待，至少Spring已经全面拥抱。</p>
+<p>#参考文档</p>
+<p><a href="https://juejin.im/post/5b3a22a16fb9a024db5ff13e" target="_blank" rel="noopener">聊聊Spring Reactor反应式编程</a></p>
+<p><a href="https://mercyblitz.github.io/2018/07/25/Reactive-Programming-%E4%B8%80%E7%A7%8D%E6%8A%80%E6%9C%AF-%E5%90%84%E8%87%AA%E8%A1%A8%E8%BF%B0/" target="_blank" rel="noopener">Reactive programming 一种技术 各自表述</a></p>
+<p><a href="https://colobu.com/2014/10/28/secrets-of-java-8-functional-interface/#JDK_8%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%9C%89%E7%9A%84%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3" target="_blank" rel="noopener">Java 8函数式接口functional interface的秘密</a></p>
+<p><a href="https://projectreactor.io/docs/core/release/reference/" target="_blank" rel="noopener">Reactor官方文档</a></p>
+<p><a href="https://www.ibm.com/developerworks/cn/java/j-cn-with-reactor-response-encode/index.html" target="_blank" rel="noopener">使用 Reactor 进行反应式编程</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    12 minutes read (About 1756 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/">SpringCloudGateway源码解析(3)- 路由</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在文章《SpringCloudGateway源码解析-揭开SpringCloudGateway神秘面纱》中，我们从宏观上了解了Spring Cloud Gateway的整体架构和思想，本篇文章就是要带着大家了解网关的一等公民”路由”的前世和今生。</p>
+<h1 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h1><p>什么是路由？维基百科中定义。<strong>路由</strong>（<strong>routing</strong>）就是通过互联的<a href="https://zh.wikipedia.org/wiki/%E4%BA%92%E8%81%AF%E7%B6%B2" target="_blank" rel="noopener">网络</a>把<a href="https://zh.wikipedia.org/wiki/%E4%BF%A1%E6%81%AF" target="_blank" rel="noopener">信息</a>从源地址传输到目的地址的活动。路由发生在<a href="https://zh.wikipedia.org/wiki/OSI%E6%A8%A1%E5%9E%8B" target="_blank" rel="noopener">OSI网络参考模型中</a>的第三层即<a href="https://zh.wikipedia.org/wiki/%E7%BD%91%E7%BB%9C%E5%B1%82" target="_blank" rel="noopener">网络层</a>。</p>
+<p>通过定义我们可以很清晰的认识到，路由中最核心的两点，即”源地址”和”目的地址”，更简单的说，网关最核心的功能就是<strong>把一个网络包安全快速的从源头搬运到目的地地址上</strong>。</p>
+<p>在Spring Cloud Gateway中，路由是一个叫Route的对象定义的，作为Gateway的使用者，需要了解路由是如何创建？如何修改？如何删除？或者更高级的特性，如何在不重启网关的情况下，任意的修改路由的配置，并让它实时生效等等，而且网关左右微服务体系下的门户，”不重启”是很重要的特性。接下来我们就从源码角度，仔细的学习Spring Cloud Gateway是如何实现一个网关路由的。</p>
+<p>##Route &amp;&amp; RouteDefinition</p>
+<p>了解大数据技术的同学应该听说过”元数据”这个术语。元数据是描述数据的数据，而Gateway中的RouteDefinition，就是为了描述Route的。换句话说，配置文件—&gt;RouteDefinition—&gt;Route。那这个时候有的同学会发问了，为何不能直接配置文件——&gt;Route，为何还要再加一个RouteDefinition？是因为Spring Cloud Gateway不仅仅支持Route通过配置文件的方式配置，还支持FluentAPI、Endpoint、注册中心等等其他的路由来源，根据”单一职责”设计，RouteDefinition使得Route和用户的行为解耦。聪明的小伙伴的可以发现，这种方式的可扩展性是非常强的，最左侧可以增加Redis，Mysql，Apollo等等组件，想想还有点小兴奋。</p>
+<p><img src="http://syxtt.xin/RouteDefinition%E8%BD%AC%E6%8D%A2%E6%88%90Route.png" alt="路由配置转换为Route对象"></p>
+<p>Route类</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Route</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Ordered</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String id;<span class="hljs-comment">//路由id</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> URI uri;<span class="hljs-comment">//target地址</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> order;<span class="hljs-comment">//路由优先级，值越小优先级越高</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AsyncPredicate&lt;ServerWebExchange&gt; predicate;<span class="hljs-comment">//路由断言</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> List&lt;GatewayFilter&gt; gatewayFilters;<span class="hljs-comment">//路由过滤器栈</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>RouteDefinition类，包含了两个构造函数，还可以通过字符串的方式构建。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Validated</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RouteDefinition</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@NotEmpty</span></span><br><span class="line">	<span class="hljs-keyword">private</span> String id = UUID.randomUUID().toString();<span class="hljs-comment">//路由元数据</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@NotEmpty</span></span><br><span class="line">	<span class="hljs-meta">@Valid</span></span><br><span class="line">	<span class="hljs-keyword">private</span> List&lt;PredicateDefinition&gt; predicates = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();<span class="hljs-comment">//路由断言集合</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Valid</span></span><br><span class="line">	<span class="hljs-keyword">private</span> List&lt;FilterDefinition&gt; filters = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();<span class="hljs-comment">//路由过滤器集合</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@NotNull</span></span><br><span class="line">	<span class="hljs-keyword">private</span> URI uri;<span class="hljs-comment">//目标地址URI</span></span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> order = <span class="hljs-number">0</span>;<span class="hljs-comment">//路由优先级</span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RouteDefinition</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RouteDefinition</span><span class="hljs-params">(String text)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">int</span> eqIdx = text.indexOf(<span class="hljs-string">'='</span>);</span><br><span class="line">		<span class="hljs-keyword">if</span> (eqIdx &lt;= <span class="hljs-number">0</span>) &#123;</span><br><span class="line">			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ValidationException(<span class="hljs-string">"Unable to parse RouteDefinition text '"</span> + text</span><br><span class="line">					+ <span class="hljs-string">"'"</span> + <span class="hljs-string">", must be of the form name=value"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		setId(text.substring(<span class="hljs-number">0</span>, eqIdx));</span><br><span class="line">		String[] args = tokenizeToStringArray(text.substring(eqIdx + <span class="hljs-number">1</span>), <span class="hljs-string">","</span>);</span><br><span class="line">		setUri(URI.create(args[<span class="hljs-number">0</span>]));</span><br><span class="line">		<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; args.length; i++) &#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.predicates.add(<span class="hljs-keyword">new</span> PredicateDefinition(args[i]));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>##RouteDefinitionLocator</p>
+<p>RouteDefinitionLocator只有一个方法来获取RouteDefinition异步序列。</p>
+<p><img src="http://syxtt.xin/RouteDefinitionLocator.png" alt="RouteDefinitionLocator"></p>
+<p>​                                  RouteDefinitionLocator继承关系图</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">RouteDefinitionLocator</span> </span>&#123;</span><br><span class="line">	<span class="hljs-function">Flux&lt;RouteDefinition&gt; <span class="hljs-title">getRouteDefinitions</span><span class="hljs-params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它的子类的作用加载情况如下：</p>
+<ul>
+<li><p>CachingRouteDefinitionLocator不再使用。</p>
+</li>
+<li><p>PropertiesRouteDefinitionLocator在GatewayAutoConfiguration中加载。它持有GatewayProperties对象，GatewayProperties对象通过@ConfigurationProperties注解自动装配RouteDefinition，所以<strong>通过PropertiesRouteDefinitionLocator类可以直接获取application.yml中所有用户配置的路由信息</strong>。</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@ConfigurationProperties(&quot;spring.cloud.gateway&quot;)</span><br><span class="line">@Validated</span><br><span class="line">public class GatewayProperties &#123;</span><br><span class="line">	@NotNull</span><br><span class="line">	@Valid</span><br><span class="line">	private List&lt;RouteDefinition&gt; routes = new ArrayList&lt;&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-attr">spring:</span></span><br><span class="line"><span class="hljs-attr">  cloud:</span></span><br><span class="line"><span class="hljs-attr">    gateway:</span></span><br><span class="line"><span class="hljs-attr">      routes:</span></span><br><span class="line"><span class="hljs-attr">      - id:</span> <span class="hljs-string">yml-id</span></span><br><span class="line"><span class="hljs-attr">        uri:</span> <span class="hljs-string">www.baidu.com</span></span><br><span class="line"><span class="hljs-attr">        order:</span> <span class="hljs-bullet">-1</span></span><br><span class="line"><span class="hljs-attr">        predicates:</span></span><br><span class="line"><span class="hljs-attr">        - name:</span> <span class="hljs-string">predicatesName</span></span><br><span class="line"><span class="hljs-attr">          args:</span></span><br><span class="line"><span class="hljs-attr">           arg0:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">           arg1:</span> <span class="hljs-number">2</span></span><br><span class="line"><span class="hljs-bullet">        -</span> <span class="hljs-string">Path=/echo</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>InMemoryRouteDefinitionRepository在GatewayAutoConfiguration中加载。InMemoryRouteDefinitionRepository提供了save()和delete()两个函数，默认通过gateway的AbstractGatewayControllerEndpoint调用，换句话说，<strong>Gateway提供了RestAPI来新增和删除网关的功能</strong>，但是这种方式比较鸡肋(JVM级的更新，没有提供持久化设定，如果Gateway集群有十台服务器，你需要操作十遍)，生产环境下动态路由，只能借助其他的持久化中间件来实现<strong>动态路由</strong>，后续的章节，会专门讲如何使用Apollo(携程开源的高可用注册中心)来实现Gateway的动态路由。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InMemoryRouteDefinitionRepository</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">RouteDefinitionRepository</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;String, RouteDefinition&gt; routes = synchronizedMap(</span><br><span class="line">			<span class="hljs-keyword">new</span> LinkedHashMap&lt;String, RouteDefinition&gt;());</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">save</span><span class="hljs-params">(Mono&lt;RouteDefinition&gt; route)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> route.flatMap(r -&gt; &#123;</span><br><span class="line">			routes.put(r.getId(), r);</span><br><span class="line">			<span class="hljs-keyword">return</span> Mono.empty();</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">delete</span><span class="hljs-params">(Mono&lt;String&gt; routeId)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> routeId.flatMap(id -&gt; &#123;</span><br><span class="line">			<span class="hljs-keyword">if</span> (routes.containsKey(id)) &#123;</span><br><span class="line">				routes.remove(id);</span><br><span class="line">				<span class="hljs-keyword">return</span> Mono.empty();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="hljs-keyword">return</span> Mono.defer(() -&gt; Mono.error(</span><br><span class="line">					<span class="hljs-keyword">new</span> NotFoundException(<span class="hljs-string">"RouteDefinition not found: "</span> + routeId)));</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> Flux&lt;RouteDefinition&gt; <span class="hljs-title">getRouteDefinitions</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> Flux.fromIterable(routes.values());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>CompositeRouteDefinitionLocator在GatewayAutoConfiguration中加载。CompositeRouteDefinitionLocator持有了所有的RouteDefinitionLocator。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CompositeRouteDefinitionLocator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">RouteDefinitionLocator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Flux&lt;RouteDefinitionLocator&gt; delegates;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CompositeRouteDefinitionLocator</span><span class="hljs-params">(Flux&lt;RouteDefinitionLocator&gt; delegates)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">this</span>.delegates = delegates;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> Flux&lt;RouteDefinition&gt; <span class="hljs-title">getRouteDefinitions</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.delegates.flatMap(RouteDefinitionLocator::getRouteDefinitions);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li>DiscoveryClientRouteDefinitionLocator在GatewayDiscoveryClientAutoConfiguration中加载，目的是集成SpringCloud的注册中心(例如Eureka，Zookeeper，Nacos等)，DiscoveryClientRouteDefinitionLocator依赖DiscoveryClient对象，所有的路由信息均是通过DiscoveryClient获得，然后转换成RouteDefinition对象。</li>
+</ul>
+<p>##RouteLocator</p>
+<p>RouteLocator只包含一个函数getRoutes()获取所有的Route对象。它有三个实现类，但是真正干活的实现类是RouteDefinitionRouteLocator，</p>
+<p><img src="http://syxtt.xin/RouteLocator%E7%B1%BB%E5%9B%BE.png" alt="RouteLocator依赖关系图"></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">RouteLocator</span> </span>&#123;</span><br><span class="line">	<span class="hljs-function">Flux&lt;Route&gt; <span class="hljs-title">getRoutes</span><span class="hljs-params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> <span class="hljs-meta">@Override</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Flux&lt;Route&gt; <span class="hljs-title">getRoutes</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">   <span class="hljs-comment">//获取RouteDefinition集合，调用convertToRoute转换成Route对象</span></span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.routeDefinitionLocator.getRouteDefinitions().map(<span class="hljs-keyword">this</span>::convertToRoute)</span><br><span class="line">			.map(route -&gt; &#123;</span><br><span class="line">				<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(<span class="hljs-string">"RouteDefinition matched: "</span> + route.getId());</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="hljs-keyword">return</span> route;</span><br><span class="line">			&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> Route <span class="hljs-title">convertToRoute</span><span class="hljs-params">(RouteDefinition routeDefinition)</span> </span>&#123;</span><br><span class="line">   <span class="hljs-comment">//断言</span></span><br><span class="line">	AsyncPredicate&lt;ServerWebExchange&gt; predicate = combinePredicates(routeDefinition);</span><br><span class="line">   <span class="hljs-comment">//过滤器</span></span><br><span class="line">	List&lt;GatewayFilter&gt; gatewayFilters = getFilters(routeDefinition);</span><br><span class="line">   <span class="hljs-comment">//构建Route</span></span><br><span class="line">	<span class="hljs-keyword">return</span> Route.async(routeDefinition).asyncPredicate(predicate)</span><br><span class="line">			.replaceFilters(gatewayFilters).build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>#设计模式</p>
+<p>在Route包下，Spencer Gibb采用了模板模式和建造者模式。</p>
+<h2 id="模板模式"><a href="#模板模式" class="headerlink" title="模板模式"></a>模板模式</h2><p>在模板模式（Template Pattern）中，一个抽象类公开定义了执行它的方法的方式/模板。它的子类可以按需要重写方法实现，但调用将以抽象类中定义的方式进行。这种类型的设计模式属于行为型模式。其实我个人理解模板模式就是面向接口编程。RouteLocator和RouteDefinitionLocator都采用了模板模式</p>
+<h2 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h2><p>建造者模式（Builder Pattern）使用多个简单的对象一步一步构建成一个复杂的对象。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
+<p>一个 Builder 类会一步一步构造最终的对象。该 Builder 类是独立于其他对象的。</p>
+<p>FluentAPI就是一个很经典的建造者模式的应用。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">builder.routes().route(r -&gt; r.path(<span class="hljs-string">"/anything/png"</span>).uri(<span class="hljs-string">"https://www.jd.com"</span>)).build();</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    14 minutes read (About 2033 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/">SpringCloudGateway源码解析(4)- 核心流程</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在文章《SpringCloudGateway源码解析(3)- 路由的装配》中，我们了解了网关路由的相关实现，这一章节，主要讲解下SpringCloudGateway中handler包实现，其中最核心的两个类FilteringWebHandler和RoutePredicateHandlerMapping。</p>
+<h1 id="GatewayAutoConfiguration"><a href="#GatewayAutoConfiguration" class="headerlink" title="GatewayAutoConfiguration"></a>GatewayAutoConfiguration</h1><p>首先先看下FilteringWebHandler，RoutePredicateHandlerMapping</p>
+<p>配置类注解含义如下</p>
+<ul>
+<li>@Configuration表示是一个SpringBoot配置类</li>
+<li>@ConditionalOnProperty 监听spring.cloud.gateway.enabled配置，缺少配置默认为true</li>
+<li>@EnableConfigurationProperties @ConfigurationProperties注解的前置条件，@ConfigurationProperties可以自动的将配置文件解析为Bean</li>
+<li>@AutoConfigureBefore 先加载WebFluxAutoConfiguration和HttpHandlerAutoConfiguration，再加载自身</li>
+<li>@AutoConfigureAfter 先加载自身，再加载GatewayLoadBalancerClientAutoConfiguration和GatewayClassPathWarningAutoConfiguration</li>
+<li>@ConditionalOnClass 配置加载依赖DispatcherHandler，即依赖WebFlux组件</li>
+</ul>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Configuration</span></span><br><span class="line"><span class="hljs-meta">@ConditionalOnProperty</span>(name = <span class="hljs-string">"spring.cloud.gateway.enabled"</span>, matchIfMissing = <span class="hljs-keyword">true</span>)</span><br><span class="line"><span class="hljs-meta">@EnableConfigurationProperties</span></span><br><span class="line"><span class="hljs-meta">@AutoConfigureBefore</span>(&#123; HttpHandlerAutoConfiguration.class,</span><br><span class="line">		WebFluxAutoConfiguration.class &#125;)</span><br><span class="line"><span class="hljs-meta">@AutoConfigureAfter</span>(&#123; GatewayLoadBalancerClientAutoConfiguration.class,</span><br><span class="line">		GatewayClassPathWarningAutoConfiguration.class &#125;)</span><br><span class="line"><span class="hljs-meta">@ConditionalOnClass</span>(DispatcherHandler.class)</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GatewayAutoConfiguration</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> FilteringWebHandler <span class="hljs-title">filteringWebHandler</span><span class="hljs-params">(List&lt;GlobalFilter&gt; globalFilters)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> FilteringWebHandler(globalFilters);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> RoutePredicateHandlerMapping <span class="hljs-title">routePredicateHandlerMapping</span><span class="hljs-params">(</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			FilteringWebHandler webHandler, </span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">    	RouteLocator routeLocator,//CachingRouteLocator会优先注入</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			GlobalCorsProperties globalCorsProperties, Environment environment)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RoutePredicateHandlerMapping(webHandler, routeLocator,</span><br><span class="line">				globalCorsProperties, environment);</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> RouteLocator <span class="hljs-title">routeDefinitionRouteLocator</span><span class="hljs-params">(GatewayProperties properties,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			List&lt;GatewayFilterFactory&gt; GatewayFilters,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			List&lt;RoutePredicateFactory&gt; predicates,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			RouteDefinitionLocator routeDefinitionLocator,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">			@Qualifier(<span class="hljs-string">"webFluxConversionService"</span>)</span> ConversionService conversionService) </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RouteDefinitionRouteLocator(routeDefinitionLocator, predicates,</span><br><span class="line">				GatewayFilters, properties, conversionService);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-meta">@Primary</span></span><br><span class="line">	<span class="hljs-comment">//重要！！CachingRouteLocator生命了@Primary注解，是优先选择注入的</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> RouteLocator <span class="hljs-title">cachedCompositeRouteLocator</span><span class="hljs-params">(List&lt;RouteLocator&gt; routeLocators)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CachingRouteLocator(</span><br><span class="line">				<span class="hljs-keyword">new</span> CompositeRouteLocator(Flux.fromIterable(routeLocators)));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Gateway源码中，大量运用SpringBoot中autoconfigure的功能。</p>
+<p>#WebFlux入口类DispatcherHandler</p>
+<p>​    <img src="http://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png" alt="DispatcherHandler依赖关系"></p>
+<p>​        要说Spring Cloud Gateway的handler包，就不得不说DispatcherHandler类。DispatcherHandler实现了ApplicationContextAware接口和WebHandler，主要持有handlerMappings，handlerAdapters，resultHandlers这三个对象。在Spring初始化的时候，会调用setApplicationContext函数进行初始化，初始化的步骤就是利用工具函数BeanFactoryUtils#beansOfTypeIncludingAncestors取出其父类的子类，赋值给DispatcherHandler的三个成员变量。赋值之后，handlerMappings和handlerAdapters的集合中，包含如下类，其中RoutePredicateHandlerMapping和SimpleHandlerAdapter是我们的主角，其他的类不在我们的讨论范围内。</p>
+<p><img src="http://syxtt.xin/DispatcherHandler%E6%8C%81%E6%9C%89%E7%9A%84%E5%AF%B9%E8%B1%A1.png" alt="DispatcherHandler持有的对象"></p>
+<p>​        当在网络请求过来时，handle函数会被调用，第一步就是构建handlerMapping Flux，此异步队列的长度为6。再concatMap通过mapping获取handler，这时会走所有的HandlerMapping实现，在Gateway的实现中，对应RoutePredicateHandlerMapping#getHandlerInternal函数，匹配路由的返回Mono<handler>，不匹配的路由返回Mono.empty()，在网关服务中，核心的路由是通过网关的api配置的，所以核心路由都会RoutePredicateHandlerMapping中，不会在其他的HandlerMapping中出现，理论上只有RoutePredicateHandlerMapping能匹配上路由，如果匹配多个，只取第一个，而RoutePredicateHandlerMapping最终返回的是FilteringWebHandler的Mono。</handler></p>
+<p>​        特意验证了Flux这段代码，这端测试代码的逻辑和DispatcherHandler类似，最后返回的结果是3，大家可以参考下。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>);</span><br><span class="line">Flux.fromIterable(list).concatMap(a -&gt; &#123;</span><br><span class="line">  <span class="hljs-keyword">if</span>(a == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> Mono.empty();</span><br><span class="line">  <span class="hljs-keyword">return</span> Mono.just(a + <span class="hljs-number">1</span>);</span><br><span class="line">&#125;).next().subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line">最终输出结果：<span class="hljs-number">3</span></span><br></pre></td></tr></table></figure>
+<p>​        接下来就会执行另外一个核心的函数invokeHandler。invokeHandler中会轮询handlerAdapters中所有的Adapters，用到了<strong>适配器模式</strong>。由于上一个流返回FilteringWebHandler对象，所以FilteringWebHandler#handle会执行。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DispatcherHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">WebHandler</span>, <span class="hljs-title">ApplicationContextAware</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">	<span class="hljs-meta">@Nullable</span></span><br><span class="line">	<span class="hljs-keyword">private</span> List&lt;HandlerMapping&gt; handlerMappings;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Nullable</span></span><br><span class="line">	<span class="hljs-keyword">private</span> List&lt;HandlerAdapter&gt; handlerAdapters;</span><br><span class="line"></span><br><span class="line">	<span class="hljs-meta">@Nullable</span></span><br><span class="line">	<span class="hljs-keyword">private</span> List&lt;HandlerResultHandler&gt; resultHandlers;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-meta">@Override</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setApplicationContext</span><span class="hljs-params">(ApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">    initStrategies(applicationContext);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initStrategies</span><span class="hljs-params">(ApplicationContext context)</span> </span>&#123;</span><br><span class="line">      Map&lt;String, HandlerMapping&gt; mappingBeans = </span><br><span class="line">      <span class="hljs-comment">//step1，获取  HandlerMapping的所有子类</span></span><br><span class="line">      BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerMapping.class, <span class="hljs-keyword">true</span>, <span class="hljs-keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      ArrayList&lt;HandlerMapping&gt; mappings = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(mappingBeans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(mappings);</span><br><span class="line">      <span class="hljs-keyword">this</span>.handlerMappings = Collections.unmodifiableList(mappings);</span><br><span class="line">      <span class="hljs-comment">//step2，获取  HandlerAdapter的所有子类</span></span><br><span class="line">      Map&lt;String, HandlerAdapter&gt; adapterBeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerAdapter.class, <span class="hljs-keyword">true</span>, <span class="hljs-keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">this</span>.handlerAdapters = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(adapterBeans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(<span class="hljs-keyword">this</span>.handlerAdapters);</span><br><span class="line">      <span class="hljs-comment">//step3，获取  HandlerResultHandler的所有子类</span></span><br><span class="line">      Map&lt;String, HandlerResultHandler&gt; beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerResultHandler.class, <span class="hljs-keyword">true</span>, <span class="hljs-keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">this</span>.resultHandlers = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(beans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(<span class="hljs-keyword">this</span>.resultHandlers);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">handle</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.handlerMappings == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> createNotFoundError();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">return</span> Flux.fromIterable(<span class="hljs-keyword">this</span>.handlerMappings)</span><br><span class="line">        	<span class="hljs-comment">//通过mapping获取handler，对应Gateway中的RoutePredicateHandlerMapping#getHandlerInternal,匹配路由的返回Mono&lt;Handler&gt;，不匹配的路由返回Mono.empty()</span></span><br><span class="line">          .concatMap(mapping -&gt; mapping.getHandler(exchange))</span><br><span class="line">        	<span class="hljs-comment">//理论上只有一个handler能匹配上路由，如果匹配多个，只取第一个</span></span><br><span class="line">          .next()</span><br><span class="line">          .switchIfEmpty(createNotFoundError())</span><br><span class="line">        	<span class="hljs-comment">//调用FilteringWebHandler#handle</span></span><br><span class="line">          .flatMap(handler -&gt; invokeHandler(exchange, handler))</span><br><span class="line">          .flatMap(result -&gt; handleResult(exchange, result));</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> Mono&lt;HandlerResult&gt; <span class="hljs-title">invokeHandler</span><span class="hljs-params">(ServerWebExchange exchange, Object handler)</span> </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.handlerAdapters != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">        <span class="hljs-keyword">for</span> (HandlerAdapter handlerAdapter : <span class="hljs-keyword">this</span>.handlerAdapters) &#123;</span><br><span class="line">          <span class="hljs-keyword">if</span> (handlerAdapter.supports(handler)) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> handlerAdapter.handle(exchange, handler);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">return</span> Mono.error(<span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">"No HandlerAdapter: "</span> + handler));</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://syxtt.xin/Distrapache%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="网关流程图"></p>
+<h1 id="RoutePredicateHandlerMapping"><a href="#RoutePredicateHandlerMapping" class="headerlink" title="RoutePredicateHandlerMapping"></a>RoutePredicateHandlerMapping</h1><p>​        经过对DispatcherHandler源码的分析，相信大家已经摸清RoutePredicateHandlerMapping的定位了，他的作用就是<strong>断言路由，返回FilterWebHandler</strong>，其核心的方法是getHandlerInternal和lookupRoute。</p>
+<p><img src="http://syxtt.xin/RoutePredicateHandlerMapping%E4%BE%9D%E8%B5%96%E5%9B%BE.png" alt="RoutePredicateHandlerMapping依赖关系"></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Override</span></span><br><span class="line"><span class="hljs-keyword">protected</span> Mono&lt;?&gt; getHandlerInternal(ServerWebExchange exchange) &#123;</span><br><span class="line">	<span class="hljs-comment">// don't handle requests on management port if set and different than server port</span></span><br><span class="line">	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.managementPortType == DIFFERENT &amp;&amp; <span class="hljs-keyword">this</span>.managementPort != <span class="hljs-keyword">null</span></span><br><span class="line">			&amp;&amp; exchange.getRequest().getURI().getPort() == <span class="hljs-keyword">this</span>.managementPort) &#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> Mono.empty();</span><br><span class="line">	&#125;</span><br><span class="line">	exchange.getAttributes().put(GATEWAY_HANDLER_MAPPER_ATTR, getSimpleName());</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">return</span> lookupRoute(exchange)</span><br><span class="line">			<span class="hljs-comment">// .log("route-predicate-handler-mapping", Level.FINER) //name this</span></span><br><span class="line">			.flatMap((Function&lt;Route, Mono&lt;?&gt;&gt;) r -&gt; &#123;</span><br><span class="line">				exchange.getAttributes().remove(GATEWAY_PREDICATE_ROUTE_ATTR);</span><br><span class="line">				<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(</span><br><span class="line">							<span class="hljs-string">"Mapping ["</span> + getExchangeDesc(exchange) + <span class="hljs-string">"] to "</span> + r);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				exchange.getAttributes().put(GATEWAY_ROUTE_ATTR, r);</span><br><span class="line">				<span class="hljs-keyword">return</span> Mono.just(webHandler);</span><br><span class="line">			&#125;).switchIfEmpty(Mono.empty().then(Mono.fromRunnable(() -&gt; &#123;</span><br><span class="line">				exchange.getAttributes().remove(GATEWAY_PREDICATE_ROUTE_ATTR);</span><br><span class="line">				<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">					logger.trace(<span class="hljs-string">"No RouteDefinition found for ["</span></span><br><span class="line">							+ getExchangeDesc(exchange) + <span class="hljs-string">"]"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​        通过this.routeLocator是CachingRouteLocator的实例，换句话说是优先从缓存中获取，如果缓存中获取不到，则从RouteDefinitionRouteLocator获取Route。获取所有的Route，从而获取Route对象的predicate属性。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">protected</span> Mono&lt;Route&gt; <span class="hljs-title">lookupRoute</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.routeLocator.getRoutes()</span><br><span class="line">			<span class="hljs-comment">// individually filter routes so that filterWhen error delaying is not a</span></span><br><span class="line">			<span class="hljs-comment">// problem</span></span><br><span class="line">			.concatMap(route -&gt; Mono.just(route).filterWhen(r -&gt; &#123;</span><br><span class="line">				<span class="hljs-comment">// add the current route we are testing</span></span><br><span class="line">				exchange.getAttributes().put(GATEWAY_PREDICATE_ROUTE_ATTR, r.getId());</span><br><span class="line">				<span class="hljs-keyword">return</span> r.getPredicate().apply(exchange);</span><br><span class="line">			&#125;)</span><br><span class="line">					<span class="hljs-comment">// instead of immediately stopping main flux due to error, log and</span></span><br><span class="line">					<span class="hljs-comment">// swallow it</span></span><br><span class="line">					.doOnError(e -&gt; logger.error(</span><br><span class="line">							<span class="hljs-string">"Error applying predicate for route: "</span> + route.getId(),</span><br><span class="line">							e))</span><br><span class="line">					.onErrorResume(e -&gt; Mono.empty()))</span><br><span class="line">			<span class="hljs-comment">// .defaultIfEmpty() put a static Route not found</span></span><br><span class="line">			<span class="hljs-comment">// or .switchIfEmpty()</span></span><br><span class="line">			<span class="hljs-comment">// .switchIfEmpty(Mono.&lt;Route&gt;empty().log("noroute"))</span></span><br><span class="line">			.next()</span><br><span class="line">			<span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> error handling</span></span><br><span class="line">			.map(route -&gt; &#123;</span><br><span class="line">				<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(<span class="hljs-string">"Route matched: "</span> + route.getId());</span><br><span class="line">				&#125;</span><br><span class="line">				validateRoute(route, exchange);</span><br><span class="line">				<span class="hljs-keyword">return</span> route;</span><br><span class="line">			&#125;);</span><br><span class="line"></span><br><span class="line">	<span class="hljs-comment">/*</span></span><br><span class="line"><span class="hljs-comment">	 * <span class="hljs-doctag">TODO:</span> trace logging if (logger.isTraceEnabled()) &#123;</span></span><br><span class="line"><span class="hljs-comment">	 * logger.trace("RouteDefinition did not match: " + routeDefinition.getId()); &#125;</span></span><br><span class="line"><span class="hljs-comment">	 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://syxtt.xin/%E7%BD%91%E5%85%B3%E8%B7%AF%E7%94%B1%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="网关路由处理流程图"></p>
+<h1 id="FilteringWebHandler"><a href="#FilteringWebHandler" class="headerlink" title="FilteringWebHandler"></a>FilteringWebHandler</h1><figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Override</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">handle</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">   <span class="hljs-comment">//step1 获取断言匹配的路由对象</span></span><br><span class="line">	Route route = exchange.getRequiredAttribute(GATEWAY_ROUTE_ATTR);</span><br><span class="line">   <span class="hljs-comment">//step2 获取路由下的过滤器对象</span></span><br><span class="line">	List&lt;GatewayFilter&gt; gatewayFilters = route.getFilters();</span><br><span class="line">	<span class="hljs-comment">//step3 合并全局过滤器和局部过滤器，并按照order排序</span></span><br><span class="line">	List&lt;GatewayFilter&gt; combined = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(<span class="hljs-keyword">this</span>.globalFilters);</span><br><span class="line">	combined.addAll(gatewayFilters);</span><br><span class="line">	AnnotationAwareOrderComparator.sort(combined);</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(<span class="hljs-string">"Sorted gatewayFilterFactories: "</span> + combined);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-comment">//step4 创建过滤器责任链</span></span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DefaultGatewayFilterChain(combined).filter(exchange);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="应用的设计模式"><a href="#应用的设计模式" class="headerlink" title="应用的设计模式"></a>应用的设计模式</h1><h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><p><img src="http://syxtt.xin/RoutePredicateFactory%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.png" alt="RoutePredicateFactory"></p>
+<p>​        Spring Cloud Gateway中，断言采用的是工厂模式。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。</p>
+<p>​        RoutePredicateFactory是一个函数式接口，是负责生产泛型为ServerWebExchange的Predicate的工厂，更进一步说生产的是GatewayPredicate对象。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@FunctionalInterface</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">RoutePredicateFactory</span>&lt;<span class="hljs-title">C</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">ShortcutConfigurable</span>, <span class="hljs-title">Configurable</span>&lt;<span class="hljs-title">C</span>&gt; </span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="hljs-function">Predicate&lt;ServerWebExchange&gt; <span class="hljs-title">apply</span><span class="hljs-params">(C config)</span></span>;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">GatewayPredicate</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Predicate</span>&lt;<span class="hljs-title">ServerWebExchange</span>&gt; </span>&#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="责任链模式"><a href="#责任链模式" class="headerlink" title="责任链模式"></a>责任链模式</h2><p>​        顾名思义，<strong>责任链模式</strong>（Chain of Responsibility Pattern）为请求创建了一个接收者对象的链。这种模式给予请求的类型，对请求的发送者和接收者进行解耦。这种类型的设计模式属于行为型模式。在这种模式中，通常每个接收者都包含对另一个接收者的引用。如果一个对象不能处理该请求，那么它会把相同的请求传给下一个接收者，依此类推。</p>
+<p>​        在Spring Cloud Gateway中，过滤就是采用了责任链模式。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DefaultGatewayFilterChain</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">GatewayFilterChain</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> index;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> List&lt;GatewayFilter&gt; filters;</span><br><span class="line"></span><br><span class="line">		DefaultGatewayFilterChain(List&lt;GatewayFilter&gt; filters) &#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.filters = filters;</span><br><span class="line">			<span class="hljs-keyword">this</span>.index = <span class="hljs-number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">DefaultGatewayFilterChain</span><span class="hljs-params">(DefaultGatewayFilterChain parent, <span class="hljs-keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.filters = parent.getFilters();</span><br><span class="line">			<span class="hljs-keyword">this</span>.index = index;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;GatewayFilter&gt; <span class="hljs-title">getFilters</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">			<span class="hljs-keyword">return</span> filters;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="hljs-meta">@Override</span></span><br><span class="line">		<span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">filter</span><span class="hljs-params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">			<span class="hljs-keyword">return</span> Mono.defer(() -&gt; &#123;</span><br><span class="line">				<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.index &lt; filters.size()) &#123;</span><br><span class="line">					GatewayFilter filter = filters.get(<span class="hljs-keyword">this</span>.index);</span><br><span class="line">					DefaultGatewayFilterChain chain = <span class="hljs-keyword">new</span> DefaultGatewayFilterChain(<span class="hljs-keyword">this</span>,</span><br><span class="line">							<span class="hljs-keyword">this</span>.index + <span class="hljs-number">1</span>);</span><br><span class="line">					<span class="hljs-keyword">return</span> filter.filter(exchange, chain);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="hljs-keyword">else</span> &#123;</span><br><span class="line">					<span class="hljs-keyword">return</span> Mono.empty(); <span class="hljs-comment">// complete</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-07-10T15:33:16.000Z">2019-07-10</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    a few seconds read (About 101 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/07/10/Java-Provider的一种写法/">Java-Provider一种写法</a>
+            
+        </h1>
+        <div class="content">
+            <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Map&lt;String, NodeProvider&lt;Node&gt;&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="hljs-string">"ik"</span>, TestInner::getNode);</span><br><span class="line"></span><br><span class="line">        System.out.println(map.get(<span class="hljs-string">"ik"</span>).get(<span class="hljs-string">"name"</span>, <span class="hljs-number">1</span>).getName());</span><br><span class="line">        System.out.println(map.get(<span class="hljs-string">"ik"</span>).get(<span class="hljs-string">"name"</span>, <span class="hljs-number">200</span>).getAge());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">NodeProvider</span>&lt;<span class="hljs-title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="hljs-function">T <span class="hljs-title">get</span><span class="hljs-params">(String name, <span class="hljs-keyword">int</span> age)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> String name;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setName</span><span class="hljs-params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getAge</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setAge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestInner</span> </span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Node <span class="hljs-title">getNode</span><span class="hljs-params">(String name, <span class="hljs-keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        Node node = <span class="hljs-keyword">new</span> Node();</span><br><span class="line">        node.setAge(age);</span><br><span class="line">        node.setName(name);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-12-11T15:33:16.000Z">2018-12-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    8 minutes read (About 1183 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/12/11/Java生产者消费者模式/">生产者消费者模式-Java</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="生产者消费者模式"><a href="#生产者消费者模式" class="headerlink" title="生产者消费者模式"></a>生产者消费者模式</h1><p>生产者-消费者模式在服务端编程中，是一种很常见的设计模式，比如消息队列的实现，就是这种思想。本文就是用Java语言编写一个简单的生产者消费者例子，从而引出concurrent包下的阻塞队列和ReentrantLock一些玩法。</p>
+<p>##基础知识</p>
+<p>首先复习下基础知识，在Java中concurrent包下并发队列分为<strong>阻塞队列</strong>和<strong>非阻塞队列</strong>，ConcurrentLinkedQueue是非阻塞队列，底层实现用了CAS。阻塞队列包括LinkedBlockingQueue，LinkedBlockingDeque，LinkedTransferQueue，ArrayBlockingQueue，阻塞队列底层是靠ReentrantLock实现。Condition包括await，signal，signalAll，Condition作为条件锁</p>
+<p>我们知道Lock的本质是AQS，AQS自己维护的队列是当前等待资源的队列，AQS会在被释放后，依次唤醒队列中从前到后的所有节点，使他们对应的线程恢复执行，直到队列为空。</p>
+<p>而Condition自己也维护了一个队列，该队列的作用是维护一个等待signal信号的队列。</p>
+<p>但是，两个队列的作用不同的，事实上，每个线程也仅仅会同时存在以上两个队列中的一个，流程是这样的：</p>
+<ul>
+<li><p>1、线程1调用reentrantLock.lock时，尝试获取锁。如果成功，则返回，从AQS的队列中移除线程；否则阻塞，保持在AQS的等待队列中。</p>
+</li>
+<li><p>2、线程1调用await方法被调用时，对应操作是被加入到Condition的等待队列中，等待signal信号；同时释放锁。</p>
+</li>
+<li>3、锁被释放后，会唤醒AQS队列中的头结点，所以线程2会获取到锁。</li>
+<li>4、线程2调用signal方法，这个时候Condition的等待队列中只有线程1一个节点，于是它被取出来，并被加入到AQS的等待队列中。注意，这个时候，线程1 并没有被唤醒，只是被加入AQS等待队列。</li>
+<li>5、signal方法执行完毕，线程2调用unLock()方法，释放锁。这个时候因为AQS中只有线程1，于是，线程1被唤醒，线程1恢复执行。</li>
+</ul>
+<p>所以，发送signal信号只是将Condition队列中的线程加到AQS的等待队列中。只有到发送signal信号的线程调用reentrantLock.unlock()释放锁后，这些线程才会被唤醒。可以看到，整个协作过程是靠结点在AQS的等待队列和Condition的等待队列中来回移动实现的，Condition作为一个条件类，很好的自己维护了一个等待信号的队列，并在适时的时候将结点加入到AQS的等待队列中来实现的唤醒操作。 signal就是唤醒Condition队列中的第一个非CANCELLED节点线程，而signalAll就是唤醒所有非CANCELLED节点线程，本质是将节点从Condition队列中取出来一个还是所有节点放到AQS的等待队列。尽管所有Node可能都被唤醒，但是要知道的是仍然只有一个线程能够拿到锁，其它没有拿到锁的线程仍然需要自旋等待，就上上面提到的第4步(acquireQueued)。</p>
+<p>##生产者-消费者代码</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 用阻塞队列实现生产-消费者模式</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Productor</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">static</span> LinkedBlockingQueue&lt;Integer&gt; blockQueue = <span class="hljs-keyword">new</span> LinkedBlockingQueue&lt;&gt;(<span class="hljs-number">10</span>);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">provide</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) &#123;</span><br><span class="line">            blockQueue.offer(i);</span><br><span class="line">            System.out.println(<span class="hljs-string">"生产:"</span> + i);</span><br><span class="line">            Thread.sleep(<span class="hljs-number">100</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 基于阻塞队列消费者</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Consumer</span> </span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">cusume</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">while</span> (!Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">            System.out.println(<span class="hljs-string">"消费:"</span> + Productor.blockQueue.take());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test0</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">//创建生产者</span></span><br><span class="line">    Productor productor = <span class="hljs-keyword">new</span> Productor();</span><br><span class="line">    <span class="hljs-comment">//创建消费者</span></span><br><span class="line">    Consumer consumer = <span class="hljs-keyword">new</span> Consumer();</span><br><span class="line">    Thread cusumerThread = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            consumer.cusume();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line">    cusumerThread.start();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">        productor.provide();</span><br><span class="line"></span><br><span class="line">        cusumerThread.interrupt();</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出：</span><br><span class="line">生产:<span class="hljs-number">0</span></span><br><span class="line">消费:<span class="hljs-number">0</span></span><br><span class="line">生产:<span class="hljs-number">1</span></span><br><span class="line">消费:<span class="hljs-number">1</span></span><br><span class="line">生产:<span class="hljs-number">2</span></span><br><span class="line">消费:<span class="hljs-number">2</span></span><br><span class="line">生产:<span class="hljs-number">3</span></span><br><span class="line">消费:<span class="hljs-number">3</span></span><br><span class="line">生产:<span class="hljs-number">4</span></span><br><span class="line">消费:<span class="hljs-number">4</span></span><br><span class="line">生产:<span class="hljs-number">5</span></span><br><span class="line">消费:<span class="hljs-number">5</span></span><br><span class="line">生产:<span class="hljs-number">6</span></span><br><span class="line">消费:<span class="hljs-number">6</span></span><br><span class="line">生产:<span class="hljs-number">7</span></span><br><span class="line">消费:<span class="hljs-number">7</span></span><br><span class="line">消费:<span class="hljs-number">8</span></span><br><span class="line">生产:<span class="hljs-number">8</span></span><br><span class="line">生产:<span class="hljs-number">9</span></span><br><span class="line">消费:<span class="hljs-number">9</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">* 自己实现的简单的阻塞队列</span></span><br><span class="line"><span class="hljs-comment">*/</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyBlockQueue</span>&lt;<span class="hljs-title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> LinkedList&lt;E&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="hljs-comment">//第一种实现方式，采用了Object wait和notify的方式</span></span><br><span class="line">    <span class="hljs-keyword">private</span> Object lock = <span class="hljs-keyword">new</span> Object();</span><br><span class="line">	<span class="hljs-comment">//第二种实现方法，采用了ReentrantLock获取Condition，通过condition await和signal方式实现</span></span><br><span class="line">    <span class="hljs-keyword">private</span> ReentrantLock reentrantLock = <span class="hljs-keyword">new</span> ReentrantLock();</span><br><span class="line">    Condition con = reentrantLock.newCondition();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">offer</span><span class="hljs-params">(E e)</span> </span>&#123;</span><br><span class="line">        queue.offer(e);</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            lock.notifyAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function">E <span class="hljs-title">take</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (queue.size() == <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                lock.wait();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> queue.poll();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">offer1</span><span class="hljs-params">(E e)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            reentrantLock.lockInterruptibly();</span><br><span class="line">            queue.offer(e);</span><br><span class="line">            con.signalAll();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">            reentrantLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function">E <span class="hljs-title">take1</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (queue.size() == <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                reentrantLock.lockInterruptibly();</span><br><span class="line">                con.await();</span><br><span class="line"></span><br><span class="line">            &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">                reentrantLock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> queue.poll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-12-11T15:33:16.000Z">2018-12-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    2 minutes read (About 337 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/12/11/单例模式/">单例模式</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式分为了饿汉式和懒汉式，总体来说懒汉式要优于饿汉式，饿汉式不管是否其他线程调用了getInstance，都在类加载阶段创建了实例。而懒汉式则只有在调用的时候，才实例化对象，更加节省系统资源。</p>
+<p>饿汉式：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span>  </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Singleton INSTANCE = <span class="hljs-keyword">new</span> Singleton();</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>懒汉式-双重检查</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 懒汉式-双重检查</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonLazy</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SingletonLazy instance = <span class="hljs-keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonLazy</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonLazy <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span> (SingletonLazy.class) &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                    instance = <span class="hljs-keyword">new</span> SingletonLazy();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>懒汉式-内部类</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 懒汉式-内部类</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonLazy1</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonLazy1</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InnerSingleton</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> SingletonLazy1 instance = <span class="hljs-keyword">new</span> SingletonLazy1();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonLazy1 <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">return</span> InnerSingleton.instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">helloworld</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="hljs-string">"hello lazy singleton."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行Main方法测试，从输出结果看，只有执行了SingletonLazy1.getInstance()方法，才开始加载内部类SingletonLazy1$InnerSingleton。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Main</span> </span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>&#123;</span><br><span class="line">        SingletonLazy1.helloworld();</span><br><span class="line">        Object lock = <span class="hljs-keyword">new</span> Object();</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            lock.wait(<span class="hljs-number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="hljs-string">"分割线---------------"</span>);</span><br><span class="line">        System.out.println(SingletonLazy1.getInstance());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出结果：</span><br><span class="line">[Loaded sun.nio.cs.US_ASCII$Decoder from /Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar]</span><br><span class="line">分割线---------------</span><br><span class="line">[Loaded sun.misc.VMSupport from /Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar]</span><br><span class="line">[Loaded com.wsy.learn.designmodel.SingletonLazy1$InnerSingleton from file:/Users/wangsiyuan1/workspace/springtest/target/classes/]</span><br><span class="line">com.wsy.learn.designmodel.SingletonLazy1@<span class="hljs-number">27716f</span>4</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+</div>
+                
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Mr.Crowley博客" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Mr.Crowley&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-Hans");</script>
+
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'true'
+        }
+    }
+};
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+
+
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Entradas',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categorias',
+                TAGS: 'Etiquetas',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 3.8.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>阿里巴巴LTR Qcon分享笔记 - Mr.Crowley博客</title>
+
+
+
+
+
+
+
+
+<link rel="icon" href="/images/favicon.svg">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-1-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="阿里巴巴LTR Qcon分享笔记" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">首页</a>
+                
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/about">关于</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="Search" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-12 has-order-2 column-main">
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-01-21T08:33:16.000Z">2019-01-21</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    11 minutes read (About 1664 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                阿里巴巴LTR Qcon分享笔记
+            
+        </h1>
+        <div class="content">
+            <p>LTR, Leaning To Rank，是一种基于机器学习的Rank方法。</p>
+<p>SENP : Search Engine Result Page 搜索引擎结果页面</p>
+<p>宏观上看，分为了三类，分别是 PointWise，PaireWise，ListWise。</p>
+<p>parameter of the classifier should be tuned to optimize the NDCG score on the cross validation set.<br>query full:SERPs returned in response to a query.<br>query less:SERPs teturned in response to the user click on some product category.</p>
+<p>i.i.d :独立同分布independent and identically distributed</p>
+<p>Personalized E-Commerce Search 个性化电子商务搜索</p>
+<p>Predict relevance scores and re-rank products returned by an e- commerce search engine on the search engine result page</p>
+<p>对搜索引擎结果页面中的item，预测相关性得分和re-rank</p>
+<p>使用的数据</p>
+<p>Search, browsing, and transaction histories for all users and specifically the user interacting<br>with the search engine in the current session</p>
+<p>所有用户的搜索，浏览，交易历史，特别是在当前搜索引擎session中用户与系统交互的行为</p>
+<p>Product properties and meta-data</p>
+<p>商品特征和元数据</p>
+<p>Data Using 使用的方法</p>
+<ul>
+<li><p>Matchine Learning (e.g. RankSVM, LambdaMart)</p>
+</li>
+<li><p>Ranking Function(e.g. BM25, Cosine Similarity)</p>
+</li>
+</ul>
+<p>Theory理论 (PAC)</p>
+<ul>
+<li><p>Generalization</p>
+</li>
+<li><p>Stability</p>
+</li>
+</ul>
+<p>Applications应用</p>
+<ul>
+<li>Search 搜索</li>
+<li>Recommender System 推荐系统</li>
+<li>Question Answering 问答系统</li>
+<li>Sentiment Analysis 情感分析，在电商领域，用户评论数据可以用情感分析模型，分析出用户对商品是否满意</li>
+</ul>
+<p>Formulation LTR的Formulation</p>
+<ul>
+<li>Machine Learning<ul>
+<li>Supervised learning with labeled data 使用标记数据进行监督学习，日志分析，点击量，点击停留时间等等</li>
+</ul>
+</li>
+<li>Ranking of objects by subject <ul>
+<li>Feature based ranking function 基于特征的排序方法</li>
+</ul>
+</li>
+<li>Approach<ul>
+<li>Traditional:BM25 (Probabilistic Model) 概率模型</li>
+<li>New<ul>
+<li>Query and associated products form Group (Train Data)  query的结果集称作group</li>
+<li>Groups are i.i.d group之间是独立同分布</li>
+<li>Features (query and product) in Group are not i.i.d  group中的特征不是独立同分布</li>
+<li>Model is a function of features 特征产生函数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Issues</p>
+<ul>
+<li>Data Labeling 打标数据（训练集）<ul>
+<li>Relevance metric (Point)  跟CTR预估有点像，点了或者没点</li>
+<li>Ordered pairs </li>
+<li>Ordered list 对排列组合取最大概率的排列</li>
+</ul>
+</li>
+<li>Feature Extraction 特征提取 (非常非常重要)<ul>
+<li>Relevance (User/Query-Prod Feature)  用户的意图（历史行为或者当前的行为）和文档的属性有match</li>
+<li>Semantic (User/Query-Prod Feature)  语义相关性 LDA，现在流行的是 deepLearning CNN</li>
+<li>Importance (Prod Feature) doc本身的重要性，比如sku的各种重要属性，类似PageRank是网页本身重要的特种</li>
+</ul>
+</li>
+<li>Learning Method 学习方法<ul>
+<li>Model 模型选择，要结合业务，要最合适的，需要对数据的理解，业务的理解</li>
+<li>Lose Function 损失函数，比如交叉熵。遇到不平滑或者不好求导的的情况，所以很多情况直接选择比较好求导的损失函数</li>
+<li>Optimized Algorithms  优化算法，随机梯度下降</li>
+</ul>
+</li>
+<li>Evaluation Measure 评估测量<ul>
+<li>NDCG 当前排序结果和预期排序结果的比值</li>
+</ul>
+</li>
+<li>Machine Learning <ul>
+<li>Classification 分类</li>
+<li>Regression 回归</li>
+<li>Ordinal Classification/Regression </li>
+</ul>
+</li>
+<li><p>Ordinal Regression 序数回归</p>
+<ul>
+<li>Pointwise <ul>
+<li>Transfer ranking to regression 转变ranking为回归问题</li>
+<li>Ignore group info 忽略group信息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Learning to Rank </p>
+<ul>
+<li>Pairwise <ul>
+<li>Transfer ranking to binary classification 转换ranking为二分类问题</li>
+</ul>
+</li>
+<li>Listwise<ul>
+<li>Straightforward represent learning 直接了当学习</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Pointwise Model</strong>用的不多</p>
+<ul>
+<li>McRank(2007)</li>
+<li>Ordinal Liner Regression （1992）</li>
+</ul>
+<p><strong>PaireWise Model</strong>比较流行</p>
+<ul>
+<li>RankSVM(2000)<ul>
+<li>Pairwise classification </li>
+</ul>
+</li>
+<li><p>IR SVM</p>
+<ul>
+<li><p>Cost-sensitive Pairwise 排序结果A B C， A比C好很重要，C比A好很差劲</p>
+</li>
+<li><p>Using modified hinge loss </p>
+</li>
+</ul>
+</li>
+<li>RankBoost (2003) GBDT</li>
+<li>RankNet (2005) 神经网络</li>
+<li>LambdaMart (2008) 最流行，既可以paireWise也可以Listwise</li>
+</ul>
+<p><strong>Listwise Model</strong> 目标是 ：正确的那个排序结果的概率最大</p>
+<ul>
+<li>Plackett-Luce Model </li>
+<li>ListMLE (2008) </li>
+<li>ListNet (2007) <ul>
+<li>Parameterized Plackett-Luce Model</li>
+</ul>
+</li>
+<li>AdaRank (2007) </li>
+<li>PermuRank (2008) </li>
+<li>SVM-Map (2007) </li>
+</ul>
+<p><strong>Optimize</strong> 优化</p>
+<ul>
+<li>Direct Optimization 直接优化<ul>
+<li>AdaRank</li>
+<li>SVM Map</li>
+</ul>
+</li>
+<li>Approximation 近似<ul>
+<li>Soft Rank </li>
+<li>Lambda Rank </li>
+</ul>
+</li>
+<li>Learning Framework 学习框架<ul>
+<li>Data Representation 数据表示</li>
+<li>Expected Risk 期望风险</li>
+<li>Empirical Risk 经验风险</li>
+<li>Generalization Analysis 概括分析</li>
+</ul>
+</li>
+<li>Evaluation 总结<ul>
+<li>Pairwise approach and Listwise approach perform better than Pointwise<br>approach</li>
+</ul>
+</li>
+</ul>
+<p><strong>Applications</strong></p>
+<ul>
+<li>Search<ul>
+<li>Re-Ranking 重排序</li>
+</ul>
+</li>
+<li>Recommender System<ul>
+<li>Collaborating Filter 协同过滤</li>
+</ul>
+</li>
+</ul>
+<p><strong>PERSONALIZED E-COMMERCE SEARCH</strong> 个性化电商搜索</p>
+<p><strong>Pertinence</strong> 如何评价搜索的效果好坏</p>
+<ul>
+<li>Log Analysis 通过分析日志分析来评价</li>
+<li>Conversion in E-commerce 通过电商转化率评价，但是转化率的评价维度较多。比如通常意义上购买&gt;加购&gt;收藏，但是在双11前夕，用户有提前加购，收藏，等待双11零点下单的习惯，这个场景下，加购或者收藏的价值不低于购买。</li>
+</ul>
+<p><strong>Data</strong> 数据来源</p>
+<ul>
+<li>User info 用户信息：基本信息，行为日志等</li>
+<li>List of the terms that forms the query 检索词的term集合</li>
+<li>Displayed items and their domains 展示的数据信息，在电商中指商品列表</li>
+<li>Items on which the user clicked 用户点击了哪些item</li>
+<li>Timing of all of these actions 用户行为的时间轴，比如分析留长等等，用户的行为都是用时间串联起来的</li>
+<li>History Behaviors Day 28 to Day 30 近一个月历史的行为数据</li>
+</ul>
+<p><strong>Ensemble Model</strong> 混合模型</p>
+<ul>
+<li>Boosting</li>
+<li>Bagging</li>
+<li>Stacking</li>
+</ul>
+<p><strong>Trap</strong> 需要注意的陷阱</p>
+<ul>
+<li>Position Bias 偏见<ul>
+<li>人对排在前面的有天然的好感，自然的从上往下读。当用户输入一个比较泛指的词时，说明他的意图不明确（自己都不知道想要什么），比如输入“裙子”，此刻搜索引擎给出的结果也只能是泛泛的，用户点击了某一个item，可能并不是他真正的意图，但至少在页面中，点击了的商品比没点的要好。</li>
+<li>线上的所有的日志和效果，都是由上一个模型产生的，上一个模型会引导用户的行为，导致产生了噪声数据，所以采集的数据并不是一个shuffle的结果。如果有条件，可以采用<strong>分桶实验</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><strong>Clicks feedback</strong></p>
+<p><strong>When to do personalize</strong></p>
+<ul>
+<li>Long Term 长期的偏好：比如一个用户每2个月买一次牙膏</li>
+<li>Short Term 短期的偏好：基于当前会话session的</li>
+</ul>
+<p><strong>Past interaction timescales</strong> 历史交互时间轴数据</p>
+<p><strong>Search behaviors timescales</strong> 搜索行为时间轴数据</p>
+<p><strong>Learing from all repeated results</strong> </p>
+<p><strong>Features</strong> 特征</p>
+<ul>
+<li><p>Aggregate features  聚合特征</p>
+</li>
+<li><p>Query features 检索特征</p>
+</li>
+<li>User click habits 用户点击习惯<ul>
+<li>Number of times the user clicked on the item in the past</li>
+</ul>
+</li>
+<li>Session features Session会话级别的特征</li>
+<li>Non-Personalized Rank 非个性化Rank<ul>
+<li>Read linearly </li>
+<li>Computed with infomation</li>
+</ul>
+</li>
+<li>Inhibiting/Promoting features<ul>
+<li>Query click entropy</li>
+</ul>
+</li>
+</ul>
+<p><strong>Methodology</strong></p>
+<ul>
+<li>Classification will be used<ul>
+<li>Parameter of the classifier should be tuned optimize the NDCG score on the cross validation set.</li>
+</ul>
+</li>
+<li>Query Full<ul>
+<li>SERPs returned in response to a query</li>
+</ul>
+</li>
+<li>Query Less<ul>
+<li>SERPs returned in response to the  user click</li>
+</ul>
+</li>
+</ul>
+<p><strong>Ensemble Model</strong> 混合Model</p>
+<p>A very powerful technique to increase accuracy on a variety of ML tasks</p>
+<ul>
+<li>Boosting</li>
+<li>Bagging</li>
+</ul>
+<p>Ensemble Correlation</p>
+<ul>
+<li>Voting</li>
+<li>Weighing</li>
+<li>Averaging</li>
+<li>Rank averaging</li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/LTR/">LTR</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>Wechat</span>
+    <div class="qrcode"><img src="/gallery/donate/wechat.jpg" alt="Wechat"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/01/21/Hbase系列1-Hbase适用场景/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">Hbase系列1-Hbase适用场景</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/01/21/Hbase系列4-rowkey设计技巧/">
+                <span class="level-item">Hbase系列4-rowkey设计技巧</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">Comentarios</h3>
+        
+<div id="SOHUCS" sid="2019/01/21/阿里巴巴LTR Qcon分享笔记/"></div>
+<script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+    appid: 'cyrXKIcmH',
+    conf: './'
+});
+</script>
+
+    </div>
+</div>
+</div>
+                
+                
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="阿里巴巴LTR Qcon分享笔记" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Mr.Crowley&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-Hans");</script>
+
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'true'
+        }
+    }
+};
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+
+
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Entradas',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categorias',
+                TAGS: 'Etiquetas',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
