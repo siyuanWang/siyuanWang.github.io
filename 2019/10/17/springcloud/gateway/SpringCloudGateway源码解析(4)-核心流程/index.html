@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>SpringCloudGateway源码解析(4)- 核心流程 | CrowleyBlog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="设计模式,Spring Cloud Gateway,SpringCloud,工厂模式,责任链模式">
+    
+    <meta name="description" content="前言在文章《SpringCloudGateway源码解析(3)- 路由的装配》中，我们了解了网关路由的相关实现，这一章节，主要讲解下SpringCloudGateway中handler包实现，其中最核心的两个类FilteringWebHandler和RoutePredicateHandlerMapping。 GatewayAutoConfiguration首先先看下FilteringWebHand">
+<meta name="keywords" content="设计模式,Spring Cloud Gateway,SpringCloud,工厂模式,责任链模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloudGateway源码解析(4)- 核心流程">
+<meta property="og:url" content="http://yoursite.com/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/index.html">
+<meta property="og:site_name" content="CrowleyBlog">
+<meta property="og:description" content="前言在文章《SpringCloudGateway源码解析(3)- 路由的装配》中，我们了解了网关路由的相关实现，这一章节，主要讲解下SpringCloudGateway中handler包实现，其中最核心的两个类FilteringWebHandler和RoutePredicateHandlerMapping。 GatewayAutoConfiguration首先先看下FilteringWebHand">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png">
+<meta property="og:updated_time" content="2019-10-23T02:12:40.123Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringCloudGateway源码解析(4)- 核心流程">
+<meta name="twitter:description" content="前言在文章《SpringCloudGateway源码解析(3)- 路由的装配》中，我们了解了网关路由的相关实现，这一章节，主要讲解下SpringCloudGateway中handler包实现，其中最核心的两个类FilteringWebHandler和RoutePredicateHandlerMapping。 GatewayAutoConfiguration首先先看下FilteringWebHand">
+<meta name="twitter:image" content="http://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item">
+                                    <a class="main-nav-list-link" href="/index.html">主页</a>
+                                </li>
+                            
+                                        <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Java/">Java</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/reactor/">reactor</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/大数据技术/">大数据技术</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/开发工具/">开发工具</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/搜索/">搜索</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/机器学习/">机器学习</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/软件架构/">软件架构</a></li></ul>
+                                    
+                                <li class="main-nav-list-item">
+                                    <a class="main-nav-list-link" href="/about/index.html">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/SpringCloud/">SpringCloud</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        SpringCloudGateway源码解析(4)- 核心流程
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+    <div class="article-date">
+        <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="article-date">
+            <time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time>
+        </a>
+    </div>
+
+		
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Spring-Cloud-Gateway/">Spring Cloud Gateway</a>, <a class="tag-link" href="/tags/SpringCloud/">SpringCloud</a>, <a class="tag-link" href="/tags/工厂模式/">工厂模式</a>, <a class="tag-link" href="/tags/设计模式/">设计模式</a>, <a class="tag-link" href="/tags/责任链模式/">责任链模式</a>
+    </div>
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在文章《SpringCloudGateway源码解析(3)- 路由的装配》中，我们了解了网关路由的相关实现，这一章节，主要讲解下SpringCloudGateway中handler包实现，其中最核心的两个类FilteringWebHandler和RoutePredicateHandlerMapping。</p>
+<h1 id="GatewayAutoConfiguration"><a href="#GatewayAutoConfiguration" class="headerlink" title="GatewayAutoConfiguration"></a>GatewayAutoConfiguration</h1><p>首先先看下FilteringWebHandler，RoutePredicateHandlerMapping</p>
+<p>配置类注解含义如下</p>
+<ul>
+<li>@Configuration表示是一个SpringBoot配置类</li>
+<li>@ConditionalOnProperty 监听spring.cloud.gateway.enabled配置，缺少配置默认为true</li>
+<li>@EnableConfigurationProperties @ConfigurationProperties注解的前置条件，@ConfigurationProperties可以自动的将配置文件解析为Bean</li>
+<li>@AutoConfigureBefore 先加载WebFluxAutoConfiguration和HttpHandlerAutoConfiguration，再加载自身</li>
+<li>@AutoConfigureAfter 先加载自身，再加载GatewayLoadBalancerClientAutoConfiguration和GatewayClassPathWarningAutoConfiguration</li>
+<li>@ConditionalOnClass 配置加载依赖DispatcherHandler，即依赖WebFlux组件</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty</span>(name = <span class="string">"spring.cloud.gateway.enabled"</span>, matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span></span><br><span class="line"><span class="meta">@AutoConfigureBefore</span>(&#123; HttpHandlerAutoConfiguration.class,</span><br><span class="line">		WebFluxAutoConfiguration.class &#125;)</span><br><span class="line"><span class="meta">@AutoConfigureAfter</span>(&#123; GatewayLoadBalancerClientAutoConfiguration.class,</span><br><span class="line">		GatewayClassPathWarningAutoConfiguration.class &#125;)</span><br><span class="line"><span class="meta">@ConditionalOnClass</span>(DispatcherHandler.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GatewayAutoConfiguration</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> FilteringWebHandler <span class="title">filteringWebHandler</span><span class="params">(List&lt;GlobalFilter&gt; globalFilters)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> FilteringWebHandler(globalFilters);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> RoutePredicateHandlerMapping <span class="title">routePredicateHandlerMapping</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">			FilteringWebHandler webHandler, </span></span></span><br><span class="line"><span class="function"><span class="params">    	RouteLocator routeLocator,//CachingRouteLocator会优先注入</span></span></span><br><span class="line"><span class="function"><span class="params">			GlobalCorsProperties globalCorsProperties, Environment environment)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> RoutePredicateHandlerMapping(webHandler, routeLocator,</span><br><span class="line">				globalCorsProperties, environment);</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> RouteLocator <span class="title">routeDefinitionRouteLocator</span><span class="params">(GatewayProperties properties,</span></span></span><br><span class="line"><span class="function"><span class="params">			List&lt;GatewayFilterFactory&gt; GatewayFilters,</span></span></span><br><span class="line"><span class="function"><span class="params">			List&lt;RoutePredicateFactory&gt; predicates,</span></span></span><br><span class="line"><span class="function"><span class="params">			RouteDefinitionLocator routeDefinitionLocator,</span></span></span><br><span class="line"><span class="function"><span class="params">			@Qualifier(<span class="string">"webFluxConversionService"</span>)</span> ConversionService conversionService) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> RouteDefinitionRouteLocator(routeDefinitionLocator, predicates,</span><br><span class="line">				GatewayFilters, properties, conversionService);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@Primary</span></span><br><span class="line">	<span class="comment">//重要！！CachingRouteLocator生命了@Primary注解，是优先选择注入的</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> RouteLocator <span class="title">cachedCompositeRouteLocator</span><span class="params">(List&lt;RouteLocator&gt; routeLocators)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> CachingRouteLocator(</span><br><span class="line">				<span class="keyword">new</span> CompositeRouteLocator(Flux.fromIterable(routeLocators)));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Gateway源码中，大量运用SpringBoot中autoconfigure的功能。</p>
+<p>#WebFlux入口类DispatcherHandler</p>
+<p>​    <img src="http://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png" alt="DispatcherHandler依赖关系"></p>
+<p>​        要说Spring Cloud Gateway的handler包，就不得不说DispatcherHandler类。DispatcherHandler实现了ApplicationContextAware接口和WebHandler，主要持有handlerMappings，handlerAdapters，resultHandlers这三个对象。在Spring初始化的时候，会调用setApplicationContext函数进行初始化，初始化的步骤就是利用工具函数BeanFactoryUtils#beansOfTypeIncludingAncestors取出其父类的子类，赋值给DispatcherHandler的三个成员变量。赋值之后，handlerMappings和handlerAdapters的集合中，包含如下类，其中RoutePredicateHandlerMapping和SimpleHandlerAdapter是我们的主角，其他的类不在我们的讨论范围内。</p>
+<p><img src="http://syxtt.xin/DispatcherHandler%E6%8C%81%E6%9C%89%E7%9A%84%E5%AF%B9%E8%B1%A1.png" alt="DispatcherHandler持有的对象"></p>
+<p>​        当在网络请求过来时，handle函数会被调用，第一步就是构建handlerMapping Flux，此异步队列的长度为6。再concatMap通过mapping获取handler，这时会走所有的HandlerMapping实现，在Gateway的实现中，对应RoutePredicateHandlerMapping#getHandlerInternal函数，匹配路由的返回Mono<handler>，不匹配的路由返回Mono.empty()，在网关服务中，核心的路由是通过网关的api配置的，所以核心路由都会RoutePredicateHandlerMapping中，不会在其他的HandlerMapping中出现，理论上只有RoutePredicateHandlerMapping能匹配上路由，如果匹配多个，只取第一个，而RoutePredicateHandlerMapping最终返回的是FilteringWebHandler的Mono。</handler></p>
+<p>​        特意验证了Flux这段代码，这端测试代码的逻辑和DispatcherHandler类似，最后返回的结果是3，大家可以参考下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line">Flux.fromIterable(list).concatMap(a -&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span>(a == <span class="number">1</span>) <span class="keyword">return</span> Mono.empty();</span><br><span class="line">  <span class="keyword">return</span> Mono.just(a + <span class="number">1</span>);</span><br><span class="line">&#125;).next().subscribe(System.out::println);</span><br><span class="line"></span><br><span class="line">最终输出结果：<span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>​        接下来就会执行另外一个核心的函数invokeHandler。invokeHandler中会轮询handlerAdapters中所有的Adapters，用到了<strong>适配器模式</strong>。由于上一个流返回FilteringWebHandler对象，所以FilteringWebHandler#handle会执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DispatcherHandler</span> <span class="keyword">implements</span> <span class="title">WebHandler</span>, <span class="title">ApplicationContextAware</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">	<span class="meta">@Nullable</span></span><br><span class="line">	<span class="keyword">private</span> List&lt;HandlerMapping&gt; handlerMappings;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Nullable</span></span><br><span class="line">	<span class="keyword">private</span> List&lt;HandlerAdapter&gt; handlerAdapters;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Nullable</span></span><br><span class="line">	<span class="keyword">private</span> List&lt;HandlerResultHandler&gt; resultHandlers;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setApplicationContext</span><span class="params">(ApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">    initStrategies(applicationContext);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initStrategies</span><span class="params">(ApplicationContext context)</span> </span>&#123;</span><br><span class="line">      Map&lt;String, HandlerMapping&gt; mappingBeans = </span><br><span class="line">      <span class="comment">//step1，获取  HandlerMapping的所有子类</span></span><br><span class="line">      BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerMapping.class, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      ArrayList&lt;HandlerMapping&gt; mappings = <span class="keyword">new</span> ArrayList&lt;&gt;(mappingBeans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(mappings);</span><br><span class="line">      <span class="keyword">this</span>.handlerMappings = Collections.unmodifiableList(mappings);</span><br><span class="line">      <span class="comment">//step2，获取  HandlerAdapter的所有子类</span></span><br><span class="line">      Map&lt;String, HandlerAdapter&gt; adapterBeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerAdapter.class, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">this</span>.handlerAdapters = <span class="keyword">new</span> ArrayList&lt;&gt;(adapterBeans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(<span class="keyword">this</span>.handlerAdapters);</span><br><span class="line">      <span class="comment">//step3，获取  HandlerResultHandler的所有子类</span></span><br><span class="line">      Map&lt;String, HandlerResultHandler&gt; beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(</span><br><span class="line">          context, HandlerResultHandler.class, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">this</span>.resultHandlers = <span class="keyword">new</span> ArrayList&lt;&gt;(beans.values());</span><br><span class="line">      AnnotationAwareOrderComparator.sort(<span class="keyword">this</span>.resultHandlers);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Mono&lt;Void&gt; <span class="title">handle</span><span class="params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.handlerMappings == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> createNotFoundError();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> Flux.fromIterable(<span class="keyword">this</span>.handlerMappings)</span><br><span class="line">        	<span class="comment">//通过mapping获取handler，对应Gateway中的RoutePredicateHandlerMapping#getHandlerInternal,匹配路由的返回Mono&lt;Handler&gt;，不匹配的路由返回Mono.empty()</span></span><br><span class="line">          .concatMap(mapping -&gt; mapping.getHandler(exchange))</span><br><span class="line">        	<span class="comment">//理论上只有一个handler能匹配上路由，如果匹配多个，只取第一个</span></span><br><span class="line">          .next()</span><br><span class="line">          .switchIfEmpty(createNotFoundError())</span><br><span class="line">        	<span class="comment">//调用FilteringWebHandler#handle</span></span><br><span class="line">          .flatMap(handler -&gt; invokeHandler(exchange, handler))</span><br><span class="line">          .flatMap(result -&gt; handleResult(exchange, result));</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">private</span> Mono&lt;HandlerResult&gt; <span class="title">invokeHandler</span><span class="params">(ServerWebExchange exchange, Object handler)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.handlerAdapters != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (HandlerAdapter handlerAdapter : <span class="keyword">this</span>.handlerAdapters) &#123;</span><br><span class="line">          <span class="keyword">if</span> (handlerAdapter.supports(handler)) &#123;</span><br><span class="line">            <span class="keyword">return</span> handlerAdapter.handle(exchange, handler);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> Mono.error(<span class="keyword">new</span> IllegalStateException(<span class="string">"No HandlerAdapter: "</span> + handler));</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://syxtt.xin/Distrapache%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="网关流程图"></p>
+<h1 id="RoutePredicateHandlerMapping"><a href="#RoutePredicateHandlerMapping" class="headerlink" title="RoutePredicateHandlerMapping"></a>RoutePredicateHandlerMapping</h1><p>​        经过对DispatcherHandler源码的分析，相信大家已经摸清RoutePredicateHandlerMapping的定位了，他的作用就是<strong>断言路由，返回FilterWebHandler</strong>，其核心的方法是getHandlerInternal和lookupRoute。</p>
+<p><img src="http://syxtt.xin/RoutePredicateHandlerMapping%E4%BE%9D%E8%B5%96%E5%9B%BE.png" alt="RoutePredicateHandlerMapping依赖关系"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> Mono&lt;?&gt; getHandlerInternal(ServerWebExchange exchange) &#123;</span><br><span class="line">	<span class="comment">// don't handle requests on management port if set and different than server port</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">this</span>.managementPortType == DIFFERENT &amp;&amp; <span class="keyword">this</span>.managementPort != <span class="keyword">null</span></span><br><span class="line">			&amp;&amp; exchange.getRequest().getURI().getPort() == <span class="keyword">this</span>.managementPort) &#123;</span><br><span class="line">		<span class="keyword">return</span> Mono.empty();</span><br><span class="line">	&#125;</span><br><span class="line">	exchange.getAttributes().put(GATEWAY_HANDLER_MAPPER_ATTR, getSimpleName());</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> lookupRoute(exchange)</span><br><span class="line">			<span class="comment">// .log("route-predicate-handler-mapping", Level.FINER) //name this</span></span><br><span class="line">			.flatMap((Function&lt;Route, Mono&lt;?&gt;&gt;) r -&gt; &#123;</span><br><span class="line">				exchange.getAttributes().remove(GATEWAY_PREDICATE_ROUTE_ATTR);</span><br><span class="line">				<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(</span><br><span class="line">							<span class="string">"Mapping ["</span> + getExchangeDesc(exchange) + <span class="string">"] to "</span> + r);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				exchange.getAttributes().put(GATEWAY_ROUTE_ATTR, r);</span><br><span class="line">				<span class="keyword">return</span> Mono.just(webHandler);</span><br><span class="line">			&#125;).switchIfEmpty(Mono.empty().then(Mono.fromRunnable(() -&gt; &#123;</span><br><span class="line">				exchange.getAttributes().remove(GATEWAY_PREDICATE_ROUTE_ATTR);</span><br><span class="line">				<span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">					logger.trace(<span class="string">"No RouteDefinition found for ["</span></span><br><span class="line">							+ getExchangeDesc(exchange) + <span class="string">"]"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​        通过this.routeLocator是CachingRouteLocator的实例，换句话说是优先从缓存中获取，如果缓存中获取不到，则从RouteDefinitionRouteLocator获取Route。获取所有的Route，从而获取Route对象的predicate属性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Mono&lt;Route&gt; <span class="title">lookupRoute</span><span class="params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">this</span>.routeLocator.getRoutes()</span><br><span class="line">			<span class="comment">// individually filter routes so that filterWhen error delaying is not a</span></span><br><span class="line">			<span class="comment">// problem</span></span><br><span class="line">			.concatMap(route -&gt; Mono.just(route).filterWhen(r -&gt; &#123;</span><br><span class="line">				<span class="comment">// add the current route we are testing</span></span><br><span class="line">				exchange.getAttributes().put(GATEWAY_PREDICATE_ROUTE_ATTR, r.getId());</span><br><span class="line">				<span class="keyword">return</span> r.getPredicate().apply(exchange);</span><br><span class="line">			&#125;)</span><br><span class="line">					<span class="comment">// instead of immediately stopping main flux due to error, log and</span></span><br><span class="line">					<span class="comment">// swallow it</span></span><br><span class="line">					.doOnError(e -&gt; logger.error(</span><br><span class="line">							<span class="string">"Error applying predicate for route: "</span> + route.getId(),</span><br><span class="line">							e))</span><br><span class="line">					.onErrorResume(e -&gt; Mono.empty()))</span><br><span class="line">			<span class="comment">// .defaultIfEmpty() put a static Route not found</span></span><br><span class="line">			<span class="comment">// or .switchIfEmpty()</span></span><br><span class="line">			<span class="comment">// .switchIfEmpty(Mono.&lt;Route&gt;empty().log("noroute"))</span></span><br><span class="line">			.next()</span><br><span class="line">			<span class="comment">// <span class="doctag">TODO:</span> error handling</span></span><br><span class="line">			.map(route -&gt; &#123;</span><br><span class="line">				<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(<span class="string">"Route matched: "</span> + route.getId());</span><br><span class="line">				&#125;</span><br><span class="line">				validateRoute(route, exchange);</span><br><span class="line">				<span class="keyword">return</span> route;</span><br><span class="line">			&#125;);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">TODO:</span> trace logging if (logger.isTraceEnabled()) &#123;</span></span><br><span class="line"><span class="comment">	 * logger.trace("RouteDefinition did not match: " + routeDefinition.getId()); &#125;</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://syxtt.xin/%E7%BD%91%E5%85%B3%E8%B7%AF%E7%94%B1%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="网关路由处理流程图"></p>
+<h1 id="FilteringWebHandler"><a href="#FilteringWebHandler" class="headerlink" title="FilteringWebHandler"></a>FilteringWebHandler</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Mono&lt;Void&gt; <span class="title">handle</span><span class="params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">   <span class="comment">//step1 获取断言匹配的路由对象</span></span><br><span class="line">	Route route = exchange.getRequiredAttribute(GATEWAY_ROUTE_ATTR);</span><br><span class="line">   <span class="comment">//step2 获取路由下的过滤器对象</span></span><br><span class="line">	List&lt;GatewayFilter&gt; gatewayFilters = route.getFilters();</span><br><span class="line">	<span class="comment">//step3 合并全局过滤器和局部过滤器，并按照order排序</span></span><br><span class="line">	List&lt;GatewayFilter&gt; combined = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="keyword">this</span>.globalFilters);</span><br><span class="line">	combined.addAll(gatewayFilters);</span><br><span class="line">	AnnotationAwareOrderComparator.sort(combined);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">		logger.debug(<span class="string">"Sorted gatewayFilterFactories: "</span> + combined);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//step4 创建过滤器责任链</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> DefaultGatewayFilterChain(combined).filter(exchange);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="应用的设计模式"><a href="#应用的设计模式" class="headerlink" title="应用的设计模式"></a>应用的设计模式</h1><h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><p><img src="http://syxtt.xin/RoutePredicateFactory%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.png" alt="RoutePredicateFactory"></p>
+<p>​        Spring Cloud Gateway中，断言采用的是工厂模式。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。</p>
+<p>​        RoutePredicateFactory是一个函数式接口，是负责生产泛型为ServerWebExchange的Predicate的工厂，更进一步说生产的是GatewayPredicate对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RoutePredicateFactory</span>&lt;<span class="title">C</span>&gt; <span class="keyword">extends</span> <span class="title">ShortcutConfigurable</span>, <span class="title">Configurable</span>&lt;<span class="title">C</span>&gt; </span>&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="function">Predicate&lt;ServerWebExchange&gt; <span class="title">apply</span><span class="params">(C config)</span></span>;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">GatewayPredicate</span> <span class="keyword">extends</span> <span class="title">Predicate</span>&lt;<span class="title">ServerWebExchange</span>&gt; </span>&#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="责任链模式"><a href="#责任链模式" class="headerlink" title="责任链模式"></a>责任链模式</h2><p>​        顾名思义，<strong>责任链模式</strong>（Chain of Responsibility Pattern）为请求创建了一个接收者对象的链。这种模式给予请求的类型，对请求的发送者和接收者进行解耦。这种类型的设计模式属于行为型模式。在这种模式中，通常每个接收者都包含对另一个接收者的引用。如果一个对象不能处理该请求，那么它会把相同的请求传给下一个接收者，依此类推。</p>
+<p>​        在Spring Cloud Gateway中，过滤就是采用了责任链模式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultGatewayFilterChain</span> <span class="keyword">implements</span> <span class="title">GatewayFilterChain</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> index;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">final</span> List&lt;GatewayFilter&gt; filters;</span><br><span class="line"></span><br><span class="line">		DefaultGatewayFilterChain(List&lt;GatewayFilter&gt; filters) &#123;</span><br><span class="line">			<span class="keyword">this</span>.filters = filters;</span><br><span class="line">			<span class="keyword">this</span>.index = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">private</span> <span class="title">DefaultGatewayFilterChain</span><span class="params">(DefaultGatewayFilterChain parent, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.filters = parent.getFilters();</span><br><span class="line">			<span class="keyword">this</span>.index = index;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> List&lt;GatewayFilter&gt; <span class="title">getFilters</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> filters;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> Mono&lt;Void&gt; <span class="title">filter</span><span class="params">(ServerWebExchange exchange)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> Mono.defer(() -&gt; &#123;</span><br><span class="line">				<span class="keyword">if</span> (<span class="keyword">this</span>.index &lt; filters.size()) &#123;</span><br><span class="line">					GatewayFilter filter = filters.get(<span class="keyword">this</span>.index);</span><br><span class="line">					DefaultGatewayFilterChain chain = <span class="keyword">new</span> DefaultGatewayFilterChain(<span class="keyword">this</span>,</span><br><span class="line">							<span class="keyword">this</span>.index + <span class="number">1</span>);</span><br><span class="line">					<span class="keyword">return</span> filter.filter(exchange, chain);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="keyword">return</span> Mono.empty(); <span class="comment">// complete</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://yoursite.com/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" data-id="ck2d5fepf006cey9vp7bebjy6" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "crowley"
+        },
+        "headline": "SpringCloudGateway源码解析(4)- 核心流程",
+        "image": "http://yoursite.comhttp://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png",
+        "keywords": "设计模式 Spring Cloud Gateway SpringCloud 工厂模式 责任链模式",
+        "genre": "SpringCloud",
+        "datePublished": "2019-10-17",
+        "dateCreated": "2019-10-17",
+        "dateModified": "2019-10-23",
+        "url": "http://yoursite.com/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/",
+        "description": "前言在文章《SpringCloudGateway源码解析(3)- 路由的装配》中，我们了解了网关路由的相关实现，这一章节，主要讲解下SpringCloudGateway中handler包实现，其中最核心的两个类FilteringWebHandler和RoutePredicateHandlerMapping。
+GatewayAutoConfiguration首先先看下FilteringWebHand"
+        "wordCount": 1683
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/siyuanWang" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">SpringCloudGateway源码解析(3)- 路由</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/28/reactor/reactive&rector 简介/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/reactor/">reactor</a></p>
+                            <p class="item-title"><a href="/2019/10/28/reactor/reactive&rector 简介/" class="title">reactive&amp;reactor简介</a></p>
+                            <p class="item-date"><time datetime="2019-10-28T15:33:16.000Z" itemprop="datePublished">2019-10-28</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/flux.png)" alt="SpringCloudGateway源码解析(2)-反应式编程" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title">SpringCloudGateway源码解析(2)-反应式编程</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/springCloudGateway%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C.png)" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="title">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png)" alt="SpringCloudGateway源码解析(4)- 核心流程" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="title">SpringCloudGateway源码解析(4)- 核心流程</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/RouteDefinition%E8%BD%AC%E6%8D%A2%E6%88%90Route.png)" alt="SpringCloudGateway源码解析(3)- 路由" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title">SpringCloudGateway源码解析(3)- 路由</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/reactor/">reactor</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据技术/">大数据技术</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搜索/">搜索</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件架构/">软件架构</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">7</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/6entinel/">6entinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/APR/">APR</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apollo/">Apollo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BM25/">BM25</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/">ElasticSearch</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Embedded-Tomcat/">Embedded Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HAProxy/">HAProxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hbase/">Hbase</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/">IK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LTR/">LTR</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LVS/">LVS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Gateway/">Spring Cloud Gateway</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TF-IDF/">TF-IDF</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jmeter/">jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lucene/">lucene</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactive/">reactive</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactor/">reactor</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring-boot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring-cloud</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/webFlux/">webFlux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/倒排索引/">倒排索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分词/">分词</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反应式编程/">反应式编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/向量空间模型/">向量空间模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/工厂模式/">工厂模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布尔模型/">布尔模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/建造者模式/">建造者模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/微服务/">微服务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搜索/">搜索</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相关性/">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网关/">网关</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自动部署/">自动部署</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/负载均衡/">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/责任链模式/">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/配置中心/">配置中心</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 11.43px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactive/" style="font-size: 10px;">reactive</a> <a href="/tags/reactor/" style="font-size: 11.43px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2019 crowley</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'http://yoursite.com/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

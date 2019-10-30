@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>IK分词器深入学习(1)-分词理论 | CrowleyBlog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="分词,IK,搜索">
+    
+    <meta name="description" content="背景介绍词是表达语义的最小单位，分词是搜索引擎的基石。 在搜索引擎中，倒排索引就是由一个个Term所构成，分词器通过对自然语言的理解，拆分出Term。分词的输入是一串连续的文字，对于英文”girl is beautiful.boy is handsome.”分词比较容易，可以根据空格和标点符号分割，那最终会分为girl/is/beautiful/boy/is/handsome（一般来说，is作为停">
+<meta name="keywords" content="分词,IK,搜索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IK分词器深入学习(1)-分词理论">
+<meta property="og:url" content="http://yoursite.com/2019/07/19/IK分词器深入学习-第一章/index.html">
+<meta property="og:site_name" content="CrowleyBlog">
+<meta property="og:description" content="背景介绍词是表达语义的最小单位，分词是搜索引擎的基石。 在搜索引擎中，倒排索引就是由一个个Term所构成，分词器通过对自然语言的理解，拆分出Term。分词的输入是一串连续的文字，对于英文”girl is beautiful.boy is handsome.”分词比较容易，可以根据空格和标点符号分割，那最终会分为girl/is/beautiful/boy/is/handsome（一般来说，is作为停">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-22T12:30:37.784Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IK分词器深入学习(1)-分词理论">
+<meta name="twitter:description" content="背景介绍词是表达语义的最小单位，分词是搜索引擎的基石。 在搜索引擎中，倒排索引就是由一个个Term所构成，分词器通过对自然语言的理解，拆分出Term。分词的输入是一串连续的文字，对于英文”girl is beautiful.boy is handsome.”分词比较容易，可以根据空格和标点符号分割，那最终会分为girl/is/beautiful/boy/is/handsome（一般来说，is作为停">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item">
+                                    <a class="main-nav-list-link" href="/index.html">主页</a>
+                                </li>
+                            
+                                        <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Java/">Java</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/SpringCloud/">SpringCloud</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/reactor/">reactor</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/大数据技术/">大数据技术</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/开发工具/">开发工具</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/搜索/">搜索</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/机器学习/">机器学习</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/软件架构/">软件架构</a></li></ul>
+                                    
+                                <li class="main-nav-list-item">
+                                    <a class="main-nav-list-link" href="/about/index.html">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索">
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/搜索/">搜索</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-IK分词器深入学习-第一章" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        IK分词器深入学习(1)-分词理论
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+    <div class="article-date">
+        <a href="/2019/07/19/IK分词器深入学习-第一章/" class="article-date">
+            <time datetime="2019-07-19T15:33:16.000Z" itemprop="datePublished">2019-07-19</time>
+        </a>
+    </div>
+
+		
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/IK/">IK</a>, <a class="tag-link" href="/tags/分词/">分词</a>, <a class="tag-link" href="/tags/搜索/">搜索</a>
+    </div>
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>词是表达语义的最小单位，分词是搜索引擎的基石。</p>
+<p>在搜索引擎中，倒排索引就是由一个个Term所构成，分词器通过对自然语言的理解，拆分出Term。分词的输入是一串连续的文字，对于英文”girl is beautiful.boy is handsome.”分词比较容易，可以根据空格和标点符号分割，那最终会分为girl/is/beautiful/boy/is/handsome（一般来说，is作为停用词），是不是很容易？但这种方式在中文中却不行，”女孩美丽，男孩帅气。”这句话应该分为”女孩/美丽/男孩/帅气”,不是简单的靠空格和符号就能实现的。</p>
+<p>上例提出了中文分词的背景，那么总要有理论来解决中文分词的问题。经过几十年的研究，中文分词方法也取得了长足的发展，产生了众多的分词方法，主要分为<strong>基于字符串匹配的分词方法</strong>，<strong>基于统计的分词方法</strong>，<strong>基于理解的分词方法</strong>三大流派。</p>
+<p>##基于字符串匹配的分词方法</p>
+<p>基于字符串匹配的分词算法也叫做机械分词算法，一般都需要事先建立足够大的分词词典，然后将待分词文本中的字符串与分词词典中的词进行匹配，如果匹配成功，该字符串当做一个词从待分词文本中切分出来，否则不切分。</p>
+<p>下面介绍下主流的字符串匹配算法</p>
+<ul>
+<li><p>最大正向匹配分词算法(Forward Maximum Matching，FMM)</p>
+<p>这是字符串匹配分词算法中最基本的一种分词算法，统计结果表明，单纯使用最大正向匹配算法的错误率为1/169。优点是原理简单，切分速度快，易与实现。缺点是歧义处理不精确。</p>
+</li>
+<li><p>最大逆向匹配分词算法(Reverse Maximum Matching，RMM)</p>
+<p>与FMM算法的基本思想相同，不同的是该方法从待切分的汉字串的末位开始处理，每次不匹配时去掉最前面的一个汉字，继续匹配。优点同FMM一样，而且最大逆向匹配算法对交集型歧义字段的处理精度比正向的要高，错误率在1/245左右，缺点是不能完全排除歧义现象。</p>
+</li>
+<li><p>双向最大匹配算法(Bi-directction Matching method，BMM)</p>
+<p>双向匹配算法基本原理是同时进行FMM和RMM扫描，然后分析两种扫描的结果。如果两种扫描结果一致，则认为不存在歧义现象；如果不一致，则需要定位到歧义字段处理。优点是提高了分词的准确率，消除了部分歧义现象。缺点是算法执行要做双向扫描，时间复杂度会有所增加。</p>
+</li>
+<li><p>全切分算法</p>
+<p>全切分算法是指切分出字符串中所有可能的词语，该算法可以大大提高切分的召回率，识别出所有可能的歧义现象。但缺点是算法复杂度比较高。</p>
+</li>
+</ul>
+<p>总结：</p>
+<p>字符串匹配分词方法，逻辑简单清晰，易实现，分词性能较高。但是严重依赖字典，如果某些词在字典中未登陆，则会对分词的精度产生较大的影响。另外算法的效率很大层面体现在字典的数据结构上，如果用Hash表的方式，检索最快但是内存占用大，一般情况下会牺牲部分性能来降低词典的容量比如TRIE索引树词典、逐词二分词典、整词二分词典。</p>
+<h2 id="基于统计的分词方法"><a href="#基于统计的分词方法" class="headerlink" title="基于统计的分词方法"></a>基于统计的分词方法</h2><p>下面介绍下统计分词的常用分词方法</p>
+<ul>
+<li><p>N元文法模型(N-gram)</p>
+<p>令C=C1C2…Cm．C 是待切分的汉字串，W=W1W2…Wn．W 是切分的结果。<br>设P(WlC)是汉字串C切分为W的某种估计概率。Wa，Wb，⋯．Wk是C的所有可能的切分方案。那么，基于统计的切分模型就是这样的一种分词模型，它能够找到目的词串W ，使得W 满足：<br>　　P(W|C)=MAX(P(Wa|C),P(Wb|C)…P(Wk|C))，<br>即估计概率为最大之词串。我们称函数P(W|C)为评价函数。一般的基于统计的分词模型的评价函数，都是根据贝叶斯公式．同时结合系统本身的资源限制，经过一定的简化，近似得来的。</p>
+<p>根据贝叶斯公式， 有：P(W|C)=P(W) P(C|W)/P(C)，对于C的多种切分方案，P(C)是一常数，而P(C|W)是在给定词串的条件下出现字串C的概率，故P(C|W)=1。所以 ，我们用P(W)来代替P(W|C)。那么，如何估计P(W)呢?最直接的估计P(W)的方法利用词的n-gram，即：<br>　　P(W)=P(W1) P(W2lW1) P(W3|W1W2)⋯P(Wk|W1,W2…Wk-1)<br>　　但是，由于当前的计算机技术和我们现有的语料资源所限，这种方法存在致命的缺陷：</p>
+<p>　　①对于有6万词的词典而言，仅词和词的bigram就可能需要60000 x 60000=3600M的统计空间，这是当前的计算机硬件水平所难以接受的，更不要说更大的n-gram 了。<br>　　②需要与上述空间相当的熟语料，否则就会产生训练语料不足所产生的数据稀疏问题。<br>　　③由于不同领域的语料库的用词有所差异，针对某一个领域的语料库统计出来的n-gram，若用于其它领域，其效果难以预料，而目前通过语料库搭配来克服领域差民间的方法尚未成熟。</p>
+<p>　　因此，利用词的n-gram 直接估计P(W)的方法，在目前是不可行的。基于上述的原因，大多数基于统计的分词模型都没有直接采用上述公式，而是采用各种各样的估计方法，从不同的角度，实现对P(W)的近似。</p>
+</li>
+<li><p>隐马尔可夫模型(Hidden Markov Model，HMM)</p>
+</li>
+</ul>
+<p>## </p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://yoursite.com/2019/07/19/IK分词器深入学习-第一章/" data-id="ck2d5felu000bey9vummfi5o8" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "crowley"
+        },
+        "headline": "IK分词器深入学习(1)-分词理论",
+        "image": "http://yoursite.com",
+        "keywords": "分词 IK 搜索",
+        "genre": "搜索",
+        "datePublished": "2019-07-19",
+        "dateCreated": "2019-07-19",
+        "dateModified": "2019-08-22",
+        "url": "http://yoursite.com/2019/07/19/IK分词器深入学习-第一章/",
+        "description": "背景介绍词是表达语义的最小单位，分词是搜索引擎的基石。
+在搜索引擎中，倒排索引就是由一个个Term所构成，分词器通过对自然语言的理解，拆分出Term。分词的输入是一串连续的文字，对于英文”girl is beautiful.boy is handsome.”分词比较容易，可以根据空格和标点符号分割，那最终会分为girl/is/beautiful/boy/is/handsome（一般来说，is作为停"
+        "wordCount": 35
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/siyuanWang" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2019/08/11/linux使用jmeter进行压力测试/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            linux使用jmeter进行压力测试
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2019/07/10/Java-Provider的一种写法/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Java-Provider一种写法</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/28/reactor/reactive&rector 简介/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/reactor/">reactor</a></p>
+                            <p class="item-title"><a href="/2019/10/28/reactor/reactive&rector 简介/" class="title">reactive&amp;reactor简介</a></p>
+                            <p class="item-date"><time datetime="2019-10-28T15:33:16.000Z" itemprop="datePublished">2019-10-28</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/flux.png)" alt="SpringCloudGateway源码解析(2)-反应式编程" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title">SpringCloudGateway源码解析(2)-反应式编程</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/springCloudGateway%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C.png)" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="title">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/DispatrcherHandler%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png)" alt="SpringCloudGateway源码解析(4)- 核心流程" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="title">SpringCloudGateway源码解析(4)- 核心流程</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://syxtt.xin/RouteDefinition%E8%BD%AC%E6%8D%A2%E6%88%90Route.png)" alt="SpringCloudGateway源码解析(3)- 路由" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a></p>
+                            <p class="item-title"><a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title">SpringCloudGateway源码解析(3)- 路由</a></p>
+                            <p class="item-date"><time datetime="2019-10-17T15:33:16.000Z" itemprop="datePublished">2019-10-17</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/reactor/">reactor</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/大数据技术/">大数据技术</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发工具/">开发工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搜索/">搜索</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/软件架构/">软件架构</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">7</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/6entinel/">6entinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/APR/">APR</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apollo/">Apollo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BM25/">BM25</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/">ElasticSearch</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Embedded-Tomcat/">Embedded Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HAProxy/">HAProxy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hbase/">Hbase</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IK/">IK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LTR/">LTR</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LVS/">LVS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Boot/">Spring Boot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/">Spring Cloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Gateway/">Spring Cloud Gateway</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/">SpringCloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TF-IDF/">TF-IDF</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jenkins/">jenkins</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jmeter/">jmeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lucene/">lucene</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactive/">reactive</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/reactor/">reactor</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring-boot</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-cloud/">spring-cloud</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/webFlux/">webFlux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/倒排索引/">倒排索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分词/">分词</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/反应式编程/">反应式编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/向量空间模型/">向量空间模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/工厂模式/">工厂模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布尔模型/">布尔模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/建造者模式/">建造者模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/微服务/">微服务</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搜索/">搜索</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相关性/">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网关/">网关</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自动部署/">自动部署</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/负载均衡/">负载均衡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/责任链模式/">责任链模式</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/配置中心/">配置中心</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 11.43px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactive/" style="font-size: 10px;">reactive</a> <a href="/tags/reactor/" style="font-size: 11.43px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2019 crowley</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'http://yoursite.com/2019/07/19/IK分词器深入学习-第一章/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
