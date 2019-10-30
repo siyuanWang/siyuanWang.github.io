@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  lang="">
+<html  lang="zh">
 <head>
     <meta charset="utf-8" />
 
@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>Etiqueta: Spring Cloud Gateway - Hexo</title>
+<title>标签: Spring Cloud Gateway - Crowley技术博客</title>
 
 
 
@@ -32,7 +32,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="Hexo" height="28">
+                <img src="/images/logo.svg" alt="Crowley技术博客" height="28">
             
             </a>
         </div>
@@ -42,7 +42,7 @@
                 
                 
                 
-                <a class="navbar-item search" title="Search" href="javascript:;">
+                <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
                 </a>
                 
@@ -58,7 +58,7 @@
     <div class="card-content">
         <nav class="breadcrumb" aria-label="breadcrumbs">
         <ul>
-            <li><a href="/tags">Etiquetas</a></li>
+            <li><a href="/tags">标签</a></li>
             <li class="is-active"><a href="#" aria-current="page">Spring Cloud Gateway</a></li>
         </ul>
         </nav>
@@ -82,7 +82,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    9 minutes read (About 1282 words)
+                    9 分钟 读完 (大约 1282 个字)
                 </span>
                 
                 
@@ -179,7 +179,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    6 minutes read (About 841 words)
+                    6 分钟 读完 (大约 841 个字)
                 </span>
                 
                 
@@ -247,7 +247,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    11 minutes read (About 1702 words)
+                    11 分钟 读完 (大约 1702 个字)
                 </span>
                 
                 
@@ -311,7 +311,70 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    12 minutes read (About 1756 words)
+                    10 分钟 读完 (大约 1495 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/">SpringCloudGateway源码解析(6)- 常用功能实现</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​        前面几章主要是对Spring Cloud Gateway源码的了解，本章则讲述常用的网关功能的实现。</p>
+<h1 id="鉴权实现"><a href="#鉴权实现" class="headerlink" title="鉴权实现"></a>鉴权实现</h1><p>​        鉴权通过对称加密，用户传入一个token。如下图展示的是POST方式的，GET方式比较简单，直接在Path后面拼装<code>?token=dd9e46d0eb1aced7</code>即可。</p>
+<p><img src="http://syxtt.xin/post%E6%96%B9%E5%BC%8Ftoken%E8%AF%B7%E6%B1%82.png" alt="POST方式传入token"></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuthFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">GlobalFilter</span>, <span class="hljs-title">Ordered</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> DesUtils dest;</span><br><span class="line">    <span class="hljs-meta">@Autowired</span></span><br><span class="line">    <span class="hljs-keyword">private</span> AuthBean authBean;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String SPLIT_WORD = <span class="hljs-string">","</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-meta">@PostConstruct</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            LOGGER.info(<span class="hljs-string">"AuthFilter初始化: token salt:&#123;&#125;"</span>, authBean.getSalt());</span><br><span class="line">            dest = <span class="hljs-keyword">new</span> DesUtils(authBean.getSalt());</span><br><span class="line">            LOGGER.info(<span class="hljs-string">"token=&#123;&#125;"</span>, dest.encrypt(<span class="hljs-string">"1001"</span>));</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MfwSearchBusinessException(<span class="hljs-string">"AuthFilter秘钥工具初始化失败:"</span>, e.getMessage(), e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">filter</span><span class="hljs-params">(ServerWebExchange exchange, GatewayFilterChain chain)</span> </span>&#123;</span><br><span class="line">        HttpMethod httpMethod = exchange.getRequest().getMethod();</span><br><span class="line">        LOGGER.debug(<span class="hljs-string">"AuthFilter in.HTTP :&#123;&#125;"</span>, httpMethod);</span><br><span class="line">        <span class="hljs-keyword">if</span> (HttpMethod.GET.equals(httpMethod)) &#123;</span><br><span class="line">            String token = exchange.getRequest().getQueryParams().getFirst(<span class="hljs-string">"token"</span>);</span><br><span class="line">            <span class="hljs-keyword">if</span> (!checkToken(token)) &#123;</span><br><span class="line">                LOGGER.info(<span class="hljs-string">"请求不通过鉴权,url:&#123;&#125;"</span>, exchange.getRequest().getURI().toString());</span><br><span class="line">                <span class="hljs-comment">//未通过验证</span></span><br><span class="line">                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);</span><br><span class="line">                <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (HttpMethod.POST.equals(httpMethod)) &#123;</span><br><span class="line">            Map&lt;String, String&gt; postBody = exchange.getAttribute(GatewayConstant.CACHE_POST_BODY);</span><br><span class="line">            LOGGER.debug(<span class="hljs-string">"http request body:&#123;&#125;"</span>, JSON.toJSONString(postBody));</span><br><span class="line">            <span class="hljs-keyword">if</span> (postBody == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);</span><br><span class="line">                <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">            &#125;</span><br><span class="line">            String token = postBody.get(<span class="hljs-string">"token"</span>);</span><br><span class="line">            <span class="hljs-keyword">if</span> (!checkToken(token)) &#123;</span><br><span class="line">                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);</span><br><span class="line">                <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-comment">//not support other Http Method</span></span><br><span class="line">            exchange.getResponse().setStatusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE);</span><br><span class="line">            <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-comment">//pass auth</span></span><br><span class="line">        <span class="hljs-keyword">return</span> chain.filter(exchange);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 校验token是否合法</span></span><br><span class="line"><span class="hljs-comment">     * token解密后是appId</span></span><br><span class="line"><span class="hljs-comment">     *</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> token</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">checkToken</span><span class="hljs-params">(String token)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (StringUtils.isBlank(token)) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">boolean</span> flag = <span class="hljs-keyword">false</span>;</span><br><span class="line">            String tokenStr = dest.decrypt(token);</span><br><span class="line">            String[] appIdArray = authBean.getAppId().split(SPLIT_WORD);</span><br><span class="line">            <span class="hljs-keyword">for</span> (String appId : appIdArray) &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (tokenStr.equals(appId)) &#123;</span><br><span class="line">                    flag = <span class="hljs-keyword">true</span>;</span><br><span class="line">                    <span class="hljs-keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">return</span> flag;</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="hljs-comment">//todo 解析失败需要报警</span></span><br><span class="line">            LOGGER.error(<span class="hljs-string">"token解析失败，默认通过校验token:&#123;&#125;"</span>, token, e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="动态限流功能"><a href="#动态限流功能" class="headerlink" title="动态限流功能"></a>动态限流功能</h1><p>​        Spring Cloud Gateway中，限流功能是至关重要的，当有不正常的流量打过来，可以控制它的流速或者直接封杀调异常流量。限流熔断的中间件有很多，比如Hystrix、Sentinel，本文主要讲解Sentinel集成Apollo，实现动态的流量控制。首先需要加入依赖，Apollo对于Sentinel来说，是一个<code>datasource</code>，当然像Mysql，Redis等都可以当做Sentinel的数据源。</p>
+<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-sentinel<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.csp<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>sentinel-datasource-apollo<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​        如下提供了一个包括总体限流、URL限流、用户限流的实现，需要在Apollo中配置限流规则。<code>GATEWAY-LIMIT</code>是总体限流的key，<code>/search-bs/helloword</code>是URL的限流规则，<code>u_1001</code>是用户限流规则。</p>
+<p><code>[{&quot;grade&quot;:1,&quot;count&quot;:100,&quot;resource&quot;:&quot;GATEWAY-LIMIT&quot;},{&quot;grade&quot;:1,&quot;count&quot;:5,&quot;resource&quot;:&quot;/search-bs/helloword&quot;},{&quot;grade&quot;:1,&quot;count&quot;:20,&quot;resource&quot;:&quot;u_1001&quot;}]</code></p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SentinelFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">GlobalFilter</span>, <span class="hljs-title">Ordered</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 限流</span></span><br><span class="line"><span class="hljs-comment">     * 限流是一个单key,value是FlowRule的集合</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@PostConstruct</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">// It's better to provide a meaningful default value.</span></span><br><span class="line">        String defaultFlowRules = <span class="hljs-string">"[]"</span>;</span><br><span class="line">        ReadableDataSource&lt;String, List&lt;FlowRule&gt;&gt; flowRuleDataSource = <span class="hljs-keyword">new</span> ApolloDataSource&lt;&gt;(</span><br><span class="line">                GatewayConstant.Apollo.NAMESPACE_RULE,</span><br><span class="line">                GatewayConstant.Sentinel.FLOW_RULE_KEY,</span><br><span class="line">                defaultFlowRules,</span><br><span class="line">                source -&gt; JSON.parseObject(source, <span class="hljs-keyword">new</span> TypeReference&lt;List&lt;FlowRule&gt;&gt;() &#123;</span><br><span class="line">        &#125;));</span><br><span class="line">        FlowRuleManager.register2Property(flowRuleDataSource.getProperty());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">filter</span><span class="hljs-params">(ServerWebExchange exchange, GatewayFilterChain chain)</span> </span>&#123;</span><br><span class="line">       <span class="hljs-keyword">try</span> (Entry entry = SphU.entry(GatewayConstant.FlowRule.GATEWAY_LIMIT)) &#123;</span><br><span class="line">            String uid = <span class="hljs-keyword">null</span>;</span><br><span class="line">            <span class="hljs-keyword">if</span> (exchange.getRequest().getMethod().equals(HttpMethod.POST)) &#123;</span><br><span class="line">                Map&lt;String, String&gt; bodyMap = (Map&lt;String, String&gt;)exchange.getAttributes().get(GatewayConstant.CACHE_POST_BODY);</span><br><span class="line">                uid = bodyMap.get(<span class="hljs-string">"uid"</span>);</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(exchange.getRequest().getMethod().equals(HttpMethod.GET)) &#123;</span><br><span class="line">                uid = exchange.getRequest().getQueryParams().getFirst(<span class="hljs-string">"uid"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            String url = exchange.getRequest().getPath().toString();</span><br><span class="line">            System.out.println(<span class="hljs-string">"url="</span> + url + <span class="hljs-string">",uid="</span> + uid);</span><br><span class="line">            <span class="hljs-comment">//校验用户限流</span></span><br><span class="line">            <span class="hljs-keyword">if</span> (StringUtils.isNotBlank(uid)) &#123;</span><br><span class="line">                <span class="hljs-keyword">try</span> (Entry userEntry = SphU.entry(<span class="hljs-string">"u_"</span> + uid)) &#123;</span><br><span class="line"></span><br><span class="line">                &#125; <span class="hljs-keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">                    LOGGER.error(<span class="hljs-string">"触发了用户限流规则"</span>);</span><br><span class="line">                    exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);</span><br><span class="line">                    <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-comment">//校验url限流</span></span><br><span class="line">            <span class="hljs-keyword">try</span> (Entry urlEntry = SphU.entry(url)) &#123;</span><br><span class="line"></span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">                LOGGER.error(<span class="hljs-string">"触发了url限流规则"</span>);</span><br><span class="line">                exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);</span><br><span class="line">                <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">            <span class="hljs-comment">// 资源访问阻止，被限流或被降级</span></span><br><span class="line">            <span class="hljs-comment">// 在此处进行相应的处理操作</span></span><br><span class="line">            LOGGER.error(<span class="hljs-string">"触发了限流规则"</span>);</span><br><span class="line">            exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);</span><br><span class="line">            <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getOrder</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> GatewayConstant.FLOW_FILTER;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="注册中心自动路由"><a href="#注册中心自动路由" class="headerlink" title="注册中心自动路由"></a>注册中心自动路由</h1><p>##实现原理</p>
+<p>​        Spring Cloud Gateway可以与注册中心进行整合，比如常见的zookeeper，Eureka，Nacos等。本文就以nacos举例，其他的注册中心整合类似。    </p>
+<p>​        首先，需要引入Nacos的依赖，它通过SpringBoot的autoConfiguration特性，自动集成到工程中。</p>
+<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​        最关键的代码是NacosWatch，它实现了<code>ApplicationEventPublisherAware</code> 和<code>SmartLifecycle</code>，拥有发布事件和监听Spring生命周期的能力。通过<code>scheduleWithFixedDelay</code>实现默认30s轮询的发送HeartbeatEvent事件对象。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">	<span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-meta">@ConditionalOnMissingBean</span></span><br><span class="line">	<span class="hljs-meta">@ConditionalOnProperty</span>(value = <span class="hljs-string">"spring.cloud.nacos.discovery.watch.enabled"</span>, matchIfMissing = <span class="hljs-keyword">true</span>)</span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> NacosWatch <span class="hljs-title">nacosWatch</span><span class="hljs-params">(NacosDiscoveryProperties nacosDiscoveryProperties)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> NacosWatch(nacosDiscoveryProperties);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NacosWatch</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ApplicationEventPublisherAware</span>, <span class="hljs-title">SmartLifecycle</span> </span>&#123;</span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stop</span><span class="hljs-params">(Runnable callback)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">this</span>.stop();</span><br><span class="line">		callback.run();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.running.compareAndSet(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">true</span>)) &#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.watchFuture = <span class="hljs-keyword">this</span>.taskScheduler.scheduleWithFixedDelay(</span><br><span class="line">					<span class="hljs-keyword">this</span>::nacosServicesWatch, <span class="hljs-keyword">this</span>.properties.getWatchDelay());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.running.compareAndSet(<span class="hljs-keyword">true</span>, <span class="hljs-keyword">false</span>) &amp;&amp; <span class="hljs-keyword">this</span>.watchFuture != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.watchFuture.cancel(<span class="hljs-keyword">true</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">nacosServicesWatch</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		<span class="hljs-comment">// nacos doesn't support watch now , publish an event every 30 seconds.</span></span><br><span class="line">		<span class="hljs-keyword">this</span>.publisher.publishEvent(</span><br><span class="line">				<span class="hljs-keyword">new</span> HeartbeatEvent(<span class="hljs-keyword">this</span>, nacosWatchIndex.getAndIncrement()));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​        HeartbeatEvent事件发出之后，会被Spring Cloud Gateway的<code>RouteRefreshListener</code>监听到，最终发送一个RefreshRoutesEvent，这个事件会触发所有的路由刷新。总结为，<strong>注册中心默认30s同步一次Gateway路由</strong>，可以通过<code>spring.cloud.nacos.watch-delay</code>属性来配置轮询的时间间隔。<code>HeartbeatMonitor</code>这个类象征性的判定是否Heartbeat更新，只要value不为null且不和现有值相等，都会执行<code>reset()</code>。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RouteRefreshListener</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ApplicationListener</span>&lt;<span class="hljs-title">ApplicationEvent</span>&gt; </span>&#123;</span><br><span class="line">   <span class="hljs-keyword">private</span> HeartbeatMonitor monitor = <span class="hljs-keyword">new</span> HeartbeatMonitor();</span><br><span class="line">   <span class="hljs-meta">@Override</span></span><br><span class="line">   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onApplicationEvent</span><span class="hljs-params">(ApplicationEvent event)</span> </span>&#123;</span><br><span class="line">      ...</span><br><span class="line">      <span class="hljs-keyword">if</span> (event <span class="hljs-keyword">instanceof</span> HeartbeatEvent) &#123;</span><br><span class="line">         HeartbeatEvent e = (HeartbeatEvent) event;</span><br><span class="line">         resetIfNeeded(e.getValue());</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">resetIfNeeded</span><span class="hljs-params">(Object value)</span> </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.monitor.update(value)) &#123;</span><br><span class="line">         reset();</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reset</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>.publisher.publishEvent(<span class="hljs-keyword">new</span> RefreshRoutesEvent(<span class="hljs-keyword">this</span>));</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HeartbeatMonitor</span> </span>&#123;</span><br><span class="line">	<span class="hljs-keyword">private</span> AtomicReference&lt;Object&gt; latestHeartbeat = <span class="hljs-keyword">new</span> AtomicReference&lt;&gt;();</span><br><span class="line">	<span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">	 * <span class="hljs-doctag">@param</span> value The latest heartbeat.</span></span><br><span class="line"><span class="hljs-comment">	 * <span class="hljs-doctag">@return</span> True if the state changed.</span></span><br><span class="line"><span class="hljs-comment">	 */</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">update</span><span class="hljs-params">(Object value)</span> </span>&#123;</span><br><span class="line">		Object last = <span class="hljs-keyword">this</span>.latestHeartbeat.get();</span><br><span class="line">		<span class="hljs-keyword">if</span> (value != <span class="hljs-keyword">null</span> &amp;&amp; !value.equals(last)) &#123;</span><br><span class="line">			<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.latestHeartbeat.compareAndSet(last, value);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​        总的来说，nacos这种实现方式，简单有效，但是也不太友好。因为路由是低频变化的，默认的30s刷新时间，会导致清空缓存，所有的路由都需要重新加载（非注册中心的路由也会重新加载）会对性能有一定的损耗，如果能判定nacos路由是否有变化，变化再更新就会最大限度降低缓存重建的问题。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    12 分钟 读完 (大约 1756 个字)
                 </span>
                 
                 
@@ -406,7 +469,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    14 minutes read (About 2033 words)
+                    14 分钟 读完 (大约 2033 个字)
                 </span>
                 
                 
@@ -471,69 +534,6 @@
 
 
 
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    10 minutes read (About 1495 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/">SpringCloudGateway源码解析(6)- 常用功能实现</a>
-            
-        </h1>
-        <div class="content">
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​        前面几章主要是对Spring Cloud Gateway源码的了解，本章则讲述常用的网关功能的实现。</p>
-<h1 id="鉴权实现"><a href="#鉴权实现" class="headerlink" title="鉴权实现"></a>鉴权实现</h1><p>​        鉴权通过对称加密，用户传入一个token。如下图展示的是POST方式的，GET方式比较简单，直接在Path后面拼装<code>?token=dd9e46d0eb1aced7</code>即可。</p>
-<p><img src="http://syxtt.xin/post%E6%96%B9%E5%BC%8Ftoken%E8%AF%B7%E6%B1%82.png" alt="POST方式传入token"></p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuthFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">GlobalFilter</span>, <span class="hljs-title">Ordered</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> DesUtils dest;</span><br><span class="line">    <span class="hljs-meta">@Autowired</span></span><br><span class="line">    <span class="hljs-keyword">private</span> AuthBean authBean;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String SPLIT_WORD = <span class="hljs-string">","</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-meta">@PostConstruct</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            LOGGER.info(<span class="hljs-string">"AuthFilter初始化: token salt:&#123;&#125;"</span>, authBean.getSalt());</span><br><span class="line">            dest = <span class="hljs-keyword">new</span> DesUtils(authBean.getSalt());</span><br><span class="line">            LOGGER.info(<span class="hljs-string">"token=&#123;&#125;"</span>, dest.encrypt(<span class="hljs-string">"1001"</span>));</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MfwSearchBusinessException(<span class="hljs-string">"AuthFilter秘钥工具初始化失败:"</span>, e.getMessage(), e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">filter</span><span class="hljs-params">(ServerWebExchange exchange, GatewayFilterChain chain)</span> </span>&#123;</span><br><span class="line">        HttpMethod httpMethod = exchange.getRequest().getMethod();</span><br><span class="line">        LOGGER.debug(<span class="hljs-string">"AuthFilter in.HTTP :&#123;&#125;"</span>, httpMethod);</span><br><span class="line">        <span class="hljs-keyword">if</span> (HttpMethod.GET.equals(httpMethod)) &#123;</span><br><span class="line">            String token = exchange.getRequest().getQueryParams().getFirst(<span class="hljs-string">"token"</span>);</span><br><span class="line">            <span class="hljs-keyword">if</span> (!checkToken(token)) &#123;</span><br><span class="line">                LOGGER.info(<span class="hljs-string">"请求不通过鉴权,url:&#123;&#125;"</span>, exchange.getRequest().getURI().toString());</span><br><span class="line">                <span class="hljs-comment">//未通过验证</span></span><br><span class="line">                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);</span><br><span class="line">                <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (HttpMethod.POST.equals(httpMethod)) &#123;</span><br><span class="line">            Map&lt;String, String&gt; postBody = exchange.getAttribute(GatewayConstant.CACHE_POST_BODY);</span><br><span class="line">            LOGGER.debug(<span class="hljs-string">"http request body:&#123;&#125;"</span>, JSON.toJSONString(postBody));</span><br><span class="line">            <span class="hljs-keyword">if</span> (postBody == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);</span><br><span class="line">                <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">            &#125;</span><br><span class="line">            String token = postBody.get(<span class="hljs-string">"token"</span>);</span><br><span class="line">            <span class="hljs-keyword">if</span> (!checkToken(token)) &#123;</span><br><span class="line">                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);</span><br><span class="line">                <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-comment">//not support other Http Method</span></span><br><span class="line">            exchange.getResponse().setStatusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE);</span><br><span class="line">            <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-comment">//pass auth</span></span><br><span class="line">        <span class="hljs-keyword">return</span> chain.filter(exchange);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 校验token是否合法</span></span><br><span class="line"><span class="hljs-comment">     * token解密后是appId</span></span><br><span class="line"><span class="hljs-comment">     *</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> token</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">checkToken</span><span class="hljs-params">(String token)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (StringUtils.isBlank(token)) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">boolean</span> flag = <span class="hljs-keyword">false</span>;</span><br><span class="line">            String tokenStr = dest.decrypt(token);</span><br><span class="line">            String[] appIdArray = authBean.getAppId().split(SPLIT_WORD);</span><br><span class="line">            <span class="hljs-keyword">for</span> (String appId : appIdArray) &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (tokenStr.equals(appId)) &#123;</span><br><span class="line">                    flag = <span class="hljs-keyword">true</span>;</span><br><span class="line">                    <span class="hljs-keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">return</span> flag;</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="hljs-comment">//todo 解析失败需要报警</span></span><br><span class="line">            LOGGER.error(<span class="hljs-string">"token解析失败，默认通过校验token:&#123;&#125;"</span>, token, e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="动态限流功能"><a href="#动态限流功能" class="headerlink" title="动态限流功能"></a>动态限流功能</h1><p>​        Spring Cloud Gateway中，限流功能是至关重要的，当有不正常的流量打过来，可以控制它的流速或者直接封杀调异常流量。限流熔断的中间件有很多，比如Hystrix、Sentinel，本文主要讲解Sentinel集成Apollo，实现动态的流量控制。首先需要加入依赖，Apollo对于Sentinel来说，是一个<code>datasource</code>，当然像Mysql，Redis等都可以当做Sentinel的数据源。</p>
-<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-sentinel<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.csp<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>sentinel-datasource-apollo<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>​        如下提供了一个包括总体限流、URL限流、用户限流的实现，需要在Apollo中配置限流规则。<code>GATEWAY-LIMIT</code>是总体限流的key，<code>/search-bs/helloword</code>是URL的限流规则，<code>u_1001</code>是用户限流规则。</p>
-<p><code>[{&quot;grade&quot;:1,&quot;count&quot;:100,&quot;resource&quot;:&quot;GATEWAY-LIMIT&quot;},{&quot;grade&quot;:1,&quot;count&quot;:5,&quot;resource&quot;:&quot;/search-bs/helloword&quot;},{&quot;grade&quot;:1,&quot;count&quot;:20,&quot;resource&quot;:&quot;u_1001&quot;}]</code></p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SentinelFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">GlobalFilter</span>, <span class="hljs-title">Ordered</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 限流</span></span><br><span class="line"><span class="hljs-comment">     * 限流是一个单key,value是FlowRule的集合</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@PostConstruct</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-comment">// It's better to provide a meaningful default value.</span></span><br><span class="line">        String defaultFlowRules = <span class="hljs-string">"[]"</span>;</span><br><span class="line">        ReadableDataSource&lt;String, List&lt;FlowRule&gt;&gt; flowRuleDataSource = <span class="hljs-keyword">new</span> ApolloDataSource&lt;&gt;(</span><br><span class="line">                GatewayConstant.Apollo.NAMESPACE_RULE,</span><br><span class="line">                GatewayConstant.Sentinel.FLOW_RULE_KEY,</span><br><span class="line">                defaultFlowRules,</span><br><span class="line">                source -&gt; JSON.parseObject(source, <span class="hljs-keyword">new</span> TypeReference&lt;List&lt;FlowRule&gt;&gt;() &#123;</span><br><span class="line">        &#125;));</span><br><span class="line">        FlowRuleManager.register2Property(flowRuleDataSource.getProperty());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">filter</span><span class="hljs-params">(ServerWebExchange exchange, GatewayFilterChain chain)</span> </span>&#123;</span><br><span class="line">       <span class="hljs-keyword">try</span> (Entry entry = SphU.entry(GatewayConstant.FlowRule.GATEWAY_LIMIT)) &#123;</span><br><span class="line">            String uid = <span class="hljs-keyword">null</span>;</span><br><span class="line">            <span class="hljs-keyword">if</span> (exchange.getRequest().getMethod().equals(HttpMethod.POST)) &#123;</span><br><span class="line">                Map&lt;String, String&gt; bodyMap = (Map&lt;String, String&gt;)exchange.getAttributes().get(GatewayConstant.CACHE_POST_BODY);</span><br><span class="line">                uid = bodyMap.get(<span class="hljs-string">"uid"</span>);</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(exchange.getRequest().getMethod().equals(HttpMethod.GET)) &#123;</span><br><span class="line">                uid = exchange.getRequest().getQueryParams().getFirst(<span class="hljs-string">"uid"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            String url = exchange.getRequest().getPath().toString();</span><br><span class="line">            System.out.println(<span class="hljs-string">"url="</span> + url + <span class="hljs-string">",uid="</span> + uid);</span><br><span class="line">            <span class="hljs-comment">//校验用户限流</span></span><br><span class="line">            <span class="hljs-keyword">if</span> (StringUtils.isNotBlank(uid)) &#123;</span><br><span class="line">                <span class="hljs-keyword">try</span> (Entry userEntry = SphU.entry(<span class="hljs-string">"u_"</span> + uid)) &#123;</span><br><span class="line"></span><br><span class="line">                &#125; <span class="hljs-keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">                    LOGGER.error(<span class="hljs-string">"触发了用户限流规则"</span>);</span><br><span class="line">                    exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);</span><br><span class="line">                    <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-comment">//校验url限流</span></span><br><span class="line">            <span class="hljs-keyword">try</span> (Entry urlEntry = SphU.entry(url)) &#123;</span><br><span class="line"></span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">                LOGGER.error(<span class="hljs-string">"触发了url限流规则"</span>);</span><br><span class="line">                exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);</span><br><span class="line">                <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">            <span class="hljs-comment">// 资源访问阻止，被限流或被降级</span></span><br><span class="line">            <span class="hljs-comment">// 在此处进行相应的处理操作</span></span><br><span class="line">            LOGGER.error(<span class="hljs-string">"触发了限流规则"</span>);</span><br><span class="line">            exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);</span><br><span class="line">            <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getOrder</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> GatewayConstant.FLOW_FILTER;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="注册中心自动路由"><a href="#注册中心自动路由" class="headerlink" title="注册中心自动路由"></a>注册中心自动路由</h1><p>##实现原理</p>
-<p>​        Spring Cloud Gateway可以与注册中心进行整合，比如常见的zookeeper，Eureka，Nacos等。本文就以nacos举例，其他的注册中心整合类似。    </p>
-<p>​        首先，需要引入Nacos的依赖，它通过SpringBoot的autoConfiguration特性，自动集成到工程中。</p>
-<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>​        最关键的代码是NacosWatch，它实现了<code>ApplicationEventPublisherAware</code> 和<code>SmartLifecycle</code>，拥有发布事件和监听Spring生命周期的能力。通过<code>scheduleWithFixedDelay</code>实现默认30s轮询的发送HeartbeatEvent事件对象。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">	<span class="hljs-meta">@Bean</span></span><br><span class="line">	<span class="hljs-meta">@ConditionalOnMissingBean</span></span><br><span class="line">	<span class="hljs-meta">@ConditionalOnProperty</span>(value = <span class="hljs-string">"spring.cloud.nacos.discovery.watch.enabled"</span>, matchIfMissing = <span class="hljs-keyword">true</span>)</span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> NacosWatch <span class="hljs-title">nacosWatch</span><span class="hljs-params">(NacosDiscoveryProperties nacosDiscoveryProperties)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> NacosWatch(nacosDiscoveryProperties);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NacosWatch</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ApplicationEventPublisherAware</span>, <span class="hljs-title">SmartLifecycle</span> </span>&#123;</span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stop</span><span class="hljs-params">(Runnable callback)</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">this</span>.stop();</span><br><span class="line">		callback.run();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.running.compareAndSet(<span class="hljs-keyword">false</span>, <span class="hljs-keyword">true</span>)) &#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.watchFuture = <span class="hljs-keyword">this</span>.taskScheduler.scheduleWithFixedDelay(</span><br><span class="line">					<span class="hljs-keyword">this</span>::nacosServicesWatch, <span class="hljs-keyword">this</span>.properties.getWatchDelay());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-meta">@Override</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.running.compareAndSet(<span class="hljs-keyword">true</span>, <span class="hljs-keyword">false</span>) &amp;&amp; <span class="hljs-keyword">this</span>.watchFuture != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">			<span class="hljs-keyword">this</span>.watchFuture.cancel(<span class="hljs-keyword">true</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">nacosServicesWatch</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">		<span class="hljs-comment">// nacos doesn't support watch now , publish an event every 30 seconds.</span></span><br><span class="line">		<span class="hljs-keyword">this</span>.publisher.publishEvent(</span><br><span class="line">				<span class="hljs-keyword">new</span> HeartbeatEvent(<span class="hljs-keyword">this</span>, nacosWatchIndex.getAndIncrement()));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​        HeartbeatEvent事件发出之后，会被Spring Cloud Gateway的<code>RouteRefreshListener</code>监听到，最终发送一个RefreshRoutesEvent，这个事件会触发所有的路由刷新。总结为，<strong>注册中心默认30s同步一次Gateway路由</strong>，可以通过<code>spring.cloud.nacos.watch-delay</code>属性来配置轮询的时间间隔。<code>HeartbeatMonitor</code>这个类象征性的判定是否Heartbeat更新，只要value不为null且不和现有值相等，都会执行<code>reset()</code>。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RouteRefreshListener</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ApplicationListener</span>&lt;<span class="hljs-title">ApplicationEvent</span>&gt; </span>&#123;</span><br><span class="line">   <span class="hljs-keyword">private</span> HeartbeatMonitor monitor = <span class="hljs-keyword">new</span> HeartbeatMonitor();</span><br><span class="line">   <span class="hljs-meta">@Override</span></span><br><span class="line">   <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onApplicationEvent</span><span class="hljs-params">(ApplicationEvent event)</span> </span>&#123;</span><br><span class="line">      ...</span><br><span class="line">      <span class="hljs-keyword">if</span> (event <span class="hljs-keyword">instanceof</span> HeartbeatEvent) &#123;</span><br><span class="line">         HeartbeatEvent e = (HeartbeatEvent) event;</span><br><span class="line">         resetIfNeeded(e.getValue());</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">resetIfNeeded</span><span class="hljs-params">(Object value)</span> </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.monitor.update(value)) &#123;</span><br><span class="line">         reset();</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">reset</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">this</span>.publisher.publishEvent(<span class="hljs-keyword">new</span> RefreshRoutesEvent(<span class="hljs-keyword">this</span>));</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HeartbeatMonitor</span> </span>&#123;</span><br><span class="line">	<span class="hljs-keyword">private</span> AtomicReference&lt;Object&gt; latestHeartbeat = <span class="hljs-keyword">new</span> AtomicReference&lt;&gt;();</span><br><span class="line">	<span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">	 * <span class="hljs-doctag">@param</span> value The latest heartbeat.</span></span><br><span class="line"><span class="hljs-comment">	 * <span class="hljs-doctag">@return</span> True if the state changed.</span></span><br><span class="line"><span class="hljs-comment">	 */</span></span><br><span class="line">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">update</span><span class="hljs-params">(Object value)</span> </span>&#123;</span><br><span class="line">		Object last = <span class="hljs-keyword">this</span>.latestHeartbeat.get();</span><br><span class="line">		<span class="hljs-keyword">if</span> (value != <span class="hljs-keyword">null</span> &amp;&amp; !value.equals(last)) &#123;</span><br><span class="line">			<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.latestHeartbeat.compareAndSet(last, value);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>​        总的来说，nacos这种实现方式，简单有效，但是也不太友好。因为路由是低频变化的，默认的30s刷新时间，会导致清空缓存，所有的路由都需要重新加载（非注册中心的路由也会重新加载）会对性能有一定的损耗，如果能判定nacos路由是否有变化，变化再更新就会最大限度降低缓存重建的问题。</p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
 </div>
                 
 
@@ -575,7 +575,7 @@
             <div class="level-item has-text-centered is-marginless">
                 <div>
                     <p class="heading">
-                        Entradas
+                        文章
                     </p>
                     <p class="title has-text-weight-normal">
                         48
@@ -585,7 +585,7 @@
             <div class="level-item has-text-centered is-marginless">
                 <div>
                     <p class="heading">
-                        Categorias
+                        分类
                     </p>
                     <p class="title has-text-weight-normal">
                         8
@@ -595,7 +595,7 @@
             <div class="level-item has-text-centered is-marginless">
                 <div>
                     <p class="heading">
-                        Etiquetas
+                        标签
                     </p>
                     <p class="title has-text-weight-normal">
                         48
@@ -606,7 +606,7 @@
         
         <div class="level">
             <a class="level-item button is-link is-rounded" href="https://github.com/siyuanWang" target="_blank">
-                SEGUIR</a>
+                关注我</a>
         </div>
         
         
@@ -630,7 +630,7 @@
     <div class="card-content">
         <div class="menu">
             <h3 class="menu-label">
-                Categorias
+                分类
             </h3>
             <ul class="menu-list">
             <li>
@@ -706,7 +706,7 @@
         <div class="card widget">
     <div class="card-content">
         <h3 class="menu-label">
-            Nube de etiquetas
+            标签云
         </h3>
         <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 11.43px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactive/" style="font-size: 10px;">reactive</a> <a href="/tags/reactor/" style="font-size: 11.43px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
     </div>
@@ -718,7 +718,7 @@
             <div class="card widget">
     <div class="card-content">
         <h3 class="menu-label">
-            Recientes
+            最新文章
         </h3>
         
         <article class="media">
@@ -823,14 +823,14 @@
     <div class="card-content">
         <div class="menu">
         <h3 class="menu-label">
-            Archivos
+            归档
         </h3>
         <ul class="menu-list">
         
         <li>
             <a class="level is-marginless" href="/archives/2019/10/">
                 <span class="level-start">
-                    <span class="level-item">October 2019</span>
+                    <span class="level-item">十月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">8</span>
@@ -841,7 +841,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/09/">
                 <span class="level-start">
-                    <span class="level-item">September 2019</span>
+                    <span class="level-item">九月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">2</span>
@@ -852,7 +852,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
                 <span class="level-start">
-                    <span class="level-item">August 2019</span>
+                    <span class="level-item">八月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">2</span>
@@ -863,7 +863,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/07/">
                 <span class="level-start">
-                    <span class="level-item">July 2019</span>
+                    <span class="level-item">七月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">3</span>
@@ -874,7 +874,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/06/">
                 <span class="level-start">
-                    <span class="level-item">June 2019</span>
+                    <span class="level-item">六月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">2</span>
@@ -885,7 +885,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/04/">
                 <span class="level-start">
-                    <span class="level-item">April 2019</span>
+                    <span class="level-item">四月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">3</span>
@@ -896,7 +896,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/01/">
                 <span class="level-start">
-                    <span class="level-item">January 2019</span>
+                    <span class="level-item">一月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">5</span>
@@ -907,7 +907,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2018/12/">
                 <span class="level-start">
-                    <span class="level-item">December 2018</span>
+                    <span class="level-item">十二月 2018</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
@@ -918,7 +918,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2018/08/">
                 <span class="level-start">
-                    <span class="level-item">August 2018</span>
+                    <span class="level-item">八月 2018</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">10</span>
@@ -929,7 +929,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2018/07/">
                 <span class="level-start">
-                    <span class="level-item">July 2018</span>
+                    <span class="level-item">七月 2018</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">7</span>
@@ -946,7 +946,7 @@
     <div class="card-content">
         <div class="menu">
             <h3 class="menu-label">
-                Etiquetas
+                标签
             </h3>
             <div class="field is-grouped is-grouped-multiline">
                 
@@ -1305,7 +1305,7 @@
         <div class="card widget">
     <div class="card-content">
         <h3 class="menu-label">
-            Recientes
+            最新文章
         </h3>
         
         <article class="media">
@@ -1410,14 +1410,14 @@
     <div class="card-content">
         <div class="menu">
         <h3 class="menu-label">
-            Archivos
+            归档
         </h3>
         <ul class="menu-list">
         
         <li>
             <a class="level is-marginless" href="/archives/2019/10/">
                 <span class="level-start">
-                    <span class="level-item">October 2019</span>
+                    <span class="level-item">十月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">8</span>
@@ -1428,7 +1428,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/09/">
                 <span class="level-start">
-                    <span class="level-item">September 2019</span>
+                    <span class="level-item">九月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">2</span>
@@ -1439,7 +1439,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
                 <span class="level-start">
-                    <span class="level-item">August 2019</span>
+                    <span class="level-item">八月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">2</span>
@@ -1450,7 +1450,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/07/">
                 <span class="level-start">
-                    <span class="level-item">July 2019</span>
+                    <span class="level-item">七月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">3</span>
@@ -1461,7 +1461,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/06/">
                 <span class="level-start">
-                    <span class="level-item">June 2019</span>
+                    <span class="level-item">六月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">2</span>
@@ -1472,7 +1472,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/04/">
                 <span class="level-start">
-                    <span class="level-item">April 2019</span>
+                    <span class="level-item">四月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">3</span>
@@ -1483,7 +1483,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2019/01/">
                 <span class="level-start">
-                    <span class="level-item">January 2019</span>
+                    <span class="level-item">一月 2019</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">5</span>
@@ -1494,7 +1494,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2018/12/">
                 <span class="level-start">
-                    <span class="level-item">December 2018</span>
+                    <span class="level-item">十二月 2018</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
@@ -1505,7 +1505,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2018/08/">
                 <span class="level-start">
-                    <span class="level-item">August 2018</span>
+                    <span class="level-item">八月 2018</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">10</span>
@@ -1516,7 +1516,7 @@
         <li>
             <a class="level is-marginless" href="/archives/2018/07/">
                 <span class="level-start">
-                    <span class="level-item">July 2018</span>
+                    <span class="level-item">七月 2018</span>
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">7</span>
@@ -1533,7 +1533,7 @@
     <div class="card-content">
         <div class="menu">
             <h3 class="menu-label">
-                Etiquetas
+                标签
             </h3>
             <div class="field is-grouped is-grouped-multiline">
                 
@@ -1890,11 +1890,11 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="Hexo" height="28">
+                    <img src="/images/logo.svg" alt="Crowley技术博客" height="28">
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 John Doe&nbsp;
+                &copy; 2019 crowley&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
                         href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
@@ -1908,7 +1908,7 @@
 </footer>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("");</script>
+<script>moment.locale("zh-CN");</script>
 
 <script>
 var IcarusThemeSettings = {
@@ -1933,7 +1933,7 @@ var IcarusThemeSettings = {
     <div class="searchbox ins-search">
     <div class="searchbox-container ins-search-container">
         <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
             <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
         </div>
         <div class="searchbox-result-wrapper ins-section-wrapper">
@@ -1945,11 +1945,11 @@ var IcarusThemeSettings = {
     (function (window) {
         var INSIGHT_CONFIG = {
             TRANSLATION: {
-                POSTS: 'Entradas',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categorias',
-                TAGS: 'Etiquetas',
-                UNTITLED: '(Untitled)',
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
             },
             CONTENT_URL: '/content.json',
         };
