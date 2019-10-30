@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 3.8.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>分类: 大数据技术 - CrowleyBlog</title>
+
+
+    <meta property="og:type" content="website">
+<meta property="og:title" content="CrowleyBlog">
+<meta property="og:url" content="http://yoursite.com/categories/大数据技术/index.html">
+<meta property="og:site_name" content="CrowleyBlog">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/images/og_image.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CrowleyBlog">
+<meta name="twitter:image" content="http://yoursite.com/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/favicon.svg">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+<style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+
+    
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+
+    
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+    
+    
+    
+    
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+    
+    
+    
+    
+    
+    
+    
+    <link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="CrowleyBlog" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">Home</a>
+                
+                <a class="navbar-item"
+                href="/archives">Archives</a>
+                
+                <a class="navbar-item"
+                href="/categories">Categories</a>
+                
+                <a class="navbar-item"
+                href="/tags">Tags</a>
+                
+                <a class="navbar-item"
+                href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    <div class="card-content">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/categories">分类</a></li>
+            
+            <li class="is-active"><a href="#" aria-current="page">大数据技术</a></li>
+        </ul>
+        </nav>
+    </div>
+</div>
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-01-21T08:33:16.000Z">2019-01-21</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/大数据技术/">大数据技术</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    5 分钟 读完 (大约 703 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/01/21/Hbase系列1-Hbase适用场景/">Hbase系列1-Hbase适用场景</a>
+            
+        </h1>
+        <div class="content">
+            <p>#HBase 使用场景</p>
+<p><strong>HBase 采用 LSM 架构，适合写多读少场景</strong></p>
+<p>##HBase 适用场景</p>
+<ul>
+<li>支持海量数据,需要 TB/PB 级别的在线服务（亿行以上）</li>
+<li>拥有良好扩展性,数据量增长速度快,对水平扩展能力有需求</li>
+<li>高性能读写,简单 kv 读写,响应延迟低</li>
+<li>写入很频繁,吞吐量大</li>
+<li>满足强一致性要求</li>
+<li>批量读取数据需求</li>
+<li>schema 灵活多变</li>
+<li>无跨行跨表事务要求</li>
+</ul>
+<p>##HBase 的限制</p>
+<p>只有主索引(Rowkey),不支持表联接、聚合、order by 等高级查询</p>
+<p>##案例分析</p>
+<p>A. 统一日志案例</p>
+<p>场景:写多读少,写入量巨大(日写入&gt;37 亿),读取随机且访问较少。<br>设计:将 Rowkey 用 UUID 类似方式生成随机字段,转换成 Byte 数组,经过优化,截取为 4 个 Byte。既<br>随机,又很短,能满足 40 年存储。通过 HBase 组针对性的预分区,将数据区域划分到所有节点上,写入均<br>衡到每个节点,因此压力平均。读取的时候,因为随机,设置了 BLOOMFILTER,所以随机读性能提高。因<br>为读取少,所以对于读取的优化就没有写那么重要了。</p>
+<p>B. 一次导入,多次读取</p>
+<p>场景:晚上导入大量数据,白天提供用户访问,每次查询是带有客户 ID 的随机数据,数据量可以估算,每<br>条数据&lt;100B。<br>设计:晚上导入大量数据,如果只有一台服务器提供服务,TPS 上不去,且容易导致节点宕机,因此需要写<br>入是均衡分布的。另外一方面,用户访问的时间和方式是比较随机的,数据又是随机的,因此将 Rowkey<br>随机分布有助于大量请求比较均衡在多个节点上。因为用户的访问更重要,因此将客户 ID 和相关业务类型<br>作为 Rowkey。如果写入数据是对用户顺序处理的,就会出现压力集中在某个节点上,导致宕机。于是将导<br>入 worker 设计为先在本地存储,然后分 10 个线程,将用户 Hash 成 10 组。每个线程读取一个用户的 300<br>条数据,批量写入 HBase,然后写下一个用户的 300 条数据,继续直到第 10 个用户,再返回写本组第一个<br>用户,直到所有数据写完。最终集群的表现比较平稳,且 TPS 很高。</p>
+<p>C. 监控数据(京东云容器监控cap，京东大脑，jdh监控，bdp监控数据查询,ump,mjdos)</p>
+<p>D. 海量存储（商家罗盘，供应商罗盘，Storm实时应用，搜索推荐)</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-01-21T08:33:16.000Z">2019-01-21</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/大数据技术/">大数据技术</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    18 分钟 读完 (大约 2730 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/01/21/Hbase系列4-rowkey设计技巧/">Hbase系列4-rowkey设计技巧</a>
+            
+        </h1>
+        <div class="content">
+            <p>#HBase Rowkey 设计</p>
+<p>##一 引言</p>
+<p>HBase Rowkey是唯一索引(Rowkey用来表示唯一一行记录)，Rowkey设计的优劣直接影响读写性能。</p>
+<p>HBase中的行是按照Rowkey的ASCII字典顺序进行全局排序的。</p>
+<p>举例说明：假如有5个Rowkey：”012”, “0”, “123”, “234”, “3”，按ASCII字典排序后的结果为：”0”, “012”, “123”, “234”, “3”。（注：文末附常用ASCII码表）</p>
+<p>Rowkey排序时会先比对两个Rowkey的第一个字节，如果相同，然后会比对第二个字节，依次类推…  对比到第X个字节时，已经超出了其中一个Rowkey的长度，短的Rowkey排在前面。</p>
+<p>由于HBase是通过Rowkey查询的，一般Rowkey上都会存一些比较关键的检索信息，建议提前考虑数据具体需要如何查询，根据查询方式进行数据存储格式的设计，要避免做全表扫描，因为效率特别低，且会损耗集群性能。</p>
+<p>##二 Rowkey设计原则</p>
+<p>Rowkey设计应遵循以下原则：</p>
+<p>###Rowkey唯一原则</p>
+<p><strong>Rowkey在设计上必须保证唯一性</strong>，Rowkey在HBase中只插入不更新(不做update操作)。HBase中所有操作都是“流式“操作,不会更改原来存储过的数据,只会进行append,并通过加上新的版本标识表示是最新数据（VERSION为1会覆盖，默认是1）。</p>
+<p>###Rowkey的散列原则</p>
+<p>Rowkey设计应散列，均匀的分布在各个HBase节点上<br>如果Rowkey按照时间戳的方式递增，不要将时间放在二进制码的前面，建议将rowkey的高位作为散列字段，由程序随机生成，低位放时间字段，这样将提高数据均衡分布在每个RegionServer，以实现负载均衡的几率。</p>
+<p>Rowkey的第一部分如果是时间戳，会将造成所有新数据都在最后一个Region，造成访问热点。</p>
+<p><strong>热点</strong>：大量的client直接访问集群的一个或极少数个节点（访问可能是读、写或者其他操作）。大量访问会使热点Region所在的单个机器超出自身承受能力，引起性能下降（Full GC）甚至Region不可用，这也会影响同一个RegionServer上的其他Region，由于主机无法服务其他Region的请求。</p>
+<p><strong>通常有3种方式来解决热点问题</strong>：</p>
+<p><strong>1、Reverse反转</strong></p>
+<p>针对固定长度的Rowkey反转后存储，这样可以使Rowkey中经常改变的部分放在最前面，可以有效的随机Rowkey。<br>反转Rowkey的例子通常以手机举例，可以将手机号反转后的字符串作为Rowkey，这样的就避免了以手机号那样比较固定开头(137x、15x等)导致热点问题。缺点是牺牲了Rowkey的有序性。</p>
+<p><strong>2、Salt加盐</strong></p>
+<p>Salting是将每一个Rowkey加一个前缀，前缀使用一些随机字符，使得数据分散在多个不同的Region，达到Region负载均衡的目标。</p>
+<p>比如在一个有4个Region(注：以 [ ,a)、[a,b)、[b,c)、[c, )为Region起至)的HBase表中，<br>加Salt前的Rowkey：abc001、abc002、abc003</p>
+<p>我们分别加上a、b、c前缀，加Salt后Rowkey为：a-abc001、b-abc002、c-abc003  </p>
+<p>可以看到，加盐前的Rowkey默认会在第2个region中，加盐后的Rowkey数据会分布在3个region中，理论上处理后的吞吐量应是之前的3倍。由于前缀是随机的，读这些数据时需要耗费更多的时间，所以Salt增加了写操作的吞吐量，不过缺点是同时增加了读操作的开销。</p>
+<p><strong>3、Hash散列或者MOD</strong></p>
+<p>用Hash散列来替代随机Salt前缀的好处是能让一个给定的行有相同的前缀，这在分散了Region负载的同时，使读操作也能够推断。</p>
+<p>确定性Hash(比如md5后取前4位做前缀)能让客户端重建完整的RowKey，可以使用Get操作直接Get想要的行。</p>
+<p>例如将上述的原始Rowkey经过hash处理，此处我们采用md5散列算法取前4位做前缀，结果如下</p>
+<p>9bf0-abc001 （abc001在md5后是9bf049097142c168c38a94c626eddf3d，取前4位是9bf0）</p>
+<p>7006-abc002</p>
+<p>95e6-abc003</p>
+<p>若以前4个字符作为不同分区的起止，上面几个Rowkey数据会分布在3个region中。实际应用场景是当数据量越来越大的时候，这种设计会使得分区之间更加均衡。</p>
+<p>如果Rowkey是数字类型的，也可以考虑MOD方法（其他类型可以使用hashcode MOD），示意图：</p>
+<p>###Rowkey长度原则</p>
+<p>Rowkey设计建议定长，长度在10~100个字节，越短越好。<br>RowKey是一个二进制码流，可以是任意字符串，最大长度 64kb，实际应用中一般为10-100bytes，以 byte[] 形式保存，一般设计成定长。建议越短越好，不要超过16个字节，原因如下：</p>
+<p>   （1）数据的持久化文件HFile中是按照KeyValue存储的，如果rowkey过长，比如超过100字节，1000w行数据，光RowKey就要占用100*1000w=10亿个字节，将近1G数据，这样会极大影响HFile的存储效率；</p>
+<p>   （2）MemStore将缓存部分数据到内存，如果rowkey字段过长，内存的有效利用率就会降低，系统不能缓存更多的数据，这样会降低检索效率。</p>
+<p>   （3）目前操作系统都是64位系统，内存8字节对齐，控制在16个字节，8字节的整数倍利用了操作系统的最佳特性。</p>
+<p>其他的如列族名、列名等属性名也是越短越好。value永远和它的key一起传输的。当具体的值在系统间传输时，它的RowKey、列名、时间戳也会一起传输。如果你的RowKey和列名和值相比较很大，那么你将会遇到一些有趣的问题。HFile中的索引最终占据了HBase分配的大量内存。</p>
+<p>###Rowkey有序原则</p>
+<p>充分利用Rowkey字典顺序排序特点，将经常读取的数据存储到一块，将最近可能会被访问的数据放到一块。时间戳反转设计：一个常见的数据库处理问题是快速获取数据的最近版本，使用反转的时间戳作为Rowkey的一部分对这个问题十分有用，可以将Long.MAX_VALUE-timestamp追加到key的末尾，例如[key][reverse_timestamp]。</p>
+<p>表中[key]的最新值可以通过scan [key]获得 [key]的第一条记录，因为HBase中rowkey是有序的，最新的[key]在任何更旧的[key]之前，所以第一条记录就是最新的。</p>
+<p>这个技巧可以替代使用多版本数据，多版本数据会永久（很长时间)保存数据的所有版本。同时，这个技巧用一个scan操作就可以获得数据的所有版本。</p>
+<p>Hbase的排序，是按照rowkey，columnKey(columnFamily + qualifier)，timestamp 三维排序，且都是按照字典顺序。首先比较rowkey字典排序，同样rowkey的按columnKey字典排序，最后按timestamp最新排到最前。</p>
+<p>###HBase Rowkey设计实战</p>
+<p>在实际的设计中我们可能更多的是结合多种设计方法来实现Rowkey的最优化设计。</p>
+<p><strong>列1：设计订单状态表</strong></p>
+<p>使用Rowkey: reverse(order_id) + (Long.MAX_VALUE – timestamp)</p>
+<p>设计优点：一、通过reverse订单号避免Region热点，二、可以按时间倒排显示。</p>
+<p><strong>列2：使用HBase作为事件(事件指的的终端在APP中发生的行为，比如登录、下单等等统称事件(event))的临时存储(HBase存储最近10分钟的热数据)</strong></p>
+<p>设计event事件的Rowkey为：两位随机数Salt + EventId + Date + Kafka的Offset</p>
+<p>设计优点：<br>加盐的目的是为了增加查询的并发性，假如Salt的范围是0~n，那我们在查询的时候，可以将数据分为n个split同时做Scan操作。经过测试验证，增加并发度能够将整体的查询速度提升5～20倍以上。</p>
+<p>随后的EventId和Date是用来做范围Scan使用的。在大部分的查询场景中，都指定了EventId，因此把EventId放在了第二个位置上，同时EventId的取值有几十个，通过Salt + EventId的方式可以保证不会形成热点。</p>
+<p>把Date放在Rowkey的第三个位置上以实现按Date做Scan。这里可以考虑对Data进行反转（参考时间戳反转设计）</p>
+<p>这样的Rowkey设计能够很好的支持如下查询场景：</p>
+<p>1、只按照EventId查询</p>
+<p>2、按照EventId和Date查询</p>
+<p>非必要情况，一般不建议进行全表的Scan查询，全表Scan对性能的消耗很大。</p>
+<p>###HBase的表设计</p>
+<p>HBase表设计通常可以是宽表（Wide Table）模式，即一行包括很多列。同样的信息也可以用高表（Tall Table）形式存储，通常<strong>高表的性能比宽表要高出50%以上</strong>。所以推荐使用高表来完成表设计。</p>
+<p>表设计时考虑HBase数据库的一些特性：</p>
+<p>   1、在HBase表中是通过Rowkey的字典序来进行数据排序的</p>
+<p>   2、所有存储在HBase表中的数据都是二进制的字节 </p>
+<p>   3、原子性只在行内保证，HBase不支持跨行事务</p>
+<p>   4、列族(Column Family)在表创建之前就要定义好</p>
+<p>   5、列族中的列标识(Column Qualifier)可以在表创建完以后动态插入数据时添加</p>
+<p>##总结</p>
+<p>在Rowkey设计时，请先考虑业务场景，比如是读比写多、还是读比写少。HBase本身是为写优化的，即便是这样，也可能会出现热点问题，设计时尽量避免热点。如果读场景比较多，除了考虑以上Rowkey设计原则外，还可以考虑和其他缓存数据库如Redis等结合。</p>
+<p>##附录</p>
+<p>常用ASCLL码</p>
+<p><img src="http://syxtt.xin/%E5%B8%B8%E7%94%A8ascll%E7%A0%81.png" alt="img"></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-01-21T08:33:16.000Z">2019-01-21</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/大数据技术/">大数据技术</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    37 分钟 读完 (大约 5583 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/01/21/Hbase系列2-Hbase架构深度解析/">Hbase系列2-Hbase架构深度解析</a>
+            
+        </h1>
+        <div class="content">
+            <p>原文：<a href="http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html" target="_blank" rel="noopener">http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html</a></p>
+<h2 id="HBase架构组成"><a href="#HBase架构组成" class="headerlink" title="HBase架构组成"></a>HBase架构组成</h2><p>HBase采用Master/Slave架构搭建集群，它隶属于Hadoop生态系统，由一下类型节点组成：HMaster节点、HRegionServer节点、ZooKeeper集群，而在底层，它将数据存储于HDFS中，因而涉及到HDFS的NameNode、DataNode等，总体结构如下：</p>
+<p><img src="http://syxtt.xin/f762fab9-ad5d-42eb-abe1-ca0601879088.png" alt="img"></p>
+<p>其中HMaster节点用于：</p>
+<ol>
+<li>管理HRegionServer，实现其负载均衡。</li>
+<li>管理和分配HRegion，比如在HRegion split时分配新的HRegion；在HRegionServer退出时迁移其内的HRegion到其他HRegionServer上。</li>
+<li>实现DDL操作（Data Definition Language，namespace和table的增删改，column familiy的增删改等）。</li>
+<li>管理namespace和table的元数据（实际存储在HDFS上）。</li>
+<li>权限控制（ACL）。</li>
+</ol>
+<p>HRegionServer节点用于：</p>
+<ol>
+<li>存放和管理本地HRegion。</li>
+<li>读写HDFS，管理Table中的数据。</li>
+<li>Client直接通过HRegionServer读写数据（从HMaster中获取元数据，找到RowKey所在的HRegion/HRegionServer后）。</li>
+</ol>
+<p>ZooKeeper集群是协调系统用于：</p>
+<ol>
+<li>存放整个 HBase集群的元数据以及集群的状态信息。</li>
+<li>实现HMaster主从节点的failover。</li>
+</ol>
+<p>HBase Client通过RPC方式和HMaster、HRegionServer通信；一个HRegionServer可以存放1000个HRegion；底层Table数据存储于HDFS中，而HRegion所处理的数据尽量和数据所在的DataNode在一起，实现数据的本地化；数据本地化并不是总能实现，比如在HRegion移动(如因Split)时，需要等下一次Compact才能继续回到本地化。</p>
+<p>这个架构图比较清晰的表达了HMaster和NameNode都支持多个热备份，使用ZooKeeper来做协调；ZooKeeper并不是云般神秘，它一般由三台机器组成一个集群，内部使用PAXOS算法支持三台Server中的一台宕机，也有使用五台机器的，此时则可以支持同时两台宕机，既少于半数的宕机，然而随着机器的增加，它的性能也会下降；RegionServer和DataNode一般会放在相同的Server上实现数据的本地化。</p>
+<h2 id="HRegion"><a href="#HRegion" class="headerlink" title="HRegion"></a>HRegion</h2><p>HBase使用RowKey将表水平切割成多个HRegion，从HMaster的角度，每个HRegion都纪录了它的StartKey和EndKey（第一个HRegion的StartKey为空，最后一个HRegion的EndKey为空），由于RowKey是排序的，因而Client可以通过HMaster快速的定位每个RowKey在哪个HRegion中。HRegion由HMaster分配到相应的HRegionServer中，然后由HRegionServer负责HRegion的启动和管理，和Client的通信，负责数据的读(使用HDFS)。每个HRegionServer可以同时管理1000个左右的HRegion（这个数字怎么来的？没有从代码中看到限制，难道是出于经验？超过1000个会引起性能问题？</p>
+<p>来回答这个问题：感觉这个1000的数字是从BigTable的论文中来的（5 Implementation节）：Each tablet server manages a set of tablets(typically we have somewhere between ten to a thousand tablets per tablet server)）。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig2.png" alt="img"></p>
+<h2 id="HMaster"><a href="#HMaster" class="headerlink" title="HMaster"></a>HMaster</h2><p>HMaster没有单点故障问题，可以启动多个HMaster，通过ZooKeeper的Master Election机制保证同时只有一个HMaster出于Active状态，其他的HMaster则处于热备份状态。一般情况下会启动两个HMaster，非Active的HMaster会定期的和Active HMaster通信以获取其最新状态，从而保证它是实时更新的，因而如果启动了多个HMaster反而增加了Active HMaster的负担。前文已经介绍过了HMaster的主要用于HRegion的分配和管理，DDL(Data Definition Language，既Table的新建、删除、修改等)的实现等，既它主要有两方面的职责：</p>
+<ol>
+<li>协调HRegionServer<ol>
+<li>启动时HRegion的分配，以及负载均衡和修复时HRegion的重新分配。</li>
+<li>监控集群中所有HRegionServer的状态(通过Heartbeat和监听ZooKeeper中的状态)。</li>
+</ol>
+</li>
+<li>Admin职能<ol>
+<li>创建、删除、修改Table的定义。</li>
+</ol>
+</li>
+</ol>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig3.png" alt="img"></p>
+<h2 id="ZooKeeper：协调者"><a href="#ZooKeeper：协调者" class="headerlink" title="ZooKeeper：协调者"></a>ZooKeeper：协调者</h2><p>ZooKeeper为HBase集群提供协调服务，它管理着HMaster和HRegionServer的状态(available/alive等)，并且会在它们宕机时通知给HMaster，从而HMaster可以实现HMaster之间的failover，或对宕机的HRegionServer中的HRegion集合的修复(将它们分配给其他的HRegionServer)。ZooKeeper集群本身使用一致性协议(PAXOS协议)保证每个节点状态的一致性。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig4.png" alt="img"></p>
+<h2 id="How-The-Components-Work-Together"><a href="#How-The-Components-Work-Together" class="headerlink" title="How The Components Work Together"></a>How The Components Work Together</h2><p>ZooKeeper协调集群所有节点的共享信息，在HMaster和HRegionServer连接到ZooKeeper后创建Ephemeral节点，并使用Heartbeat机制维持这个节点的存活状态，如果某个Ephemeral节点实效，则HMaster会收到通知，并做相应的处理。</p>
+<p>另外，HMaster通过监听ZooKeeper中的Ephemeral节点(默认：/hbase/rs/*)来监控HRegionServer的加入和宕机。在第一个HMaster连接到ZooKeeper时会创建Ephemeral节点(默认：/hbasae/master)来表示Active的HMaster，其后加进来的HMaster则监听该Ephemeral节点，如果当前Active的HMaster宕机，则该节点消失，因而其他HMaster得到通知，而将自身转换成Active的HMaster，在变为Active的HMaster之前，它会创建在/hbase/back-masters/下创建自己的Ephemeral节点。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig5.png" alt="img"></p>
+<h3 id="HBase的第一次读写"><a href="#HBase的第一次读写" class="headerlink" title="HBase的第一次读写"></a>HBase的第一次读写</h3><p>在HBase 0.96以前，HBase有两个特殊的Table：-ROOT-和.META.（如BigTable中的设计），其中-ROOT- Table的位置存储在ZooKeeper，它存储了.META. Table的RegionInfo信息，并且它只能存在一个HRegion，而.META. Table则存储了用户Table的RegionInfo信息，它可以被切分成多个HRegion，因而对第一次访问用户Table时，首先从ZooKeeper中读取-ROOT- Table所在HRegionServer；然后从该HRegionServer中根据请求的TableName，RowKey读取.META. Table所在HRegionServer；最后从该HRegionServer中读取.META. Table的内容而获取此次请求需要访问的HRegion所在的位置，然后访问该HRegionSever获取请求的数据，这需要三次请求才能找到用户Table所在的位置，然后第四次请求开始获取真正的数据。当然为了提升性能，客户端会缓存-ROOT- Table位置以及-ROOT-/.META. Table的内容。如下图所示：</p>
+<p><img src="http://syxtt.xin/image0030.jpg" alt="img"></p>
+<p>可是即使客户端有缓存，在初始阶段需要三次请求才能直到用户Table真正所在的位置也是性能低下的，而且真的有必要支持那么多的HRegion吗？或许对Google这样的公司来说是需要的，但是对一般的集群来说好像并没有这个必要。在BigTable的论文中说，每行METADATA存储1KB左右数据，中等大小的Tablet(HRegion)在128MB左右，3层位置的Schema设计可以支持2^34个Tablet(HRegion)。即使去掉-ROOT- Table，也还可以支持2^17(131072)个HRegion， 如果每个HRegion还是128MB，那就是16TB，这个貌似不够大，但是现在的HRegion的最大大小都会设置的比较大，比如我们设置了2GB，此时支持的大小则变成了4PB，对一般的集群来说已经够了，因而在HBase 0.96以后去掉了-ROOT- Table，只剩下这个特殊的目录表叫做Meta Table(hbase:meta)，它存储了集群中所有用户HRegion的位置信息，而ZooKeeper的节点中(/hbase/meta-region-server)存储的则直接是这个Meta Table的位置，并且这个Meta Table如以前的-ROOT- Table一样是不可split的。这样，客户端在第一次访问用户Table的流程就变成了：</p>
+<ol>
+<li>从ZooKeeper(/hbase/meta-region-server)中获取hbase:meta的位置（HRegionServer的位置），缓存该位置信息。</li>
+<li>从HRegionServer中查询用户Table对应请求的RowKey所在的HRegionServer，缓存该位置信息。</li>
+<li>从查询到HRegionServer中读取Row。</li>
+</ol>
+<p>从这个过程中，我们发现客户会缓存这些位置信息，然而第二步它只是缓存当前RowKey对应的HRegion的位置，因而如果下一个要查的RowKey不在同一个HRegion中，则需要继续查询hbase:meta所在的HRegion，然而随着时间的推移，客户端缓存的位置信息越来越多，以至于不需要再次查找hbase:meta Table的信息，除非某个HRegion因为宕机或Split被移动，此时需要重新查询并且更新缓存。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig6.png" alt="img"></p>
+<h3 id="hbase-meta表"><a href="#hbase-meta表" class="headerlink" title="hbase:meta表"></a>hbase:meta表</h3><p>hbase:meta表存储了所有用户HRegion的位置信息，它的RowKey:tableName,regionStartKey,regionId,replicaId等，它只有info列族，这个列族包含三个列，他们分别是：info:regioninfo列是RegionInfo的proto格式：regionId,tableName,startKey,endKey,offline,split,replicaId；info:server格式：HRegionServer对应的server:port；info:serverstartcode格式是HRegionServer的启动时间戳。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig7.png" alt="img"></p>
+<h2 id="HRegionServer详解"><a href="#HRegionServer详解" class="headerlink" title="HRegionServer详解"></a>HRegionServer详解</h2><p>HRegionServer一般和DataNode在同一台机器上运行，实现数据的本地性。HRegionServer包含多个HRegion，由WAL(HLog)、BlockCache、MemStore、HFile组成。</p>
+<ol>
+<li><strong>WAL即Write Ahead Log</strong>，在早期版本中称为HLog，它是HDFS上的一个文件，如其名字所表示的，所有写操作都会先保证将数据写入这个Log文件后，才会真正更新MemStore，最后写入HFile中。采用这种模式，可以保证HRegionServer宕机后，我们依然可以从该Log文件中读取数据，Replay所有的操作，而不至于数据丢失。这个Log文件会定期Roll出新的文件而删除旧的文件(那些已持久化到HFile中的Log可以删除)。WAL文件存储在/hbase/WALs/${HRegionServer_Name}的目录中(在0.94之前，存储在/hbase/.logs/目录中)，一般一个HRegionServer只有一个WAL实例，也就是说一个HRegionServer的所有WAL写都是串行的(就像log4j的日志写也是串行的)，这当然会引起性能问题，因而在HBase 1.0之后，通过<a href="https://issues.apache.org/jira/browse/HBASE-5699" target="_blank" rel="noopener">HBASE-5699</a>实现了多个WAL并行写(MultiWAL)，该实现采用HDFS的多个管道写，以单个HRegion为单位。关于WAL可以参考Wikipedia的<a href="https://en.wikipedia.org/wiki/Write-ahead_logging" target="_blank" rel="noopener">Write-Ahead Logging</a>。顺便吐槽一句，英文版的维基百科竟然能毫无压力的正常访问了，这是某个GFW的疏忽还是以后的常态？</li>
+<li><strong>BlockCache是一个读缓存</strong>，即“引用局部性”原理（也应用于CPU，<a href="http://baike.baidu.com/link?url=Dh2u9KvowXcl2PloHJFTB9vEOoVS3WxPhDCVvbQGL_piyKFQ2iTHYAYf5mLAsFrcBUig6NC7A4-Aki61qnGCTK#3_1" target="_blank" rel="noopener">分空间局部性和时间局部性</a>，空间局部性是指CPU在某一时刻需要某个数据，那么有很大的概率在一下时刻它需要的数据在其附近；时间局部性是指某个数据在被访问过一次后，它有很大的概率在不久的将来会被再次的访问），将数据预读取到内存中，以提升读的性能。HBase中提供两种BlockCache的实现：默认on-heap LruBlockCache和BucketCache(通常是off-heap)。通常BucketCache的性能要差于LruBlockCache，然而由于GC的影响，LruBlockCache的延迟会变的不稳定，而BucketCache由于是自己管理BlockCache，而不需要GC，因而它的延迟通常比较稳定，这也是有些时候需要选用BucketCache的原因。这篇文章<a href="http://www.n10k.com/blog/blockcache-101/" target="_blank" rel="noopener">BlockCache101</a>对on-heap和off-heap的BlockCache做了详细的比较。</li>
+<li><strong>HRegion是一个Table中的一个Region在一个HRegionServer中的表达</strong>。一个Table可以有一个或多个Region，他们可以在一个相同的HRegionServer上，也可以分布在不同的HRegionServer上，一个HRegionServer可以有多个HRegion，他们分别属于不同的Table。HRegion由多个Store(HStore)构成，每个HStore对应了一个Table在这个HRegion中的一个Column Family，即每个Column Family就是一个集中的存储单元，因而最好将具有相近IO特性的Column存储在一个Column Family，以实现高效读取(数据局部性原理，可以提高缓存的命中率)。HStore是HBase中存储的核心，它实现了读写HDFS功能，一个HStore由一个MemStore 和0个或多个StoreFile组成。<ol>
+<li><strong>MemStore是一个写缓存</strong>(In Memory Sorted Buffer)，所有数据的写在完成WAL日志写后，会 写入MemStore中，由MemStore根据一定的算法将数据Flush到地层HDFS文件中(HFile)，通常每个HRegion中的每个 Column Family有一个自己的MemStore。</li>
+<li><strong>HFile(StoreFile) 用于存储HBase的数据(Cell/KeyValue)</strong>。在HFile中的数据是按RowKey、Column Family、Column排序，对相同的Cell(即这三个值都一样)，则按timestamp倒序排列。</li>
+</ol>
+</li>
+</ol>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig8.png" alt="img"></p>
+<p>虽然上面这张图展现的是最新的HRegionServer的架构(但是并不是那么的精确)，但是我一直比较喜欢看以下这张图，即使它展现的应该是0.94以前的架构。</p>
+<p><img src="http://syxtt.xin/image0060.jpg" alt="img"></p>
+<h3 id="HRegionServer中数据写流程图解"><a href="#HRegionServer中数据写流程图解" class="headerlink" title="HRegionServer中数据写流程图解"></a>HRegionServer中数据写流程图解</h3><p>当客户端发起一个Put请求时，首先它从hbase:meta表中查出该Put数据最终需要去的HRegionServer。然后客户端将Put请求发送给相应的HRegionServer，在HRegionServer中它首先会将该Put操作写入WAL日志文件中(Flush到磁盘中)。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig9.png" alt="img"></p>
+<p>写完WAL日志文件后，HRegionServer根据Put中的TableName和RowKey找到对应的HRegion，并根据Column Family找到对应的HStore，并将Put写入到该HStore的MemStore中。此时写成功，并返回通知客户端。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig10.png" alt="img"></p>
+<h3 id="MemStore-Flush"><a href="#MemStore-Flush" class="headerlink" title="MemStore Flush"></a>MemStore Flush</h3><p>MemStore是一个In Memory Sorted Buffer，在每个HStore中都有一个MemStore，即它是一个HRegion的一个Column Family对应一个实例。它的排列顺序以RowKey、Column Family、Column的顺序以及Timestamp的倒序，如下所示：</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig11.png" alt="img"></p>
+<p>每一次Put/Delete请求都是先写入到MemStore中，当MemStore满后会Flush成一个新的StoreFile(底层实现是HFile)，即一个HStore(Column Family)可以有0个或多个StoreFile(HFile)。有以下三种情况可以触发MemStore的Flush动作，</p>
+<p>需要注意的是MemStore的最小Flush单元是HRegion而不是单个MemStore。据说这是Column Family有个数限制的其中一个原因，估计是因为太多的Column Family一起Flush会引起性能问题？具体原因有待考证。</p>
+<ol>
+<li>当一个HRegion中的所有MemStore的大小总和超过了hbase.hregion.memstore.flush.size的大小，默认128MB。此时当前的HRegion中所有的MemStore会Flush到HDFS中。</li>
+<li>当全局MemStore的大小超过了hbase.regionserver.global.memstore.upperLimit的大小，默认40％的内存使用量。此时当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush顺序是MemStore大小的倒序（一个HRegion中所有MemStore总和作为该HRegion的MemStore的大小还是选取最大的MemStore作为参考？有待考证），直到总体的MemStore使用量低于hbase.regionserver.global.memstore.lowerLimit，默认38%的内存使用量。</li>
+<li>当前HRegionServer中WAL的大小超过了hbase.regionserver.hlog.blocksize <em> hbase.regionserver.max.logs的数量，当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush使用时间顺序，最早的MemStore先Flush直到WAL的数量少于hbase.regionserver.hlog.blocksize </em> hbase.regionserver.max.logs。<a href="http://blog.sematext.com/2012/07/16/hbase-memstore-what-you-should-know/" target="_blank" rel="noopener">这里</a>说这两个相乘的默认大小是2GB，查代码，hbase.regionserver.max.logs默认值是32，而hbase.regionserver.hlog.blocksize是HDFS的默认blocksize，32MB。但不管怎么样，因为这个大小超过限制引起的Flush不是一件好事，可能引起长时间的延迟，因而这篇文章给的建议：“<strong>Hint</strong>: keep hbase.regionserver.hlog.blocksize <em> hbase.regionserver.maxlogs just a bit above hbase.regionserver.global.memstore.lowerLimit </em> HBASE_HEAPSIZE.”。并且需要注意，<a href="http://hbase.apache.org/book.html#_memstore_flush" target="_blank" rel="noopener">这里</a>给的描述是有错的(虽然它是官方的文档)。</li>
+</ol>
+<p>在MemStore Flush过程中，还会在尾部追加一些meta数据，其中就包括Flush时最大的WAL sequence值，以告诉HBase这个StoreFile写入的最新数据的序列，那么在Recover时就直到从哪里开始。在HRegion启动时，这个sequence会被读取，并取最大的作为下一次更新时的起始sequence。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig12.png" alt="img"></p>
+<h2 id="HFile格式"><a href="#HFile格式" class="headerlink" title="HFile格式"></a>HFile格式</h2><p>HBase的数据以KeyValue(Cell)的形式顺序的存储在HFile中，在MemStore的Flush过程中生成HFile，由于MemStore中存储的Cell遵循相同的排列顺序，因而Flush过程是顺序写，我们直到磁盘的顺序写性能很高，因为不需要不停的移动磁盘指针。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig13.png" alt="img"></p>
+<p>HFile参考BigTable的SSTable和Hadoop的TFile实现，从HBase开始到现在，HFile经历了三个版本，其中V2在0.92引入，V3在0.98引入。首先我们来看一下V1的格式：</p>
+<p><img src="http://syxtt.xin/image0080.jpg" alt="img"></p>
+<p>V1的HFile由多个Data Block、Meta Block、FileInfo、Data Index、Meta Index、Trailer组成，其中Data Block是HBase的最小存储单元，在前文中提到的BlockCache就是基于Data Block的缓存的。一个Data Block由一个魔数和一系列的KeyValue(Cell)组成，魔数是一个随机的数字，用于表示这是一个Data Block类型，以快速监测这个Data Block的格式，防止数据的破坏。Data Block的大小可以在创建Column Family时设置(HColumnDescriptor.setBlockSize())，默认值是64KB，大号的Block有利于顺序Scan，小号Block利于随机查询，因而需要权衡。Meta块是可选的，FileInfo是固定长度的块，它纪录了文件的一些Meta信息，例如：AVG_KEY_LEN, AVG_VALUE_LEN, LAST_KEY, COMPARATOR, MAX_SEQ_ID_KEY等。Data Index和Meta Index纪录了每个Data块和Meta块的其实点、未压缩时大小、Key(起始RowKey？)等。Trailer纪录了FileInfo、Data Index、Meta Index块的起始位置，Data Index和Meta Index索引的数量等。其中FileInfo和Trailer是固定长度的。</p>
+<p>HFile里面的每个KeyValue对就是一个简单的byte数组。但是这个byte数组里面包含了很多项，并且有固定的结构。我们来看看里面的具体结构：</p>
+<p><img src="http://syxtt.xin/image0090.jpg" alt="img"></p>
+<p>开始是两个固定长度的数值，分别表示Key的长度和Value的长度。紧接着是Key，开始是固定长度的数值，表示RowKey的长度，紧接着是 RowKey，然后是固定长度的数值，表示Family的长度，然后是Family，接着是Qualifier，然后是两个固定长度的数值，表示Time Stamp和Key Type（Put/Delete）。Value部分没有这么复杂的结构，就是纯粹的二进制数据了。随着HFile版本迁移，KeyValue(Cell)的格式并未发生太多变化，只是在V3版本，尾部添加了一个可选的Tag数组。</p>
+<p>HFileV1版本的在实际使用过程中发现它占用内存多，并且Bloom File和Block Index会变的很大，而引起启动时间变长。其中每个HFile的Bloom Filter可以增长到100MB，这在查询时会引起性能问题，因为每次查询时需要加载并查询Bloom Filter，100MB的Bloom Filer会引起很大的延迟；另一个，Block Index在一个HRegionServer可能会增长到总共6GB，HRegionServer在启动时需要先加载所有这些Block Index，因而增加了启动时间。为了解决这些问题，在0.92版本中引入HFileV2版本：</p>
+<p><img src="http://syxtt.xin/hfilev2.png" alt="img"></p>
+<p>在这个版本中，Block Index和Bloom Filter添加到了Data Block中间，而这种设计同时也减少了写的内存使用量；另外，为了提升启动速度，在这个版本中还引入了延迟读的功能，即在HFile真正被使用时才对其进行解析。</p>
+<p>FileV3版本基本和V2版本相比，并没有太大的改变，它在KeyValue(Cell)层面上添加了Tag数组的支持；并在FileInfo结构中添加了和Tag相关的两个字段。关于具体HFile格式演化介绍，可以参考这里。</p>
+<p>对HFileV2格式具体分析，它是一个多层的类B+树索引，采用这种设计，可以实现查找不需要读取整个文件：</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig14.png" alt="img"></p>
+<p>Data Block中的Cell都是升序排列，每个block都有它自己的Leaf-Index，每个Block的最后一个Key被放入Intermediate-Index中，Root-Index指向Intermediate-Index。在HFile的末尾还有Bloom Filter用于快速定位那么没有在某个Data Block中的Row；TimeRange信息用于给那些使用时间查询的参考。在HFile打开时，这些索引信息都被加载并保存在内存中，以增加以后的读取性能。</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx" target="_blank" rel="noopener">https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx</a></p>
+<p><a href="http://jimbojw.com/wiki/index.php?title=Understanding_Hbase_and_BigTable" target="_blank" rel="noopener">http://jimbojw.com/wiki/index.php?title=Understanding_Hbase_and_BigTable</a></p>
+<p><a href="http://hbase.apache.org/book.html" target="_blank" rel="noopener">http://hbase.apache.org/book.html</a> </p>
+<p><a href="http://www.searchtb.com/2011/01/understanding-hbase.html" target="_blank" rel="noopener">http://www.searchtb.com/2011/01/understanding-hbase.html</a> </p>
+<p><a href="http://research.google.com/archive/bigtable-osdi06.pdf" target="_blank" rel="noopener">http://research.google.com/archive/bigtable-osdi06.pdf</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-01-21T08:33:16.000Z">2019-01-21</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/大数据技术/">大数据技术</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    38 分钟 读完 (大约 5717 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/01/21/Hbase系列3-Hbase深入浅出/">Hbase系列3-Hbase深入浅出</a>
+            
+        </h1>
+        <div class="content">
+            <p>转自原文：<a href="https://www.ibm.com/developerworks/cn/analytics/library/ba-cn-bigdata-hbase/index.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/analytics/library/ba-cn-bigdata-hbase/index.html</a></p>
+<h2 id="HBase-在大数据生态圈中的位置"><a href="#HBase-在大数据生态圈中的位置" class="headerlink" title="HBase 在大数据生态圈中的位置"></a>HBase 在大数据生态圈中的位置</h2><p>提到大数据的存储，大多数人首先联想到的是 Hadoop 和 Hadoop 中的 HDFS 模块。大家熟知的 Spark、以及 Hadoop 的 MapReduce，可以理解为一种计算框架。而 HDFS，我们可以认为是为计算框架服务的存储层。因此不管是 Spark 还是 MapReduce，都需要使用 HDFS 作为默认的持久化存储层。那么 HBase 又是什么，可以用在哪里，解决什么样的问题？简单地，我们可以认为 HBase 是一种类似于数据库的存储层，也就是说 HBase 适用于结构化的存储。并且 HBase 是一种列式的分布式数据库，是由当年的 Google 公布的 BigTable 的论文而生。不过这里也要注意 HBase 底层依旧依赖 HDFS 来作为其物理存储，这点类似于 Hive。</p>
+<p>可能有的读者会好奇 HBase 于 Hive 的区别，我们简单的梳理一下 Hive 和 HBase 的应用场景：</p>
+<p>Hive 适合用来对一段时间内的数据进行分析查询，例如，用来计算趋势或者网站的日志。Hive 不应该用来进行实时的查询（Hive 的设计目的，也不是支持实时的查询）。因为它需要很长时间才可以返回结果；HBase 则非常适合用来进行大数据的实时查询，例如 Facebook 用 HBase 进行消息和实时的分析。对于 Hive 和 HBase 的部署来说，也有一些区别，Hive 一般只要有 Hadoop 便可以工作。而 HBase 则还需要 Zookeeper 的帮助（Zookeeper，是一个用来进行分布式协调的服务，这些服务包括配置服务，维护元信息和命名空间服务）。再而，HBase 本身只提供了 Java 的 API 接口，并不直接支持 SQL 的语句查询，而 Hive 则可以直接使用 HQL（一种类 SQL 语言）。如果想要在 HBase 上使用 SQL，则需要联合使用 Apache Phonenix，或者联合使用 Hive 和 HBase。但是和上面提到的一样，如果集成使用 Hive 查询 HBase 的数据，则无法绕过 MapReduce，那么实时性还是有一定的损失。Phoenix 加 HBase 的组合则不经过 MapReduce 的框架，因此当使用 Phoneix 加 HBase 的组成，实时性上会优于 Hive 加 HBase 的组合，我们后续也会示例性介绍如何使用两者。最后我们再提下 Hive 和 HBase 所使用的存储层，默认情况下 Hive 和 HBase 的存储层都是 HDFS。但是 HBase 在一些特殊的情况下也可以直接使用本机的文件系统。例如 Ambari 中的 AMS 服务直接在本地文件系统上运行 HBase。</p>
+<h2 id="HBase-与传统关系数据库的区别"><a href="#HBase-与传统关系数据库的区别" class="headerlink" title="HBase 与传统关系数据库的区别"></a>HBase 与传统关系数据库的区别</h2><p>首先让我们了解下什么是 ACID。ACID 是指数据库事务正确执行的四个基本要素的缩写，其包含：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）以及持久性（Durability）。对于一个支持事务（Transaction）的数据库系统，必需要具有这四种<a href="http://baike.baidu.com/view/884393.htm" target="_blank" rel="noopener">特性</a>，否则在事务过程（Transaction Processing）当中无法保证数据的正确性，交易过程极可能达不到交易方的要求。下面，我们就简单的介绍下这 4 个特性的含义。</p>
+<ul>
+<li><p>原子性(Atomicity)是指一个事务要么全部执行,要么全部不执行。换句话说，一个事务不可能只执行了一半就停止了。比如一个事情分为两步完成才可以完成，那么这两步必须同时完成，要么一步也不执行，绝不会停留在某一个中间状态。如果事物执行过程中，发生错误，系统会将事物的状态回滚到最开始的状态。</p>
+</li>
+<li><p>一致性(Consistency)是指事务的运行并不改变数据库中数据的一致性。也就是说，无论并发事务有多少个，但是必须保证数据从一个一致性的状态转换到另一个一致性的状态。例如有 a、b 两个账户，分别都是 10。当 a 增加 5 时，b 也会随着改变，总值 20 是不会改变的。</p>
+</li>
+<li><p>隔离性（Isolation）是指两个以上的事务不会出现交错执行的状态。因为这样可能会导致数据不一致。如果有多个事务，运行在相同的时间内，执行相同的功能，事务的隔离性将确保每一事务在系统中认为只有该事务在使用系统。这种属性有时称为<a href="http://baike.baidu.com/view/196479.htm" target="_blank" rel="noopener">串行</a>化，为了防止事务操作间的混淆，必须串行化或序列化请求，使得在同一时间仅有一个请求用于同一数据。</p>
+</li>
+<li><p>持久性(Durability)指事务执行成功以后,该事务对数据库所作的更改便是持久的保存在数据库之中，不会无缘无故的回滚。</p>
+</li>
+</ul>
+<p>在具体的介绍 HBase 之前，我们先简单对比下 HBase 与传统关系数据库的（RDBMS，全称为 Relational Database Management System）区别。如表 1 所示。</p>
+<h4 id="表-1-HBase-与-RDBMS-的区别"><a href="#表-1-HBase-与-RDBMS-的区别" class="headerlink" title="表 1. HBase 与 RDBMS 的区别"></a>表 1. HBase 与 RDBMS 的区别</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>HBase</th>
+<th>RDBMS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>硬件架构</td>
+<td>类似于 Hadoop 的分布式集群，硬件成本低廉</td>
+<td>传统的多核系统，硬件成本昂贵</td>
+</tr>
+<tr>
+<td>容错性</td>
+<td>由软件架构实现，由于由多个节点组成，所以不担心一点或几点宕机</td>
+<td>一般需要额外硬件设备实现 HA 机制</td>
+</tr>
+<tr>
+<td>数据库大小</td>
+<td>PB</td>
+<td>GB、TB</td>
+</tr>
+<tr>
+<td>数据排布方式</td>
+<td>稀疏的、分布的多维的 Map</td>
+<td>以行和列组织</td>
+</tr>
+<tr>
+<td>数据类型</td>
+<td>Bytes</td>
+<td>丰富的数据类型</td>
+</tr>
+<tr>
+<td>事物支持</td>
+<td>ACID 只支持单个 Row 级别</td>
+<td>全面的 ACID 支持，对 Row 和表</td>
+</tr>
+<tr>
+<td>查询语言</td>
+<td>只支持 Java API （除非与其他框架一起使用，如 Phoenix、Hive）</td>
+<td>SQL</td>
+</tr>
+<tr>
+<td>索引</td>
+<td>只支持 Row-key，除非与其他技术一起应用，如 Phoenix、Hive</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>吞吐量</td>
+<td>百万查询/每秒</td>
+<td>数千查询/每秒</td>
+</tr>
+</tbody>
+</table>
+<p>理解了上面的表格之后，我们在看看数据是如何在 HBase 以及 RDBMS 中排布的。首先，数据在 RDBMS 的排布大致如表 2。</p>
+<h4 id="表-2-数据在-RDBMS-中的排布示例"><a href="#表-2-数据在-RDBMS-中的排布示例" class="headerlink" title="表 2. 数据在 RDBMS 中的排布示例"></a>表 2. 数据在 RDBMS 中的排布示例</h4><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>姓</th>
+<th>名</th>
+<th>密码</th>
+<th>时间戳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>张</td>
+<td>三</td>
+<td>111</td>
+<td>20160719</td>
+</tr>
+<tr>
+<td>2</td>
+<td>李</td>
+<td>四</td>
+<td>222</td>
+<td>20160720</td>
+</tr>
+</tbody>
+</table>
+<p>那么数据在 HBase 中的排布会是什么样子呢？如表 3 所示（这只是逻辑上的排布）。</p>
+<h4 id="表-3-数据在-HBase-中的排布（逻辑上）"><a href="#表-3-数据在-HBase-中的排布（逻辑上）" class="headerlink" title="表 3. 数据在 HBase 中的排布（逻辑上）"></a>表 3. 数据在 HBase 中的排布（逻辑上）</h4><table>
+<thead>
+<tr>
+<th>Row-Key</th>
+<th>Value（CF、Qualifier、Version）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>info{‘姓’: ‘张’，’名’:’三’} pwd{‘密码’: ‘111’}</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Info{‘姓’: ‘李’，’名’:’四’} pwd{‘密码’: ‘222’}</td>
+</tr>
+</tbody>
+</table>
+<p>从上面示例表中，我们可以看出，在 HBase 中首先会有 Column Family 的概念，简称为 CF。CF 一般用于将相关的列（Column）组合起来。在物理上 HBase 其实是按 CF 存储的，只是按照 Row-key 将相关 CF 中的列关联起来。物理上的数据排布大致可以如表 4 所示。</p>
+<h4 id="表-4-数据在-HBase-中的排布"><a href="#表-4-数据在-HBase-中的排布" class="headerlink" title="表 4. 数据在 HBase 中的排布"></a>表 4. 数据在 HBase 中的排布</h4><table>
+<thead>
+<tr>
+<th>Row-Key</th>
+<th>CF:Column-Key</th>
+<th>时间戳</th>
+<th>Cell Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>info:fn</td>
+<td>123456789</td>
+<td>三</td>
+</tr>
+<tr>
+<td>1</td>
+<td>info:ln</td>
+<td>123456789</td>
+<td>张</td>
+</tr>
+<tr>
+<td>2</td>
+<td>info:fn</td>
+<td>123456789</td>
+<td>四</td>
+</tr>
+<tr>
+<td>2</td>
+<td>info:ln</td>
+<td>123456789</td>
+<td>李</td>
+</tr>
+</tbody>
+</table>
+<p>我们已经提到 HBase 是按照 CF 来存储数据的。在表 3 中，我们看到了两个 CF，分别是 info 和 pwd。info 存储着姓名相关列的数据，而 pwd 则是密码相关的数据。上表便是 info 这个 CF 存储在 Hbase 中的数据排布。Pwd 的数据排布是类似的。上表中的 fn 和 ln 称之为 Column-key 或者 Qulifimer。在 Hbase 中，Row-key 加上 CF 加上 Qulifier 再加上一个时间戳才可以定位到一个单元格数据（Hbase 中每个单元格默认有 3 个时间戳的版本数据）。初学者，在一开始接触这些概念是很容易混淆。其实不管是 CF 还是 Qulifier 都是客户定义出来的。也就是说在 HBase 中创建表格时，就需要指定表格的 CF、Row-key 以及 Qulifier。我们会在后续的介绍中，尝试指定这些相关的概念，以便加深理解。这里我们先通过下图理解下 HBase 中，逻辑上的数据排布与物理上的数据排布之间的关系。</p>
+<h4 id="图-1-Hbase-中逻辑上数据的排布与物理上排布的关联"><a href="#图-1-Hbase-中逻辑上数据的排布与物理上排布的关联" class="headerlink" title="图 1. Hbase 中逻辑上数据的排布与物理上排布的关联"></a>图 1. Hbase 中逻辑上数据的排布与物理上排布的关联</h4><p><img src="http://syxtt.xin/ibm-hbase001.png" alt="img"></p>
+<p>从上图我们看到 Row1 到 Row5 的数据分布在两个 CF 中，并且每个 CF 对应一个 HFile。并且逻辑上每一行中的一个单元格数据，对应于 HFile 中的一行，然后当用户按照 Row-key 查询数据的时候，HBase 会遍历两个 HFile，通过相同的 Row-Key 标识，将相关的单元格组织成行返回，这样便有了逻辑上的行数据。讲解到这，我们就大致了解 HBase 中的数据排布格式，以及与 RDBMS 的一些区别。</p>
+<p>对于 RDBMS 来说，一般都是以 SQL 作为为主要的访问方式。而 HBase 是一种”NoSQL”数据库。”NoSQL”是一个通用词表示该数据库并</p>
+<p>是 RDBMS 。现在的市面上有许多种 NoSQL 数据库，如 BerkeleyDB 是本地 NoSQL 数据库的例子, HBase 则为大型分布式 NoSql 数据库。从技术上来说，Hbase 更像是”数据存储”而非”数据库”（HBase 和 HDFS 都属于大数据的存储层）。因此，HBase 缺少很多 RDBMS 特性，如列类型，二级索引，触发器和高级查询语言等。然而, HBase 也具有许多其他特征同时支持线性化和模块化扩充。最明显的方式，我们可以通过增加 Region Server 的数量扩展 HBase。并且 HBase 可以放在普通的服务器中，例如将集群从 5 个扩充到 10 个 Region Server 时，存储空间和处理容量都可以同时翻倍。当然 RDBMS 也能很好的扩充，但仅对一个点，尤其是对一个单独数据库服务器而言，为了更好的性能，往往需要特殊的硬件和存储设备（往往价格也非常昂贵）。</p>
+<h2 id="HBase-相关的模块以及-HBase-表格的特性"><a href="#HBase-相关的模块以及-HBase-表格的特性" class="headerlink" title="HBase 相关的模块以及 HBase 表格的特性"></a>HBase 相关的模块以及 HBase 表格的特性</h2><p>在这里，让我们了解下 HBase 都有哪些模块，以及大致的工作流程。前面我们提到过 HBase 也是构建于 HDFS 之上，这是正确的，但也不是完全正确。HBase 其实也支持直接在本地文件系统之上运行，不过这样的 HBase 只能运行在一台机器上，那么对于分布式大数据的环境是没有意义的（这也是所谓的 HBase 的单机模式）。一般只用于测试或者验证某一个 HBase 的功能，后面我们在详细的介绍 HBase 的几种运行模式。这里我们只要记得在分布式的生产环境中，HBase 需要运行在 HDFS 之上，以 HDFS 作为其基础的存储设施。HBase 上层提供了访问的数据的 Java API 层，供应用访问存储在 HBase 的数据。在 HBase 的集群中主要由 Master 和 Region Server 组成，以及 Zookeeper，具体模块如下图所示。</p>
+<h4 id="图-2-HBase-的相关模块"><a href="#图-2-HBase-的相关模块" class="headerlink" title="图 2. HBase 的相关模块"></a>图 2. HBase 的相关模块</h4><p><img src="http://syxtt.xin/ibm-hbase002.png" alt="img"></p>
+<p>接下来，我们简单的一一介绍下 HBase 中相关模块的作用。</p>
+<ul>
+<li><p>Master</p>
+<p>HBase Master 用于协调多个 Region Server，侦测各个 Region Server 之间的状态，并平衡 Region Server 之间的负载。HBase Master 还有一个职责就是负责分配 Region 给 Region Server。HBase 允许多个 Master 节点共存，但是这需要 Zookeeper 的帮助。不过当多个 Master 节点共存时，只有一个 Master 是提供服务的，其他的 Master 节点处于待命的状态。当正在工作的 Master 节点宕机时，其他的 Master 则会接管 HBase 的集群。</p>
+</li>
+<li><p>Region Server</p>
+<p>对于一个 Region Server 而言，其包括了多个 Region。Region Server 的作用只是管理表格，以及实现读写操作。Client 直接连接 Region Server，并通信获取 HBase 中的数据。对于 Region 而言，则是真实存放 HBase 数据的地方，也就说 Region 是 HBase 可用性和分布式的基本单位。如果当一个表格很大，并由多个 CF 组成时，那么表的数据将存放在多个 Region 之间，并且在每个 Region 中会关联多个存储的单元（Store）。</p>
+</li>
+<li><p>Zookeeper</p>
+<p>对于 HBase 而言，Zookeeper 的作用是至关重要的。首先 Zookeeper 是作为 HBase Master 的 HA 解决方案。也就是说，是 Zookeeper 保证了至少有一个 HBase Master 处于运行状态。并且 Zookeeper 负责 Region 和 Region Server 的注册。其实 Zookeeper 发展到目前为止，已经成为了分布式大数据框架中容错性的标准框架。不光是 HBase，几乎所有的分布式大数据相关的开源框架，都依赖于 Zookeeper 实现 HA。</p>
+</li>
+</ul>
+<p>一个完整分布式的 HBase 的工作原理示意图如下：</p>
+<h4 id="图-3-HBase-的工作原理"><a href="#图-3-HBase-的工作原理" class="headerlink" title="图 3. HBase 的工作原理"></a>图 3. HBase 的工作原理</h4><p><img src="http://syxtt.xin/ibm-hbase003.png" alt="img"></p>
+<p>在上面的图中，我们需要注意几个我们之前没有提到的概念：Store、MemStore、StoreFile 以及 HFile。带着这几个新的概念，我们完整的梳理下整个 HBase 的工作流程。</p>
+<p>首先我们需要知道 HBase 的集群是通过 Zookeeper 来进行机器之前的协调，也就是说 HBase Master 与 Region Server 之间的关系是依赖 Zookeeper 来维护。当一个 Client 需要访问 HBase 集群时，Client 需要先和 Zookeeper 来通信，然后才会找到对应的 Region Server。每一个 Region Server 管理着很多个 Region。对于 HBase 来说，Region 是 HBase 并行化的基本单元。因此，数据也都存储在 Region 中。这里我们需要特别注意，每一个 Region 都只存储一个 Column Family 的数据，并且是该 CF 中的一段（按 Row 的区间分成多个 Region）。Region 所能存储的数据大小是有上限的，当达到该上限时（Threshold），Region 会进行分裂，数据也会分裂到多个 Region 中，这样便可以提高数据的并行化，以及提高数据的容量。每个 Region 包含着多个 Store 对象。每个 Store 包含一个 MemStore，和一个或多个 HFile。MemStore 便是数据在内存中的实体，并且一般都是有序的。当数据向 Region 写入的时候，会先写入 MemStore。当 MemStore 中的数据需要向底层文件系统倾倒（Dump）时（例如 MemStore 中的数据体积到达 MemStore 配置的最大值），Store 便会创建 StoreFile，而 StoreFile 就是对 HFile 一层封装。所以 MemStore 中的数据会最终写入到 HFile 中，也就是磁盘 IO。由于 HBase 底层依靠 HDFS，因此 HFile 都存储在 HDFS 之中。这便是整个 HBase 工作的原理简述。</p>
+<p>我们了解了 HBase 大致的工作原理，那么在 HBase 的工作过程中，如何保证数据的可靠性呢？带着这个问题，我们理解下 HLog 的作用。HBase 中的 HLog 机制是 WAL 的一种实现，而 WAL（一般翻译为预写日志）是事务机制中常见的一致性的实现方式。每个 Region Server 中都会有一个 HLog 的实例，Region Server 会将更新操作（如 Put，Delete）先记录到 WAL（也就是 HLog）中，然后将其写入到 Store 的 MemStore，最终 MemStore 会将数据写入到持久化的 HFile 中（MemStore 到达配置的内存阀值）。这样就保证了 HBase 的写的可靠性。如果没有 WAL，当 Region Server 宕掉的时候，MemStore 还没有写入到 HFile，或者 StoreFile 还没有保存，数据就会丢失。或许有的读者会担心 HFile 本身会不会丢失，这是由 HDFS 来保证的。在 HDFS 中的数据默认会有 3 份。因此这里并不考虑 HFile 本身的可靠性。</p>
+<p>前面，我们很多次提到了 HFile，也就是 HBase 持久化的存储文件。也许有的读者还不能完全理解 HFile，这里我们便详细的看看 HFile 的结构，如下图。</p>
+<h4 id="图-4-HFile-的结构"><a href="#图-4-HFile-的结构" class="headerlink" title="图 4. HFile 的结构"></a>图 4. HFile 的结构</h4><p><img src="http://syxtt.xin/ibm-hbase004.png" alt="img"></p>
+<p>从图中我们可以看到 HFile 由很多个数据块（Block）组成，并且有一个固定的结尾块。其中的数据块是由一个 Header 和多个 Key-Value 的键值对组成。在结尾的数据块中包含了数据相关的索引信息，系统也是通过结尾的索引信息找到 HFile 中的数据。HFile 中的数据块大小默认为 64KB。如果访问 HBase 数据库的场景多为有序的访问，那么建议将该值设置的大一些。如果场景多为随机访问，那么建议将该值设置的小一些。一般情况下，通过调整该值可以提高 HBase 的性能。</p>
+<p>如果要用很短的一句话总结 HBase，我们可以认为 HBase 就是一个有序的多维 Map，其中每一个 Row-key 映射了许多数据，这些数据存储在 CF 中的 Column。我们可以用下图来表示这句话。</p>
+<h4 id="图-5-HBase-的数据映射关系"><a href="#图-5-HBase-的数据映射关系" class="headerlink" title="图 5. HBase 的数据映射关系"></a>图 5. HBase 的数据映射关系</h4><p><img src="http://syxtt.xin/ibm-hbase005.png" alt="img"></p>
+<h2 id="HBase-的使用建议"><a href="#HBase-的使用建议" class="headerlink" title="HBase 的使用建议"></a>HBase 的使用建议</h2><p>之前我介绍了很多 HBase 与 RDBMS 的区别，以及一些优势的地方。那么什么时候最需要 HBase，或者说 HBase 是否可以替代原有的 RDBMS？对于这个问题，我们必须时刻谨记——HBase 并不适合所有问题，其设计目标并不是替代 RDBMS，而是对 RDBMS 的一个重要补充，尤其是对大数据的场景。当需要考量 HBase 作为一个备选项时，我们需要进行如下的调研工作。</p>
+<p>首先，要确信有足够多数据，如果有上亿或上千亿行数据，HBase 才会是一个很好的备选。其次，需要确信业务上可以不依赖 RDBMS 的额外特性，例如，列数据类型, 二级索引，SQL 查询语言等。再而，需要确保有足够硬件。且不说 HBase，一般情况下当 HDFS 的集群小于 5 个数据节点时，也干不好什么事情 (HDFS 默认会将每一个 Block 数据备份 3 分)，还要加上一个 NameNode。</p>
+<p>以下我给了一些使用 HBase 时候对表格设计的一些建议，读者也可以理解背后的含义。不过我并不希望这些建议成为使用 HBase 的教条，毕竟也有不尽合理的地方。首先，一个 HBase 数据库是否高效，很大程度会和 Row-Key 的设计有关。因此，如何设计 Row-key 是使用 HBase 时，一个非常重要的话题。随着数据访问方式的不同，Row-Key 的设计也会有所不同。不过概括起来的宗旨只有一个，那就是尽可能选择一个 Row-Key，可以使你的数据均匀的分布在集群中。这也很容易理解，因为 HBase 是一个分布式环境，Client 会访问不同 Region Server 获取数据。如果数据排布均匀在不同的多个节点，那么在批量的 Client 便可以从不同的 Region Server 上获取数据，而不是瓶颈在某一个节点，性能自然会有所提升。对于具体的建议我们一般有几条：</p>
+<ol>
+<li>当客户端需要频繁的写一张表，随机的 RowKey 会获得更好的性能。</li>
+<li>当客户端需要频繁的读一张表，有序的 RowKey 则会获得更好的性能。</li>
+<li>对于时间连续的数据（例如 log），有序的 RowKey 会很方便查询一段时间的数据（Scan 操作）。</li>
+</ol>
+<p>上面我们谈及了对 Row-Key 的设计，接着我们需要想想是否 Column Family 也会在不同的场景需要不同的设计方案呢。答案是肯定的，不过 CF 跟 Row-key 比较的话，确实也简单一些，但这并不意味着 CF 的设计就是一个琐碎的话题。在 RDBMS（传统关系数据库）系统中，我们知道如果当用户的信息分散在不同的表中，便需要根据一个 Key 进行 Join 操作。而在 HBase 中，我们需要设计 CF 来聚合用户所有相关信息。简单来说，就是需要将数据按类别（或者一个特性）聚合在一个或多个 CF 中。这样，便可以根据 CF 获取这类信息。上面，我们讲解过一个 Region 对应于一个 CF。那么设想，如果在一个表中定义了多个 CF 时，就必然会有多个 Region。当 Client 查询数据时，就不得不查询多个 Region。这样性能自然会有所下降，尤其当 Region 夸机器的时候。因此在大多数的情况下，一个表格不会超过 2 到 3 个 CF，而且很多情况下都是 1 个 CF 就足够了。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/大数据技术/">大数据技术</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    8 分钟 读完 (大约 1196 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/MAC下搭建大数据开发环境/">Mac环境下搭建大数据开发环境</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="Mac下搭建大数据开发环境"><a href="#Mac下搭建大数据开发环境" class="headerlink" title="Mac下搭建大数据开发环境"></a>Mac下搭建大数据开发环境</h1><p>环境比较浪费时间，结合自己搭建环境的经验，整理成文档。</p>
+<h2 id="安装JDK-和-SCALA"><a href="#安装JDK-和-SCALA" class="headerlink" title="安装JDK 和 SCALA"></a>安装JDK 和 SCALA</h2><p><strong>所有的前置条件是安装JDK，我用的是JDK8.x</strong></p>
+<p>java version “1.8.0_162”</p>
+<p>Java(TM) SE Runtime Environment (build 1.8.0_162-b12)</p>
+<p>Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)</p>
+<p>Scala code runner version 2.12.4 – Copyright 2002-2017, LAMP/EPFL and Lightbend, Inc.</p>
+<h2 id="Spark-V2-3-0"><a href="#Spark-V2-3-0" class="headerlink" title="Spark V2.3.0"></a>Spark V2.3.0</h2><p><img src="file:////Users/wangsiyuan1/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image001.png" alt="img"></p>
+<p>Spark安装比较简单，也没什么坑。网上一大堆，随意搞。</p>
+<h2 id="vmvare虚拟机"><a href="#vmvare虚拟机" class="headerlink" title="vmvare虚拟机"></a>vmvare虚拟机</h2><p>安装vmware fusion</p>
+<h2 id="虚拟下安装Hadoop-amp-hive"><a href="#虚拟下安装Hadoop-amp-hive" class="headerlink" title="虚拟下安装Hadoop &amp; hive"></a>虚拟下安装Hadoop &amp; hive</h2><p>1、hadoop伪分布式部署，版本 2.7.1, sbin/start-all.sh , sbin/stop-all.sh。jps验证其服务是否启动完全</p>
+<p>2、hive用mysql（我用的是mariaDB，比安装Mysql省事）做元数据库，版本2.1.1 hive。hive-env.sh,hive-site.xml  hdfs dfs -ls /user/hive/warehouse hive表都存到这个目录下</p>
+<p>4、关闭防火墙 永久关闭： chkconfig iptables off  及时生效service iptables stop</p>
+<p>5、mac 下 虚拟机vmware Fution</p>
+<p>6、ssh -p 22 <a href="mailto:root@172.16.192.130" target="_blank" rel="noopener">root@172.16.192.130</a> ssh链接虚拟机</p>
+<p>core-site.xml</p>
+ <figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.tmp.dir<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>/soft/data/hadoop/tmp<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">description</span>&gt;</span>Abase for other temporary directories.<span class="hljs-tag">&lt;/<span class="hljs-name">description</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>fs.defaultFS<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hdfs://172.16.192.130:9000<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.native.lib<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">description</span>&gt;</span>Should native hadoop libraries, if present, be used.						<span class="hljs-tag">&lt;/<span class="hljs-name">description</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>hdfs-site.xml</p>
+<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.replication<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">         <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.permissions<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>启动方式：</p>
+<p>$HADOOP_HOME/sbin/start-all   </p>
+<p> 3825 Jps</p>
+<p>3089 DataNode</p>
+<p>3252 SecondaryNameNode</p>
+<p>2903 NameNode</p>
+<p>3405 ResourceManager</p>
+<p>3695 NodeManager</p>
+<h2 id="虚拟机下安装Mysql-当做Hive的元数据库"><a href="#虚拟机下安装Mysql-当做Hive的元数据库" class="headerlink" title="虚拟机下安装Mysql,当做Hive的元数据库"></a>虚拟机下安装Mysql,当做Hive的元数据库</h2><p>service mysql status 查看mysql是否启动</p>
+<p>service mysql start 启动mysql服务</p>
+<p>mysql用的mariaDB,yum安装，搜索“centOS 6 yum安装 mariaDB”。mySQL 启动：service mysql start,service mysql status</p>
+<p>查看HIVE元数据：</p>
+<p>mysql -uroot -p 访问mysql</p>
+<p>use hive;</p>
+<p>show tables;</p>
+<h2 id="虚拟机下安装Hbase"><a href="#虚拟机下安装Hbase" class="headerlink" title="虚拟机下安装Hbase"></a>虚拟机下安装Hbase</h2><p>1、 进入hbase官网，下载hbase1.2.1，因为本地的hadoop版本是2.7.1，要注意hbase和hadoop的兼容性。</p>
+<p>2、 下载之后，tar -zxvf hbase-1.2.1-bin.tar.gz</p>
+<p>3、 修改hbase conf目录下hbase-site.xml文件</p>
+<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span></span><br><span class="line">	<span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">      <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hbase.rootdir<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hdfs://192.168.2.100:9000/hbase<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span> </span><br><span class="line">注意别忘了端口号，URL要和hadoop core-site.xml保持一致</span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">         <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hbase.cluster.distributed<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span></span><br><span class="line">         <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">         <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hbase.zookeeper.property.dataDir<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span></span><br><span class="line">         <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>/soft/zkdata<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>注意/soft/zkdata要有读写权限</span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>4、 修改conf 下的 hbase-env.sh</p>
+<p>export JAVA_HOME=/soft/jdk1.8.0_171</p>
+<p>export HBASE_CLASSPATH=$HADOOP_HOME/conf</p>
+<p>export HBASE_MANAGES_ZK=true 这个值默认是true的，作用是让HBase启动的时候同时也启动zookeeper.</p>
+<p>5、 启动hbase ./start-hbase.sh,执行JPS会看到如下进程。</p>
+<p>[root@localhost bin]# jps</p>
+<p>20979 DataNode</p>
+<p>21315 ResourceManager</p>
+<p>22180 HRegionServer</p>
+<p>21605 NodeManager</p>
+<p>21158 SecondaryNameNode</p>
+<p>21961 HQuorumPeer</p>
+<p>23116 Jps</p>
+<p>22060 HMaster</p>
+<p>20845 NameNode</p>
+<p>6、 启动Hbase shell, bin/hbase shell，执行命令测试下Hbase shell能否正常工作。</p>
+<p>hbase(main):001:0&gt; list “test”</p>
+<p>TABLE                                                                                                            </p>
+<p>test                                                                                                             </p>
+<p>1 row(s) in 0.3870 seconds</p>
+<p>=&gt; [“test”]</p>
+<h2 id="遇到的雷"><a href="#遇到的雷" class="headerlink" title="遇到的雷"></a>遇到的雷</h2><p>本地SPARK连HIVE，需要把虚拟机中 hive_home/conf/hive-site.xml 复制到spark_home/conf下一份，并且需要把mysql驱动放到$spark_home/jars中</p>
+<p>需要把虚拟机中的MYSQL （hive元数据库）权限调成任何IP都能访问。GRANT ALL PRIVILEGES ON <em>.</em> TO  ‘root‘@’%’ IDENTIFIED BY ‘123456’; 执行flush privileges;刷新权限。</p>
+<p>如果遇到这个错误。 Hive Schema version 1.2.0 does not match metastore’s schema version 2.1.0 Metastore is not upgraded or corrupt。 需要把hive-site.xml设置成hive.metastore.schema.verification = false</p>
+<p>hive.exec.local.scratchdir，hive.querylog.location，hive.server2.logging.operation.log.location 都配置成 /tmp/root。之前放到apache-hive目录下，会报错。</p>
+<p>ElasticSearch-hadoop 6.2.3 匹配es 6.x ;ElasticSearch-hadoop 5.2.3 匹配 es 5.x </p>
+<p>mac 改成静态IP <a href="https://blog.csdn.net/zhishengqianjun/article/details/77046796" target="_blank" rel="noopener">https://blog.csdn.net/zhishengqianjun/article/details/77046796</a></p>
+<p>本地调用Hbase API的时候，需要执行以下三个步骤，不然就会找不到regionServer反复重试，照成阻塞。</p>
+<p>1、 配置Linux的hostname :vim /etc/sysconfig/network</p>
+<p>NETWORKING=yes</p>
+<p>HOSTNAME=master</p>
+<p>2、 配置Linux的hosts，映射ip的hostname的关系</p>
+<p>127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</p>
+<p>::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</p>
+<p>193.168.2.100 master</p>
+<p>3、配置访问windows的hosts，192.168.2.100 master</p>
+<h2 id="mac下安装ElasticSearch"><a href="#mac下安装ElasticSearch" class="headerlink" title="mac下安装ElasticSearch"></a>mac下安装ElasticSearch</h2><p>特别简单，自行google</p>
+<p>brew services restart elasticsearch</p>
+<p>brew services restart kibana</p>
+<p>elasticsearch –version 观察es版本</p>
+<p>安装目录： /usr/local/Cellar/elasticsearch/6.2.4</p>
+<p>brew info elasticsearch 可以查看elasticsearch的详情。很实用的命令。</p>
+<h2 id="Mac下vmware-静态IP"><a href="#Mac下vmware-静态IP" class="headerlink" title="Mac下vmware 静态IP"></a>Mac下vmware 静态IP</h2><p>虚拟机默认是动态分配IP，一旦IP变更，大数据的环境会有问题。静态IP是必须要解决的问题。</p>
+<p><a href="https://blog.csdn.net/zhishengqianjun/article/details/77046796" target="_blank" rel="noopener">https://blog.csdn.net/zhishengqianjun/article/details/77046796</a></p>
+<p>照着这个帖子，一步一步来。稳稳的。</p>
+<h2 id="Idea中执行spark-sql"><a href="#Idea中执行spark-sql" class="headerlink" title="Idea中执行spark sql"></a>Idea中执行spark sql</h2><p><img src="file:////Users/wangsiyuan1/Library/Group%20Containers/UBF8T346G9.Office/TemporaryItems/msohtmlclip/clip_image002.png" alt="img"></p>
+<p>需要把spark_home/conf下的hive-site.xml复制到resource目录下。</p>
+<p>另外，如果pom中没有mysql jar包的话，需要加入。</p>
+<h2 id="将hdfs-文件关联到hive上"><a href="#将hdfs-文件关联到hive上" class="headerlink" title="将hdfs 文件关联到hive上"></a>将hdfs 文件关联到hive上</h2><p>1、 首先在虚拟机hive上，创建好表结构</p>
+<p>2、 登录线上的hive，找到hive对应的HDFS文件，copy一个part下来。</p>
+<p>3、 传到虚拟机的hdfs上</p>
+<p>4、执行ALTER TABLE xxx ADD PARTITION (dt=’2013-02-28’)<br> LOCATION ‘/wsy’; （如果是lzo压缩过的文件，执行lzop -dv 001008_0.lzo 解压缩，不然hive读的时候会乱码）</p>
+<p>5、 大功告成。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/大数据技术/">大数据技术</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    6 分钟 读完 (大约 875 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/Hbase系列5-javademo/">Hbase系列5-javademo</a>
+            
+        </h1>
+        <div class="content">
+            <p>基于Hadoop2.7.1 + Hbase 1.2.1 + HbaseClientAPI 1.2.8</p>
+<figure class="highlight scala hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">package</span> com.jd.union.spark</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> java.io.<span class="hljs-type">IOException</span></span><br><span class="line"><span class="hljs-keyword">import</span> java.security.<span class="hljs-type">MessageDigest</span></span><br><span class="line"><span class="hljs-keyword">import</span> java.text.<span class="hljs-type">SimpleDateFormat</span></span><br><span class="line"><span class="hljs-keyword">import</span> java.util</span><br><span class="line"><span class="hljs-keyword">import</span> java.util._</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> org.apache.hadoop.hbase._</span><br><span class="line"><span class="hljs-keyword">import</span> org.apache.hadoop.hbase.client.&#123;<span class="hljs-type">ConnectionFactory</span>, <span class="hljs-type">HBaseAdmin</span>, _&#125;</span><br><span class="line"><span class="hljs-keyword">import</span> org.apache.hadoop.hbase.util.<span class="hljs-type">Bytes</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">SkuDataToHBaseJob</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Serializable</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">val</span> dateFormat = <span class="hljs-keyword">new</span> <span class="hljs-type">SimpleDateFormat</span>(<span class="hljs-string">"yyyyMMdd"</span>)</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">var</span> conf = <span class="hljs-type">HBaseConfiguration</span>.create()</span><br><span class="line">  conf.set(<span class="hljs-string">"hbase.zookeeper.quorum"</span>, <span class="hljs-string">"192.168.2.100"</span>)</span><br><span class="line">  conf.set(<span class="hljs-string">"hbase.zookeeper.property.clientPort"</span>, <span class="hljs-string">"2181"</span>)</span><br><span class="line">  <span class="hljs-keyword">val</span> conn = <span class="hljs-type">ConnectionFactory</span>.createConnection(conf)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;</span><br><span class="line">    <span class="hljs-keyword">val</span> skuId = <span class="hljs-string">"129399424324"</span></span><br><span class="line">    <span class="hljs-keyword">val</span> orKey = dateFormat.format(<span class="hljs-keyword">new</span> <span class="hljs-type">Date</span>()) + <span class="hljs-string">"$"</span> + skuId</span><br><span class="line">    <span class="hljs-comment">//todo 取前四位 + skuId + date 当做rowkey，避免热点数据</span></span><br><span class="line">    <span class="hljs-keyword">val</span> rowkey = md5(orKey)</span><br><span class="line">    <span class="hljs-keyword">val</span> data: <span class="hljs-type">String</span> = <span class="hljs-string">" &#123;\"abParam\":\"nature\",\"abVersion\":\"comm\",\"adowner\":\"p_10026704\",\"bestCouponId\":\"92737319\",\"brandCode\":382820,\"brandName\":\"谷邦（GUBANG）\",\"cid1\":1620,\"cid1Name\":\"家居日用\",\"cid2\":13780,\"cid2Name\":\"收纳用品\",\"cid3\":13785,\"cid3Name\":\"收纳架/篮\",\"color\":\"2个装北欧粉\",\"comments\":11,\"couponId\":0,\"couponLink\":\"\",\"createTime\":\"2019-01-22T05:44:42.969Z\",\"deliveryType\":0,\"endTime\":\"2999-01-01 23:59:59\",\"goodComments\":11,\"goodCommentsShare\":100,\"hasCoupon\":1,\"imageUrl\":\"jfs/t1/10013/33/7229/24225/5c286dfaEacd0c6a2/f16290038d59eea6.jpg\",\"imgList\":\"jfs/t1/8948/19/11086/256803/5c286df9E594f189f/5a2af0eeda043878.jpg|jfs/t1/23576/23/3598/256769/5c286df9E1e32d799/62ced8312a144260.jpg|jfs/t1/10013/33/7229/24225/5c286dfaEacd0c6a2/f16290038d59eea6.jpg|jfs/t1/26566/34/4201/410351/5c2f5aa6Eb441c098/fc86afded2d6334d.png|jfs/t1/20665/7/3549/279989/5c286dfaE5a253816/1dfab92f62045e00.jpg|jfs/t1/20297/14/3513/296706/5c286df4Efecc5d55/971d9dad36ea6788.jpg\",\"inOrderComm30Days\":129.07,\"inOrderComm30DaysSku\":84.35,\"inOrderCount30Days\":58,\"inOrderCount30DaysSku\":36,\"isCare\":0,\"isHot\":1,\"isLock\":0,\"isNew\":0,\"isOversea\":0,\"isPinGou\":1,\"isSeckill\":0,\"isStuPrice\":0,\"itemTag\":0,\"lowestPrice\":9.90,\"majorSuppBrevityCode\":\"\",\"orientationFlag\":0,\"owner\":\"p\",\"pcCommission\":5.97,\"pcCommissionShare\":30.0,\"pcPrice\":19.90,\"pid\":40520301670,\"pingouActiveId\":15461534722120,\"pingouEnd\":\"2037-08-16 09:30:48\",\"pingouPrice\":9.90,\"pingouStart\":\"2018-12-30 15:05:02\",\"pingouTmCount\":2,\"planId\":1507475989,\"qualityScore\":0.0631,\"qualityScoreNew\":0.4147,\"rfId\":0,\"ruleType\":7,\"seckillOriPrice\":0.0,\"seckillPrice\":0.0,\"shelvesTm\":\"2018-12-30 15:04:32.0\",\"shopId\":863648,\"size\":\"\",\"skuId\":40520301670,\"skuName\":\"谷邦-两个装卫生间牙刷架壁挂式免打孔浴室置物吸盘梳子筒座牙膏杯吸壁收纳盒 2个装北欧粉\",\"startTime\":\"2019-01-11 00:00:00\",\"stuPrice\":0.0,\"themeFlag\":2,\"unionCoupon\":[&#123;\"batchId\":92737319,\"beginTime\":\"2019-01-10 14:22:00\",\"couponKind\":3,\"couponType\":1,\"createTime\":\"2019-01-18T09:50:26.589Z\",\"createUser\":\"lisen43\",\"discount\":8.0,\"endTime\":\"2019-01-31 14:23:00\",\"expireType\":5,\"key\":\"3172a45b3f8242d2ba92141a7c26b66d\",\"link\":\"http://coupon.m.jd.com/coupons/show.action?key=3172a45b3f8242d2ba92141a7c26b66d&amp;roleId=17184533&amp;to=mall.jd.com/index-863648.html\",\"ownerType\":\"92,95,444,498\",\"platformType\":0,\"quota\":17.0,\"remainCnt\":19965,\"source\":3,\"updateTime\":\"2019-01-18T09:50:26.589Z\",\"useEndTime\":\"2019-01-31 23:59:59\",\"useStartTime\":\"2019-01-10 00:00:00\",\"venderId\":10026704&#125;],\"updateTime\":\"2019-01-22T15:01:31.194Z\",\"venderName\":\"谷邦家居拼购店\",\"vid\":10026704,\"wareId\":12567523910,\"wlCommission\":5.97,\"wlCommissionShare\":30.0,\"wlPrice\":19.90&#125;"</span></span><br><span class="line">    <span class="hljs-keyword">val</span> tableName = <span class="hljs-string">"union_search_sku"</span></span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">      addData(rowkey, tableName, <span class="hljs-string">"cf"</span>, <span class="hljs-string">"value"</span>, data)</span><br><span class="line">      get(rowkey, tableName)</span><br><span class="line">      println(<span class="hljs-string">"scan----------------"</span>)</span><br><span class="line">      scan(tableName)</span><br><span class="line">      <span class="hljs-comment">//createTable("admin_create")</span></span><br><span class="line">      <span class="hljs-comment">//del(tableName, "20190909$2")</span></span><br><span class="line">      println(<span class="hljs-string">"创建表成功"</span>)</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">case</span> e: <span class="hljs-type">Exception</span> =&gt; &#123;</span><br><span class="line">        e.printStackTrace()</span><br><span class="line">        <span class="hljs-literal">null</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">md5</span></span>(source: <span class="hljs-type">String</span>): <span class="hljs-type">String</span> = &#123;</span><br><span class="line">    <span class="hljs-keyword">val</span> sb = <span class="hljs-keyword">new</span> <span class="hljs-type">StringBuffer</span>(<span class="hljs-number">32</span>)</span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">val</span> md = <span class="hljs-type">MessageDigest</span>.getInstance(<span class="hljs-string">"MD5"</span>)</span><br><span class="line">      <span class="hljs-keyword">val</span> bytes = md.digest(source.getBytes(<span class="hljs-string">"utf-8"</span>))</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">for</span> (i &lt;- <span class="hljs-number">0</span> to bytes.length) &#123;</span><br><span class="line">        sb.append(<span class="hljs-type">Integer</span>.toHexString((bytes.apply(i) &amp; <span class="hljs-number">0xFF</span>) | <span class="hljs-number">0x100</span>).toLowerCase().substring(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">case</span> e: <span class="hljs-type">Exception</span> =&gt; <span class="hljs-literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">    sb.toString()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-meta">@throws</span>[<span class="hljs-type">IOException</span>]</span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">addData</span></span>(rowKey: <span class="hljs-type">String</span>, tableName: <span class="hljs-type">String</span>, cf: <span class="hljs-type">String</span>, column: <span class="hljs-type">String</span>, value: <span class="hljs-type">String</span>): <span class="hljs-type">Unit</span> = &#123;</span><br><span class="line">    <span class="hljs-keyword">val</span> put = <span class="hljs-keyword">new</span> <span class="hljs-type">Put</span>(<span class="hljs-type">Bytes</span>.toBytes(rowKey))</span><br><span class="line">    println(<span class="hljs-string">"开始创建table"</span>)</span><br><span class="line">    <span class="hljs-keyword">val</span> table = conn.getTable(<span class="hljs-type">TableName</span>.valueOf(tableName))</span><br><span class="line">    println(<span class="hljs-string">"创建结束"</span>)</span><br><span class="line">    <span class="hljs-comment">// 获取表</span></span><br><span class="line">    put.addColumn(<span class="hljs-type">Bytes</span>.toBytes(cf), <span class="hljs-type">Bytes</span>.toBytes(column), <span class="hljs-type">Bytes</span>.toBytes(value))</span><br><span class="line">    table.put(put)</span><br><span class="line">    <span class="hljs-type">System</span>.out.println(<span class="hljs-string">"add data Success!"</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-meta">@throws</span>[<span class="hljs-type">IOException</span>]</span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get</span></span>(rowKey: <span class="hljs-type">String</span>, tableName: <span class="hljs-type">String</span>): <span class="hljs-type">Unit</span> = &#123;</span><br><span class="line">    <span class="hljs-keyword">val</span> get = <span class="hljs-keyword">new</span> <span class="hljs-type">Get</span>(<span class="hljs-type">Bytes</span>.toBytes(rowKey))</span><br><span class="line">    <span class="hljs-keyword">val</span> table = conn.getTable(<span class="hljs-type">TableName</span>.valueOf(tableName))</span><br><span class="line">    <span class="hljs-keyword">val</span> result: <span class="hljs-type">Result</span> = table.get(get)</span><br><span class="line">    <span class="hljs-keyword">val</span> it = result.listCells().iterator()</span><br><span class="line">    <span class="hljs-keyword">while</span> (it.hasNext) &#123;</span><br><span class="line">      <span class="hljs-keyword">val</span> cell: <span class="hljs-type">Cell</span> = it.next()</span><br><span class="line">      cell.getValueArray</span><br><span class="line">      println(<span class="hljs-string">"value:"</span> + <span class="hljs-type">Bytes</span>.toString(cell.getValueArray, cell.getValueOffset, cell.getValueLength))</span><br><span class="line">      println(<span class="hljs-string">"column familly:"</span> + <span class="hljs-type">Bytes</span>.toString(cell.getValueArray, cell.getFamilyOffset, cell.getFamilyLength))</span><br><span class="line">      println(<span class="hljs-string">"Qualifier:"</span> + <span class="hljs-type">Bytes</span>.toString(cell.getValueArray, cell.getQualifierOffset, cell.getQualifierLength))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">scan</span></span>(tableName: <span class="hljs-type">String</span>): <span class="hljs-type">Unit</span> = &#123;</span><br><span class="line">    <span class="hljs-keyword">val</span> scan = <span class="hljs-keyword">new</span> <span class="hljs-type">Scan</span>()</span><br><span class="line">    <span class="hljs-keyword">var</span> rs: <span class="hljs-type">ResultScanner</span> = <span class="hljs-literal">null</span></span><br><span class="line">    <span class="hljs-keyword">val</span> table = conn.getTable(<span class="hljs-type">TableName</span>.valueOf(tableName))</span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">      rs = table.getScanner(scan)</span><br><span class="line">      <span class="hljs-keyword">val</span> it = rs.iterator()</span><br><span class="line">      <span class="hljs-keyword">while</span> (it.hasNext) &#123;</span><br><span class="line">        <span class="hljs-keyword">val</span> cellIt = it.next().listCells().iterator()</span><br><span class="line">        <span class="hljs-keyword">while</span> (cellIt.hasNext) &#123;</span><br><span class="line">          <span class="hljs-keyword">val</span> kv = cellIt.next()</span><br><span class="line">          println(<span class="hljs-string">"value:"</span> + <span class="hljs-type">Bytes</span>.toString(kv.getValueArray, kv.getValueOffset, kv.getValueLength))</span><br><span class="line">          println(<span class="hljs-string">"column familly:"</span> + <span class="hljs-type">Bytes</span>.toString(kv.getValueArray, kv.getFamilyOffset, kv.getFamilyLength))</span><br><span class="line">          println(<span class="hljs-string">"Qualifier:"</span> + <span class="hljs-type">Bytes</span>.toString(kv.getValueArray, kv.getQualifierOffset, kv.getQualifierLength))</span><br><span class="line">          <span class="hljs-type">System</span>.out.println(<span class="hljs-string">"timestamp:"</span> + kv.getTimestamp)</span><br><span class="line">          <span class="hljs-type">System</span>.out.println(<span class="hljs-string">"-------------------------------------------"</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="hljs-keyword">finally</span> rs.close()</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">createTable</span></span>(tableName: <span class="hljs-type">String</span>): <span class="hljs-type">Unit</span> = &#123;</span><br><span class="line">    <span class="hljs-keyword">val</span> admin = conn.getAdmin.asInstanceOf[<span class="hljs-type">HBaseAdmin</span>]</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">val</span> tn = <span class="hljs-type">TableName</span>.valueOf(tableName)</span><br><span class="line">    <span class="hljs-keyword">val</span> descriptor: <span class="hljs-type">HTableDescriptor</span> = <span class="hljs-keyword">new</span> <span class="hljs-type">HTableDescriptor</span>(tn)</span><br><span class="line">    <span class="hljs-keyword">val</span> cf = <span class="hljs-keyword">new</span> <span class="hljs-type">HColumnDescriptor</span>(<span class="hljs-string">"cf"</span>)</span><br><span class="line">    descriptor.addFamily(cf)</span><br><span class="line">    admin.createTable(descriptor)</span><br><span class="line">    admin.close()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">del</span></span>(tableName: <span class="hljs-type">String</span>, rowkey: <span class="hljs-type">String</span>): <span class="hljs-type">Unit</span> = &#123;</span><br><span class="line">    <span class="hljs-keyword">val</span> table = conn.getTable(<span class="hljs-type">TableName</span>.valueOf(tableName))</span><br><span class="line">    <span class="hljs-keyword">val</span> del = <span class="hljs-keyword">new</span> <span class="hljs-type">Delete</span>(<span class="hljs-type">Bytes</span>.toBytes(rowkey))</span><br><span class="line">    table.delete(del)</span><br><span class="line"></span><br><span class="line">    table.close()</span><br><span class="line">    println(<span class="hljs-string">"删除成功"</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">    * 根据时间戳，删除数据</span></span><br><span class="line"><span class="hljs-comment">    * @param tableName</span></span><br><span class="line"><span class="hljs-comment">    * @param minTime</span></span><br><span class="line"><span class="hljs-comment">    * @param maxTime</span></span><br><span class="line"><span class="hljs-comment">    */</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">deleteTimeRange</span></span>(tableName: <span class="hljs-type">String</span>, minTime: <span class="hljs-type">Long</span>, maxTime: <span class="hljs-type">Long</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">var</span> table = conn.getTable(<span class="hljs-type">TableName</span>.valueOf(tableName))</span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">val</span> scan = <span class="hljs-keyword">new</span> <span class="hljs-type">Scan</span>()</span><br><span class="line">      scan.setTimeRange(minTime, maxTime)</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">val</span> rs = table.getScanner(scan)</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">val</span> list = getDeleteList(rs)</span><br><span class="line">      <span class="hljs-keyword">if</span> (list.size() &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">        table.delete(list)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">case</span> e: <span class="hljs-type">Exception</span> =&gt; e.printStackTrace()</span><br><span class="line">    &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">      table.close()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getDeleteList</span></span>(rs: <span class="hljs-type">ResultScanner</span>): util.<span class="hljs-type">List</span>[<span class="hljs-type">Delete</span>] = &#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">val</span> list = <span class="hljs-keyword">new</span> util.<span class="hljs-type">ArrayList</span>[<span class="hljs-type">Delete</span>]()</span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">      <span class="hljs-keyword">for</span> (r: <span class="hljs-type">Result</span> &lt;- rs) &#123;</span><br><span class="line">        <span class="hljs-keyword">val</span> d = <span class="hljs-keyword">new</span> <span class="hljs-type">Delete</span>(r.getRow())</span><br><span class="line">        list.add(d)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">      rs.close()</span><br><span class="line">    &#125;</span><br><span class="line">    list</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                    <figure class="image is-128x128 has-mb-6">
+                        <img class="" src="/images/avatar.png" alt="Your name">
+                    </figure>
+                    
+                    <p class="is-size-4 is-block">
+                        Your name
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Your title
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Your location</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        48
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        48
+                    </p>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Github" href="https://github.com/ppoffice">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Facebook" href="https://facebook.com">
+                
+                <i class="fab fa-facebook"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Twitter" href="https://twitter.com">
+                
+                <i class="fab fa-twitter"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Dribbble" href="https://dribbble.com">
+                
+                <i class="fab fa-dribbble"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://hexo.io" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hexo.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://github.com/ppoffice" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">PPOffice</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">github.com</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Java/">
+            <span class="level-start">
+                <span class="level-item">Java</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/SpringCloud/">
+            <span class="level-start">
+                <span class="level-item">SpringCloud</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">9</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/reactor/">
+            <span class="level-start">
+                <span class="level-item">reactor</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/大数据技术/">
+            <span class="level-start">
+                <span class="level-item">大数据技术</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/开发工具/">
+            <span class="level-start">
+                <span class="level-item">开发工具</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/搜索/">
+            <span class="level-start">
+                <span class="level-item">搜索</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">13</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/">
+            <span class="level-start">
+                <span class="level-item">机器学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/软件架构/">
+            <span class="level-start">
+                <span class="level-item">软件架构</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 11.43px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactive/" style="font-size: 10px;">reactive</a> <a href="/tags/reactor/" style="font-size: 11.43px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
+    </div>
+</div>
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/10/28/reactor/reactive&rector 简介/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactive&amp;reactor简介">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-28T15:33:16.000Z">2019-10-28</time></div>
+                    <a href="/2019/10/28/reactor/reactive&rector 简介/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactive&amp;reactor简介</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/reactor/">reactor</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(2)-反应式编程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(2)-反应式编程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(3)- 路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(3)- 路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/6entinel/">
+                        <span class="tag">6entinel</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/APR/">
+                        <span class="tag">APR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Apollo/">
+                        <span class="tag">Apollo</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BM25/">
+                        <span class="tag">BM25</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ElasticSearch/">
+                        <span class="tag">ElasticSearch</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Embedded-Tomcat/">
+                        <span class="tag">Embedded Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAProxy/">
+                        <span class="tag">HAProxy</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Hbase/">
+                        <span class="tag">Hbase</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/IK/">
+                        <span class="tag">IK</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JVM/">
+                        <span class="tag">JVM</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LTR/">
+                        <span class="tag">LTR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LVS/">
+                        <span class="tag">LVS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Nginx/">
+                        <span class="tag">Nginx</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Boot/">
+                        <span class="tag">Spring Boot</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud/">
+                        <span class="tag">Spring Cloud</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud-Gateway/">
+                        <span class="tag">Spring Cloud Gateway</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/SpringCloud/">
+                        <span class="tag">SpringCloud</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/TF-IDF/">
+                        <span class="tag">TF-IDF</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Tomcat/">
+                        <span class="tag">Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jenkins/">
+                        <span class="tag">jenkins</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jmeter/">
+                        <span class="tag">jmeter</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lucene/">
+                        <span class="tag">lucene</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactive/">
+                        <span class="tag">reactive</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactor/">
+                        <span class="tag">reactor</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring/">
+                        <span class="tag">spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-boot/">
+                        <span class="tag">spring-boot</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-cloud/">
+                        <span class="tag">spring-cloud</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/webFlux/">
+                        <span class="tag">webFlux</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/倒排索引/">
+                        <span class="tag">倒排索引</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/分词/">
+                        <span class="tag">分词</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/反应式编程/">
+                        <span class="tag">反应式编程</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/向量空间模型/">
+                        <span class="tag">向量空间模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工厂模式/">
+                        <span class="tag">工厂模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/布尔模型/">
+                        <span class="tag">布尔模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/建造者模式/">
+                        <span class="tag">建造者模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/开发工具/">
+                        <span class="tag">开发工具</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/微服务/">
+                        <span class="tag">微服务</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/搜索/">
+                        <span class="tag">搜索</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/相关性/">
+                        <span class="tag">相关性</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/线程/">
+                        <span class="tag">线程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/网关/">
+                        <span class="tag">网关</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/自动部署/">
+                        <span class="tag">自动部署</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/设计模式/">
+                        <span class="tag">设计模式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/负载均衡/">
+                        <span class="tag">负载均衡</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/责任链模式/">
+                        <span class="tag">责任链模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/配置中心/">
+                        <span class="tag">配置中心</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/10/28/reactor/reactive&rector 简介/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactive&amp;reactor简介">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-28T15:33:16.000Z">2019-10-28</time></div>
+                    <a href="/2019/10/28/reactor/reactive&rector 简介/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactive&amp;reactor简介</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/reactor/">reactor</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(2)-反应式编程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(2)-反应式编程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(3)- 路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(3)- 路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/6entinel/">
+                        <span class="tag">6entinel</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/APR/">
+                        <span class="tag">APR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Apollo/">
+                        <span class="tag">Apollo</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BM25/">
+                        <span class="tag">BM25</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ElasticSearch/">
+                        <span class="tag">ElasticSearch</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Embedded-Tomcat/">
+                        <span class="tag">Embedded Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAProxy/">
+                        <span class="tag">HAProxy</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Hbase/">
+                        <span class="tag">Hbase</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/IK/">
+                        <span class="tag">IK</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JVM/">
+                        <span class="tag">JVM</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LTR/">
+                        <span class="tag">LTR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LVS/">
+                        <span class="tag">LVS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Nginx/">
+                        <span class="tag">Nginx</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Boot/">
+                        <span class="tag">Spring Boot</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud/">
+                        <span class="tag">Spring Cloud</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud-Gateway/">
+                        <span class="tag">Spring Cloud Gateway</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/SpringCloud/">
+                        <span class="tag">SpringCloud</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/TF-IDF/">
+                        <span class="tag">TF-IDF</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Tomcat/">
+                        <span class="tag">Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jenkins/">
+                        <span class="tag">jenkins</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jmeter/">
+                        <span class="tag">jmeter</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lucene/">
+                        <span class="tag">lucene</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactive/">
+                        <span class="tag">reactive</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactor/">
+                        <span class="tag">reactor</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring/">
+                        <span class="tag">spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-boot/">
+                        <span class="tag">spring-boot</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-cloud/">
+                        <span class="tag">spring-cloud</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/webFlux/">
+                        <span class="tag">webFlux</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/倒排索引/">
+                        <span class="tag">倒排索引</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/分词/">
+                        <span class="tag">分词</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/反应式编程/">
+                        <span class="tag">反应式编程</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/向量空间模型/">
+                        <span class="tag">向量空间模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工厂模式/">
+                        <span class="tag">工厂模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/布尔模型/">
+                        <span class="tag">布尔模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/建造者模式/">
+                        <span class="tag">建造者模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/开发工具/">
+                        <span class="tag">开发工具</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/微服务/">
+                        <span class="tag">微服务</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/搜索/">
+                        <span class="tag">搜索</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/相关性/">
+                        <span class="tag">相关性</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/线程/">
+                        <span class="tag">线程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/网关/">
+                        <span class="tag">网关</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/自动部署/">
+                        <span class="tag">自动部署</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/设计模式/">
+                        <span class="tag">设计模式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/负载均衡/">
+                        <span class="tag">负载均衡</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/责任链模式/">
+                        <span class="tag">责任链模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/配置中心/">
+                        <span class="tag">配置中心</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="CrowleyBlog" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 crowley&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'unfolded'
+        }
+    }
+};
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+
+
+
+    
+    
+<script src="/js/animation.js"></script>
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+<script src="/js/gallery.js" defer></script>
+
+    
+    
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+    
+    
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

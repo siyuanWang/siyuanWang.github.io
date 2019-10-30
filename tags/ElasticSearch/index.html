@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 3.8.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>标签: ElasticSearch - CrowleyBlog</title>
+
+
+    <meta property="og:type" content="website">
+<meta property="og:title" content="CrowleyBlog">
+<meta property="og:url" content="http://yoursite.com/tags/ElasticSearch/index.html">
+<meta property="og:site_name" content="CrowleyBlog">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/images/og_image.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CrowleyBlog">
+<meta name="twitter:image" content="http://yoursite.com/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/favicon.svg">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+<style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+
+    
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+
+    
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+    
+    
+    
+    
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+    
+    
+    
+    
+    
+    
+    
+    <link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="CrowleyBlog" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">Home</a>
+                
+                <a class="navbar-item"
+                href="/archives">Archives</a>
+                
+                <a class="navbar-item"
+                href="/categories">Categories</a>
+                
+                <a class="navbar-item"
+                href="/tags">Tags</a>
+                
+                <a class="navbar-item"
+                href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    <div class="card-content">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/tags">标签</a></li>
+            <li class="is-active"><a href="#" aria-current="page">ElasticSearch</a></li>
+        </ul>
+        </nav>
+    </div>
+</div>
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-06-13T08:33:16.000Z">2019-06-13</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    2 分钟 读完 (大约 280 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/06/13/ElasticSearch-updateByQuery/">ElasticSearch之updateByQuery使用</a>
+            
+        </h1>
+        <div class="content">
+            <p>#背景</p>
+<p>有时需要通过某些查询条件，更新文档某一个字段，这样的诉求，用SQL表达就是update t_student set class=’优秀的小男生’ where age = 10 and score = 100 and sex = 1。ES有updateByQuery API 和 deleteByQuery API，这样一条DSL就可以搞定类似的需求。</p>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>批量更新id = 9627361的文档，admin_rank数值++，address更新成”我是_update_by_query”，name_alias_array字段，更新为一个集合。</p>
+<figure class="highlight json hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">POST hotel_20190513/hotel/_update_by_query</span><br><span class="line">&#123;</span><br><span class="line">  <span class="hljs-attr">"script"</span>: &#123;</span><br><span class="line">    <span class="hljs-attr">"inline"</span>: <span class="hljs-string">"ctx._source.admin_rank++;ctx._source['address']='我是_update_by_query';ctx._source['name_alias_array']=['哈哈','hei嘿']"</span>,</span><br><span class="line">    <span class="hljs-attr">"lang"</span>: <span class="hljs-string">"painless"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="hljs-attr">"query"</span>: &#123;</span><br><span class="line">    <span class="hljs-attr">"bool"</span>: &#123;<span class="hljs-attr">"must"</span>: [</span><br><span class="line">      &#123;<span class="hljs-attr">"term"</span>: &#123;</span><br><span class="line">        <span class="hljs-attr">"id"</span>: &#123;</span><br><span class="line">          <span class="hljs-attr">"value"</span>: <span class="hljs-number">9627361</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;&#125;</span><br><span class="line">    ]&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>删除entity_type = hotel_name的所有文档。</p>
+<figure class="highlight json hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">POST entity_hotel_20190528/entity_hotel/_delete_by_query</span><br><span class="line">&#123;</span><br><span class="line">  <span class="hljs-attr">"query"</span>: &#123;</span><br><span class="line">    <span class="hljs-attr">"term"</span>: &#123;</span><br><span class="line">      <span class="hljs-attr">"entity_type"</span>: &#123;</span><br><span class="line">        <span class="hljs-attr">"value"</span>: <span class="hljs-string">"hotel_name"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>golang例子</p>
+<figure class="highlight go hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">updateByQuery := client.UpdateByQuery().Query(elastic.NewTermQuery(<span class="hljs-string">"entity_id"</span>, node.TagId)).Script(elastic.NewScriptInline(script)).Index(index).Type(indexType)</span><br><span class="line">	out, err := updateByQuery.Do(context.TODO())</span><br><span class="line">	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;</span><br><span class="line">		<span class="hljs-built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	b, err := json.Marshal(out)</span><br><span class="line">	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;</span><br><span class="line">		<span class="hljs-built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	got := <span class="hljs-keyword">string</span>(b)</span><br><span class="line">	updated := tool.GoJson(got).Get(<span class="hljs-string">"updated"</span>).ToString()</span><br><span class="line">	<span class="hljs-keyword">if</span> tool.IsEmpty(updated) &#123;</span><br><span class="line">		updated = <span class="hljs-string">"0"</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-built_in">println</span>(<span class="hljs-string">"执行成功.tagId="</span> + tool.ToString(node.TagId) + <span class="hljs-string">"更新"</span> + updated + <span class="hljs-string">"个文档."</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.5/docs-update-by-query.html" target="_blank" rel="noopener">官方文档</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-04-23T08:33:16.000Z">2019-04-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    3 分钟 读完 (大约 459 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/04/23/ElasticSearch集群的搭建/">ElasticSearch集群的搭建</a>
+            
+        </h1>
+        <div class="content">
+            <p>#相关技术点</p>
+<p>in-memory buffer是通过refresh操作写到文件缓冲区的，refresh的过程除了在文件缓冲区生成这个文件以外，还会让底层Lucene的index reader打开这个文件，让新生成的这个文件对搜索可见。</p>
+<p>周五的时候跟同事讨论下了，不知道这样理解对不对–refresh类似于 outputstream flush（此时数据从 java heap 写到 memory buffer），之后（按照大神上面说的）index reader读取新文件，然后等待触发flush（这个则类似于 outputstream close，此时数据从 memory buffer 写到 disk），请大神赐教</p>
+<h1 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h1><p>集群包括3台物理机共12个节点，每台物理机部署1个Master节点，1个Client节点，2个Data节点。</p>
+<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># ---------------------------------- Cluster -----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#集群名称</span></span><br><span class="line"><span class="hljs-string">cluster.name:</span> </span><br><span class="line"><span class="hljs-comment"># ------------------------------------ Node ------------------------------------</span></span><br><span class="line"><span class="hljs-comment">#节点名称</span></span><br><span class="line"><span class="hljs-string">node.name:</span> </span><br><span class="line"><span class="hljs-comment">#是否是Master Node</span></span><br><span class="line"><span class="hljs-string">node.master:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-comment">#是否是Data Node</span></span><br><span class="line"><span class="hljs-string">node.data:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment">#是否是Ingest Node</span></span><br><span class="line"><span class="hljs-string">node.ingest:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-string">node.attr.rack:</span> <span class="hljs-string">first</span></span><br><span class="line"><span class="hljs-comment"># ----------------------------------- Paths ------------------------------------</span></span><br><span class="line"><span class="hljs-comment"># Path to log files:</span></span><br><span class="line"><span class="hljs-comment">#可以指定es的数据存储目录，默认存储在es_home/data目录下</span></span><br><span class="line"><span class="hljs-comment">#path.data: /path/to/data</span></span><br><span class="line"><span class="hljs-comment">#可以指定es的日志存储目录，默认存储在es_home/logs目录下</span></span><br><span class="line"><span class="hljs-comment">#path.logs: /path/to/logs</span></span><br><span class="line"><span class="hljs-comment"># ----------------------------------- Memory -----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#锁定物理内存地址，防止elasticsearch内存被交换出去,也就是避免es使用swap交换分区</span></span><br><span class="line"><span class="hljs-string">bootstrap.memory_lock:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-comment">#CentOS下不支持SecComp，故而需要设置成false</span></span><br><span class="line"><span class="hljs-string">bootstrap.system_call_filter:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment"># ---------------------------------- Network -----------------------------------</span></span><br><span class="line"><span class="hljs-string">network.host:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.97</span></span><br><span class="line"><span class="hljs-string">http.port:</span> <span class="hljs-number">9200</span></span><br><span class="line"><span class="hljs-string">transport.tcp.port:</span> <span class="hljs-number">9300</span></span><br><span class="line"><span class="hljs-comment"># --------------------------------- Discovery ----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#</span></span><br><span class="line"><span class="hljs-string">discovery.zen.ping.unicast.hosts:</span> <span class="hljs-string">["192.168.1.97:9300","192.168.1.98:9300","192.168.1.113:9300"]</span></span><br><span class="line"><span class="hljs-comment">#理论上是 masternum/2+1,防止脑裂</span></span><br><span class="line"><span class="hljs-string">discovery.zen.minimum_master_nodes:</span> <span class="hljs-number">2</span></span><br><span class="line"><span class="hljs-comment"># ---------------------------------- Various -----------------------------------</span></span><br><span class="line"><span class="hljs-string">xpack.security.enabled:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment">#支持跨域访问</span></span><br><span class="line"><span class="hljs-string">http.cors.enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-string">http.cors.allow-origin:</span> <span class="hljs-string">"*"</span></span><br></pre></td></tr></table></figure>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="https://www.jianshu.com/p/62ede45cfb2e" target="_blank" rel="noopener">Linux sandboxing机制</a></p>
+<p><a href="https://www.cnblogs.com/huxiao-tee/p/4657851.html" target="_blank" rel="noopener">从内核文件系统看文件读写过程</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    5 分钟 读完 (大约 806 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/ElasticSearch深分页浅分页/">ElasticSearch Scroll</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="ElasticSearch-Scroll"><a href="#ElasticSearch-Scroll" class="headerlink" title="ElasticSearch Scroll"></a>ElasticSearch Scroll</h1><p>##深分页</p>
+<p>比如pageIndex=10，pageSize=20，{“start”: 180, “size”: 20}，相当于每个分片召回了200条数据，排序之后截断前20条返回。但是如果pageIndex=1000，每个分片需要召回20000条数据，排序，最后仍然是取前20条，扔掉19980条。深分页的实现方式代价是很大的。</p>
+<h2 id="Scroll"><a href="#Scroll" class="headerlink" title="Scroll"></a>Scroll</h2><p>为了解决以上深分页，在页码太大情况下性能的问题，ES提供了Scroll方式。</p>
+<p>scroll 查询 可以用来对 Elasticsearch 有效地执行大批量的文档查询，而又不用付出深度分页那种代价。</p>
+<p>游标查询允许我们 先做查询初始化，然后再批量地拉取结果。 这有点儿像传统数据库中的 cursor 。</p>
+<p>游标查询会取某个时间点的快照数据。 查询初始化之后索引上的任何变化会被它忽略。 它通过保存旧的数据文件来实现这个特性，结果就像保留初始化时的索引 视图 一样。</p>
+<p>深度分页的代价根源是结果集全局排序，如果去掉全局排序的特性的话查询结果的成本就会很低。 游标查询用字段 _doc 来排序。 这个指令让 Elasticsearch 仅仅从还有结果的分片返回下一批结果。</p>
+<p>启用游标查询可以通过在查询的时候设置参数 scroll 的值为我们期望的游标查询的过期时间。 游标查询的过期时间会在每次做查询的时候刷新，所以这个时间只需要足够处理当前批的结果就可以了，而不是处理查询结果的所有文档的所需时间。 这个过期时间的参数很重要，因为保持这个游标查询窗口需要消耗资源，所以我们期望如果不再需要维护这种资源就该早点儿释放掉。 设置这个超时能够让 Elasticsearch 在稍后空闲的时候自动释放这部分资源。</p>
+<p>例如：依据查询条件开启滚动，镜像有效期为5分钟。这个查询结果中包含scroll_id</p>
+<figure class="highlight hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST 'http://localhost:9200/es_cluster/goods_index/goods/_search?scroll=5m' -d '&#123;</span><br><span class="line">  "size": 20,</span><br><span class="line">  "query": &#123;</span><br><span class="line">    "bool": &#123;</span><br><span class="line">      "filter": [</span><br><span class="line">        &#123;</span><br><span class="line">          "exists": &#123;</span><br><span class="line">            "field": "skuUpTime"</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
+<p>下次查询的时候，就可以直接用scroll_id来查询了</p>
+<figure class="highlight hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST 'http://localhost:9200/es_cluster/scroll' -d '&#123;</span><br><span class="line">  "scroll": "5m",</span><br><span class="line">  "scroll_id": "DnF1ZXJ5VGhlbkZldGNoJgAAAAA8lsqeFjRwN19JcDBKVFd1cy04dkZucUZ4dHcAAAAAPlQH_BZIMUU1VFA2dVIxMk10M0xoWW1sSEtRAAAAADtYOdcWUVBlYXZCNmRTSEtXV2llZTE4dkEwZwAAAAA6dfbHFkdEMS1VY21CVHFhSFpFS1ZrVnBwSVEAAAAAPaL6vBZsZmRFeHRBeFFJaWlVOXNWV2xnZlB3AAAAADy6UDUWRU9NVVRadG5STnV4cThrb2VMdHhqUQAAAAA9V-f6FnNYSV83SHZVVHpDTHVLZWFiNmVwcVEAAAAAPMlOFhY5Zk5ESlBZdFI5bVVEclI4b2paTld3AAAAADn6zjwWZEJ5RU9VOThTUW1HUnB5UzlOT18xUQAAAAA9EBaGFmM4Ykh6SHkxU3JPYkFFRFZMWVRiQUEAAAAAPSKSJxZVUlRzY0luTFJTQzQ3WTZydUxoQVN3AAAAADyw6E4WS21DZHdWX21TRXlkdzVvYUpRcVBKUQAAAAA7sX3BFnh4UC1rMGhDU1FlZFFSdjVDVVc0d3cAAAAAPMIY9RZla0lLajhFQlMtYUVOZDE1U0tXekRnAAAAADtYOdgWUVBlYXZCNmRTSEtXV2llZTE4dkEwZwAAAAA5-s49FmRCeUVPVTk4U1FtR1JweVM5Tk9fMVEAAAAAPMlOFxY5Zk5ESlBZdFI5bVVEclI4b2paTld3AAAAADzjiUkWMll6VHRaUDRUV2VjNXA4LUxfMlFxdwAAAAA8cKq6FndTQ2JfOWlWUXlHNHdNMUZ3ejZVZUEAAAAAPHCquRZ3U0NiXzlpVlF5RzR3TTFGd3o2VWVBAAAAADzx948Wdlk0dzdJWnBRWHEyRWFsVEhsVUdiQQAAAAA9cxFHFnpwdy1EaXFXUmR5REM5ZW5CYTB0ZEEAAAAAPXMRSBZ6cHctRGlxV1JkeURDOWVuQmEwdGRBAAAAAD1DIxMWM0E3dW1PbkVUQzZMSUJXV21LaHNiZwAAAAA9QyMUFjNBN3VtT25FVEM2TElCV1dtS2hzYmcAAAAAPPeZ9hZyY0luUVRFb1RsNmF1YWhZaVEwWUFBAAAAADz3mfcWcmNJblFURW9UbDZhdWFoWWlRMFlBQQAAAAA6pq_PFjRDZjN6XzBSU25DRE5PWlA2RFRUR2cAAAAAOqavzhY0Q2Yzel8wUlNuQ0ROT1pQNkRUVEdnAAAAADzcYCcWQ2xwZk15U01RNk9oelRQR2w2bTRmdwAAAAA84x3vFk8wYjdmdV9aU2E2QzREc045bUx4UUEAAAAAPPTj5RZoYlctclkyblM3cXpDeEZTa05FNlNnAAAAADzrVQEWLU9xeUFOVHRUQTZtd2R2eG5MTF96UQAAAAA861UAFi1PcXlBTlR0VEE2bXdkdnhuTExfelEAAAAAO1D_vBZheEpkUFp4UFNXS19BWDdvMTNkS1BnAAAAADuxfcIWeHhQLWswaENTUWVkUVJ2NUNVVzR3dwAAAAA7ungNFlpqWVViMnZsVDU2LXg4VzBlTlZ0cWcAAAAAPaL6vRZsZmRFeHRBeFFJaWlVOXNWV2xnZlB3"</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    几秒 读完 (大约 22 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/elasticSearch-sniff/">elasticSearch系列笔记(5)-客户端负载均衡</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="常用负载均衡策略"><a href="#常用负载均衡策略" class="headerlink" title="常用负载均衡策略"></a>常用负载均衡策略</h2><h2 id="ES客户端负载均衡策略"><a href="#ES客户端负载均衡策略" class="headerlink" title="ES客户端负载均衡策略"></a>ES客户端负载均衡策略</h2><h2 id="集群嗅探"><a href="#集群嗅探" class="headerlink" title="集群嗅探"></a>集群嗅探</h2>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    8 分钟 读完 (大约 1255 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/elasticSearch-初体验/">elasticSearch系列笔记(1)-Hello ElasticSearch</a>
+            
+        </h1>
+        <div class="content">
+            <p>读了上面的小故事，是不是觉得对ElasticSearch的前世今生，兴趣十足呢？！我计划写一篇ElasticSearch的系列学习笔记，深入浅出，不仅方便大家学习，还能够让我更加深入的了解这门技术。学习一门新技术的第一课就是hello world.<br>接下来的章节，实操ElasticSearch hello world。</p>
+<h2 id="ElasticSearch简介"><a href="#ElasticSearch简介" class="headerlink" title="ElasticSearch简介"></a>ElasticSearch简介</h2><h3 id="回忆时光"><a href="#回忆时光" class="headerlink" title="回忆时光"></a>回忆时光</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>许多年前，一个刚结婚的名叫 Shay Banon 的失业开发者，跟着他的妻子去了伦敦，他的妻子在那里学习厨师（感觉国内的女生很少有喜欢做饭的，反而男生喜欢做饭）。 在寻找一个赚钱的工作的时候，为了给他的妻子做一个食谱搜索引擎，他开始使用 Lucene 的一个早期版本。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>直接使用 Lucene 是很难的，因此 Shay 开始做一个抽象层，Java 开发者使用它可以很简单的给他们的程序添加搜索功能。 他发布了他的第一个开源项目 Compass。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>后来 Shay 获得了一份工作，主要是高性能，分布式环境下的内存数据网格。这个对于高性能，实时，分布式搜索引擎的需求尤为突出， 他决定重写 Compass，把它变为一个独立的服务并取名 Elasticsearch。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>第一个公开版本在2010年2月发布，从此以后，Elasticsearch 已经成为了 Github 上最活跃的项目之一，他拥有超过300名 contributors(目前736名 contributors )。 一家公司已经开始围绕 Elasticsearch 提供商业服务，并开发新的特性，但是，Elasticsearch 将永远开源并对所有人可用。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>据说，Shay 的妻子还在等着她的食谱搜索引擎…<br></p>
+<h3 id="切入正题"><a href="#切入正题" class="headerlink" title="切入正题"></a>切入正题</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>读了上面的小故事，是不是觉得对ElasticSearch的前世今生，兴趣十足呢？！我计划写一篇ElasticSearch的系列学习笔记，深入浅出，不仅方便大家学习，还能够让我更加深入的了解这门技术。学习一门新技术的第一课就是hello world.<br>接下来的章节，实操ElasticSearch hello world。</p>
+<h3 id="Mac-ElasticSearch-安装"><a href="#Mac-ElasticSearch-安装" class="headerlink" title="Mac ElasticSearch 安装"></a>Mac ElasticSearch 安装</h3><p>1、Java环境的安装配置<br><br>2、brew install elasticSearch（仅适用于Mac）<br><br>3、brew info elasticSearch,会显示如下信息表示安装成功</p>
+<pre><code>elasticSearch: stable 6.2.4, HEAD
+Distributed search &amp; analytics engine
+https://www.elastic.co/products/elasticsearch
+/usr/local/Cellar/elasticSearch/6.2.4 (112 files, 30.8MB)
+  Built from source on 2018-05-29 at 11:10:53
+From: https://github.com/Homebrew/homebrew-core/blob/master/Formula/elasticsearch.rb
+==&gt; Requirements
+Required: java = 1.8 ✔
+==&gt; Options
+--HEAD
+    Install HEAD version
+==&gt; Caveats
+</code></pre><p>4、brew services start elasticsearch</p>
+<pre><code>启动后localhost:9200，打印如下，说明ElasticSearch启动成功
+{
+  &quot;name&quot; : &quot;yptOhLD&quot;,
+  &quot;cluster_name&quot; : &quot;elasticsearch_1&quot;,
+  &quot;cluster_uuid&quot; : &quot;_na_&quot;,
+  &quot;version&quot; : {
+    &quot;number&quot; : &quot;6.2.4&quot;,
+    &quot;build_hash&quot; : &quot;ccec39f&quot;,
+    &quot;build_date&quot; : &quot;2018-04-12T20:37:28.497551Z&quot;,
+    &quot;build_snapshot&quot; : false,
+    &quot;lucene_version&quot; : &quot;7.2.1&quot;,
+    &quot;minimum_wire_compatibility_version&quot; : &quot;5.6.0&quot;,
+    &quot;minimum_index_compatibility_version&quot; : &quot;5.0.0&quot;
+  },
+  &quot;tagline&quot; : &quot;You Know, for Search&quot;
+}
+</code></pre><p>5、brew install kibana（仅适用于Mac）<br>6、brew services start kibana <br><br>7、打开kibana localhost:5601<br></p>
+<p>基于以上7个步骤，环境问题搞定，下面来真实的操作一下ElasticSearch。</p>
+<h2 id="ElasticSearch-Hello-World"><a href="#ElasticSearch-Hello-World" class="headerlink" title="ElasticSearch Hello World"></a>ElasticSearch Hello World</h2><h3 id="创建索引-create-index"><a href="#创建索引-create-index" class="headerlink" title="创建索引(create index)"></a>创建索引(create index)</h3><pre><code>curl -XPUT &quot;http://localhost:9200/goods_index&quot;
+
+curl -XGET &quot;http://localhost:9200/goods_index&quot;
+
+{
+  &quot;goods_index&quot;: { #索引名称
+    &quot;aliases&quot;: {},
+    &quot;mappings&quot;: {},
+    &quot;settings&quot;: {
+      &quot;index&quot;: {
+        &quot;creation_date&quot;: &quot;1530627979046&quot;,
+        &quot;number_of_shards&quot;: &quot;5&quot;, #5个分片
+        &quot;number_of_replicas&quot;: &quot;1&quot;, #一个备份
+        &quot;uuid&quot;: &quot;kTy_hHlQQRaVPygKHZpUYQ&quot;,
+        &quot;version&quot;: {
+          &quot;created&quot;: &quot;6020499&quot;
+        },
+        &quot;provided_name&quot;: &quot;goods_index&quot;
+      }
+    }
+  }
+}
+</code></pre><h3 id="索引文档-index-document"><a href="#索引文档-index-document" class="headerlink" title="索引文档(index document)"></a>索引文档(index document)</h3><pre><code>curl -XPUT &quot;http://localhost:9200/goods_index/goods/12343333&quot; -H &apos;Content-Type:application/json&apos; -d&apos;
+{
+  &quot;skuName&quot;: &quot;华为手机&quot;,
+  &quot;url&quot;:&quot;https://item.jd.com/6946605.html&quot;
+}&apos;
+
+索引数据之后，再执行查看索引详情，会发现mappings属性多了一个名字叫goods的type,goods下面多了skuName和url两个properties。
+{
+  &quot;goods_index&quot;: {
+    &quot;aliases&quot;: {},
+    &quot;mappings&quot;: {
+      &quot;goods&quot;: {
+        &quot;properties&quot;: {
+          &quot;skuName&quot;: {
+            &quot;type&quot;: &quot;text&quot;,
+            &quot;fields&quot;: {
+              &quot;keyword&quot;: {
+                &quot;type&quot;: &quot;keyword&quot;,
+                &quot;ignore_above&quot;: 256
+              }
+            }
+          },
+          &quot;url&quot;: {
+            &quot;type&quot;: &quot;text&quot;,
+            &quot;fields&quot;: {
+              &quot;keyword&quot;: {
+                &quot;type&quot;: &quot;keyword&quot;,
+                &quot;ignore_above&quot;: 256
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;settings&quot;: {
+      &quot;index&quot;: {
+        &quot;creation_date&quot;: &quot;1530627979046&quot;,
+        &quot;number_of_shards&quot;: &quot;5&quot;,
+        &quot;number_of_replicas&quot;: &quot;1&quot;,
+        &quot;uuid&quot;: &quot;kTy_hHlQQRaVPygKHZpUYQ&quot;,
+        &quot;version&quot;: {
+          &quot;created&quot;: &quot;6020499&quot;
+        },
+        &quot;provided_name&quot;: &quot;goods_index&quot;
+      }
+    }
+  }
+}
+</code></pre><h3 id="查询文档-query-document"><a href="#查询文档-query-document" class="headerlink" title="查询文档(query document)"></a>查询文档(query document)</h3><pre><code>curl -XGET &quot;http://localhost:9200/goods_index/goods/_search&quot;
+</code></pre><p>执行上面的查询语句，得到如下的结果集。</p>
+<pre><code>{
+  &quot;took&quot;: 1,
+  &quot;timed_out&quot;: false,
+  &quot;_shards&quot;: {
+    &quot;total&quot;: 5,
+    &quot;successful&quot;: 5,
+    &quot;skipped&quot;: 0,
+    &quot;failed&quot;: 0
+  },
+  &quot;hits&quot;: {
+    &quot;total&quot;: 1,
+    &quot;max_score&quot;: 1,
+    &quot;hits&quot;: [
+      {
+        &quot;_index&quot;: &quot;goods_index&quot;,
+        &quot;_type&quot;: &quot;goods&quot;,
+        &quot;_id&quot;: &quot;12343333&quot;,
+        &quot;_score&quot;: 1,
+        &quot;_source&quot;: {
+          &quot;skuName&quot;: &quot;华为手机&quot;,
+          &quot;url&quot;: &quot;https://item.jd.com/6946605.html&quot;
+        }
+      }
+    ]
+  }
+}
+</code></pre><h2 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>ElasticSearch的Hello world，是不是比java，python难一些呢？不过还好，一个检索系统，就此拉开了帷幕。这就是ElasticSearch推崇的“开箱即用”的理念。但是要学好ElasticSearch可不是一件容易的事情，细心的同学，可能会发现有一些细节：<br><br>1、什么是索引？<br><br>2、什么是文档？<br><br>3、索引和文档是什么样的关系？<br><br>……<br><br>请持续关注我的博客，我们逐渐从ElasticSearch小白，变成大牛。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html" title="elasticSearch权威指南2.x" target="_blank" rel="noopener">elasticSearch权威指南2.x</a><br><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" title="elasticSearch权威指南6.2" target="_blank" rel="noopener">elasticSearch reference 6.2</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    几秒 读完 (大约 2 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/elasticSearch-term_vector/">elasticSearch系列笔记(4)-term_vector</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="term-vector"><a href="#term-vector" class="headerlink" title="term_vector"></a>term_vector</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.0/term-vector.html#term-vector" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/2.0/term-vector.html#term-vector</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    9 分钟 读完 (大约 1368 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/elasticSearch-搜索类型(query type)/">elasticSearch系列笔记(4)-elasticSearch搜索类型</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="ElasticSearch本地源码调试"><a href="#ElasticSearch本地源码调试" class="headerlink" title="ElasticSearch本地源码调试"></a>ElasticSearch本地源码调试</h2><p>转自：<a href="https://donlianli.iteye.com/blog/2094305" target="_blank" rel="noopener">https://donlianli.iteye.com/blog/2094305</a></p>
+<p>es在查询时，可以指定搜索类型为QUERY_THEN_FETCH,QUERY_AND_FEATCH,DFS_QUERY_THEN_FEATCH和DFS_QUERY_AND_FEATCH。那么这4种搜索类型有什么区别？</p>
+<p>分布式搜索背景介绍：</p>
+<p>ES天生就是为分布式而生，但分布式有分布式的缺点。比如要搜索某个单词，但是数据却分别在5个分片（Shard)上面，这5个分片可能在5台主机上面。因为全文搜索天生就要排序（按照匹配度进行排名）,但数据却在5个分片上，如何得到最后正确的排序呢？ES是这样做的，大概分两步。</p>
+<p>step1、ES客户端会将这个搜索词同时向5个分片发起搜索请求，这叫Scatter,</p>
+<p>step2、这5个分片基于本Shard独立完成搜索，然后将符合条件的结果全部返回，这一步叫Gather。</p>
+<p>客户端将返回的结果进行重新排序和排名，最后返回给用户。也就是说，ES的一次搜索，是一次scatter/gather过程（这个跟mapreduce也很类似）.</p>
+<p>然而这其中有两个问题。</p>
+<p>第一、数量问题。比如，用户需要搜索”双黄连”，要求返回最符合条件的前10条。但在5个分片中，可能都存储着双黄连相关的数据。所以ES会向这5个分片都发出查询请求，并且要求每个分片都返回符合条件的10条记录。当ES得到返回的结果后，进行整体排序，然后取最符合条件的前10条返给用户。这种情况，ES5个shard最多会收到10*5=50条记录，这样返回给用户的结果数量会多于用户请求的数量。</p>
+<p>第二、排名问题。上面搜索，每个分片计算分值都是基于自己的分片数据进行计算的。计算分值使用的词频率和其他信息都是基于自己的分片进行的，而ES进行整体排名是基于每个分片计算后的分值进行排序的，这就可能会导致排名不准确的问题。如果我们想更精确的控制排序，应该先将计算排序和排名相关的信息（词频率等）从5个分片收集上来，进行统一计算，然后使用整体的词频率去每个分片进行查询。</p>
+<p>这两个问题，估计ES也没有什么较好的解决方法，最终把选择的权利交给用户，方法就是在搜索的时候指定query type。</p>
+<p><strong>1、query and fetch</strong></p>
+<p>向索引的所有分片（shard）都发出查询请求，各分片返回的时候把元素文档（document）和计算后的排名信息一起返回。这种搜索方式是最快的。因为相比下面的几种搜索方式，这种查询方法只需要去shard查询一次。但是各个shard返回的结果的数量之和可能是用户要求的size的n倍。</p>
+<p><strong>2、query then fetch</strong>（默认的搜索方式）</p>
+<p>如果你搜索时，没有指定搜索方式，就是使用的这种搜索方式。这种搜索方式，大概分两个步骤，第一步，先向所有的shard发出请求，各分片只返回排序和排名相关的信息（注意，不包括文档document)，然后按照各分片返回的分数进行重新排序和排名，取前size个文档。然后进行第二步，去相关的shard取document。这种方式返回的document与用户要求的size是相等的。</p>
+<p><strong>3、DFS query and fetch</strong></p>
+<p>这种方式比第一种方式多了一个初始化散发(initial scatter)步骤，有这一步，据说可以更精确控制搜索打分和排名。</p>
+<p>4、<strong>DFS</strong> <strong>query then fetch</strong></p>
+<p>比第2</p>
+<p>种</p>
+<p>方式多了一个</p>
+<p>初始化散发(initial scatter)步骤。</p>
+<p>DSF是什么缩写？初始化散发是一个什么样的过程？</p>
+<p>从es的官方网站我们可以指定，初始化散发其实就是在进行真正的查询之前，先把各个分片的词频率和文档频率收集一下，然后进行词搜索的时候，各分片依据全局的词频率和文档频率进行搜索和排名。显然如果使用DFS_QUERY_THEN_FETCH这种查询方式，效率是最低的，因为一个搜索，可能要请求3次分片。但，使用DFS方法，搜索精度应该是最高的。</p>
+<p>至于DFS是什么缩写，没有找到相关资料，这个D可能是Distributed，F可能是frequency的缩写，至于S可能是Scatter的缩写，整个单词可能是分布式词频率和文档频率散发的缩写。</p>
+<p>总结一下，从性能考虑QUERY_AND_FETCH是最快的，DFS_QUERY_THEN_FETCH是最慢的。从搜索的准确度来说，DFS要比非DFS的准确度更高。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    几秒 读完 (大约 25 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/mac安装mysql指南/">mac安装mysql记录</a>
+            
+        </h1>
+        <div class="content">
+            <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install mysql</span><br></pre></td></tr></table></figure>
+<p>CREATE USER ‘test‘@’%’ IDENTIFIED BY ‘root@12’;</p>
+<p>grant all privileges on <em>.</em> to ‘test‘@’%’;</p>
+<p>Flush privileges;</p>
+<p>下载Sequel Pro开始使用</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    25 分钟 读完 (大约 3753 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/ElasticSearch-相关性实现/">ElasticSearch系列笔记(2)-ElasticSearch 理论基础</a>
+            
+        </h1>
+        <div class="content">
+            <p>本节主要介绍下ElasticSearch 理论基础。知其然知其所以然，如下的理论和算法，就是ElasticSearch的魂！</p>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/07/11/ElasticSearch-相关性实现/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    12 分钟 读完 (大约 1725 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/elasticSearch-本地源码调试/">elasticSearch系列笔记(3)-elastic本地源码调试</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="ElasticSearch本地源码调试"><a href="#ElasticSearch本地源码调试" class="headerlink" title="ElasticSearch本地源码调试"></a>ElasticSearch本地源码调试</h2><p>转自：<a href="https://www.felayman.com/articles/2017/11/10/1510291087246.html" target="_blank" rel="noopener">https://www.felayman.com/articles/2017/11/10/1510291087246.html</a></p>
+<p>Elasticsearch版本为 5.5.1</p>
+<h3 id="1-源码下载"><a href="#1-源码下载" class="headerlink" title="1. 源码下载"></a>1. 源码下载</h3><ul>
+<li>git clone <a href="https://github.com/elastic/elasticsearch" target="_blank" rel="noopener">https://github.com/elastic/elasticsearch</a></li>
+</ul>
+<h3 id="2-分支切换"><a href="#2-分支切换" class="headerlink" title="2. 分支切换"></a>2. 分支切换</h3><ul>
+<li>git checkout v5.5.1</li>
+</ul>
+<h3 id="3-运行gradle-idea-gradle-build-x-test"><a href="#3-运行gradle-idea-gradle-build-x-test" class="headerlink" title="3 运行gradle idea,gradle build -x test"></a>3 运行gradle idea,gradle build -x test</h3><p>如果运行gradle idea会报如下错误:请修改elasticsearch源文件中的BuildPlugin.groory文件中的findJavaHome()方法的第一行代码,源码为 String javaHome = System.getenv(‘JAVA_HOME’),修改为String javaHome = “你的JAVA_HOME地址,输入echo $JAVA_HOME($)”</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">What went wrong:</span><br><span class="line">A problem occurred evaluating project &apos;:benchmarks&apos;.</span><br><span class="line">&gt; Failed to apply plugin [id &apos;elasticsearch.build&apos;]</span><br><span class="line">&gt; JAVA_HOME must be set to build Elasticsearch</span><br></pre></td></tr></table></figure>
+<p>这里我使用的是idea工具来调试源码,因此先不要用idea导入该项目,而是进入到下载的elasticsearch目录下,执行gradle idea,等待漫长的依赖下载,等待下载完成后 执行 gradle build -x test 对源码进行编译,等待编译完成.</p>
+<h3 id="4-注释掉jar-hell相关代码"><a href="#4-注释掉jar-hell相关代码" class="headerlink" title="4. 注释掉jar hell相关代码"></a>4. 注释掉jar hell相关代码</h3><ul>
+<li>全局搜索JarHell.checkJarHell,以及checkJarHell,注释掉相应的代码,否则运行会报错</li>
+</ul>
+<h3 id="5-配置Edit-Configuation"><a href="#5-配置Edit-Configuation" class="headerlink" title="5. 配置Edit Configuation"></a>5. 配置Edit Configuation</h3><ul>
+<li>mainClass为 org.elasticsearch.bootstrap.Elasticsearch VM options为</li>
+<li>Des.path.home=/Users/admin/elk/elasticsearch-5.5.0 -Dlog4j2.disable.jmx=true</li>
+</ul>
+<h3 id="6-运行org-elasticsearch-bootstrap-Elasticsearch中的main方法"><a href="#6-运行org-elasticsearch-bootstrap-Elasticsearch中的main方法" class="headerlink" title="6. 运行org.elasticsearch.bootstrap.Elasticsearch中的main方法"></a>6. 运行org.elasticsearch.bootstrap.Elasticsearch中的main方法</h3><figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"> [<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">396</span>][INFO ][o.e.n.Node               ] [] initializing ...</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">487</span>][INFO ][o.e.e.NodeEnvironment    ] [iobPZcg] using [<span class="hljs-number">1</span>] data paths, mounts [[/ (/dev/disk1)]], net usable_space [<span class="hljs-number">133.3</span>gb], net total_space [<span class="hljs-number">232.6</span>gb], spins? [unknown], types [hfs]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">487</span>][INFO ][o.e.e.NodeEnvironment    ] [iobPZcg] heap size [<span class="hljs-number">3.5</span>gb], compressed ordinary object pointers [<span class="hljs-keyword">true</span>]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">503</span>][INFO ][o.e.n.Node               ] node name [iobPZcg] derived from node ID [iobPZcgEQBKodmURFuo_Gw]; set [node.name] to override</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">503</span>][INFO ][o.e.n.Node               ] version[<span class="hljs-number">5.5</span>.0-SNAPSHOT], pid[<span class="hljs-number">65630</span>], build[Unknown/Unknown], OS[Mac OS X/<span class="hljs-number">10.12</span>/x86_64], JVM[Oracle Corporation/<span class="hljs-function">Java <span class="hljs-title">HotSpot</span><span class="hljs-params">(TM)</span> 64-Bit Server VM/1.8.0_101/25.101-b13]</span></span><br><span class="line"><span class="hljs-function">[2017-07-11T22:00:08,503][INFO ][o.e.n.Node               ] JVM arguments [-Des.path.home</span>=/Users/admin/elk/elasticsearch-<span class="hljs-number">5.5</span>.0, -Dlog4j2.disable.jmx=<span class="hljs-keyword">true</span>, -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=<span class="hljs-number">49964</span>:/Applications/IntelliJ IDEA.app/Contents/bin, -Dfile.encoding=UTF-<span class="hljs-number">8</span>]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">504</span>][WARN ][o.e.n.Node               ] version [<span class="hljs-number">5.5</span>.0-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable <span class="hljs-keyword">for</span> production</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [aggs-matrix-stats]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [ingest-common]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [lang-expression]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [lang-groovy]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [lang-mustache]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [lang-painless]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [parent-join]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [percolator]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [reindex]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [transport-netty3]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [transport-netty4]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] no plugins loaded</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">11</span>,<span class="hljs-number">386</span>][INFO ][o.e.d.DiscoveryModule    ] [iobPZcg] using discovery type [zen]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">068</span>][INFO ][o.e.n.Node               ] initialized</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">068</span>][INFO ][o.e.n.Node               ] [iobPZcg] starting ...</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">120</span>][INFO ][i.n.u.i.PlatformDependent] Your platform does not provide complete low-level API <span class="hljs-keyword">for</span> accessing direct buffers reliably. Unless explicitly requested, heap buffer will always be preferred to avoid potential system instability.</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">291</span>][INFO ][o.e.t.TransportService   ] [iobPZcg] publish_address &#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9300</span>&#125;, bound_addresses &#123;[fe80::<span class="hljs-number">1</span>]:<span class="hljs-number">9300</span>&#125;, &#123;[::<span class="hljs-number">1</span>]:<span class="hljs-number">9300</span>&#125;, &#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9300</span>&#125;</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">308</span>][WARN ][o.e.b.BootstrapChecks    ] [iobPZcg] initial heap size [<span class="hljs-number">268435456</span>] not equal to maximum heap size [<span class="hljs-number">4294967296</span>]; <span class="hljs-keyword">this</span> can cause resize pauses and prevents mlockall from locking the entire heap</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">383</span>][INFO ][o.e.c.s.ClusterService   ] [iobPZcg] new_master &#123;iobPZcg&#125;&#123;iobPZcgEQBKodmURFuo_Gw&#125;&#123;J8yIAMTeS3uOKeW35gG0kw&#125;&#123;<span class="hljs-number">127.0</span>.0.1&#125;&#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9300</span>&#125;, reason: zen-disco-elected-as-master ([<span class="hljs-number">0</span>] nodes joined)</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">408</span>][INFO ][o.e.h.n.Netty4HttpServerTransport] [iobPZcg] publish_address &#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9200</span>&#125;, bound_addresses &#123;[fe80::<span class="hljs-number">1</span>]:<span class="hljs-number">9200</span>&#125;, &#123;[::<span class="hljs-number">1</span>]:<span class="hljs-number">9200</span>&#125;, &#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9200</span>&#125;</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">409</span>][INFO ][o.e.n.Node               ] [iobPZcg] started</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">639</span>][INFO ][o.e.g.GatewayService     ] [iobPZcg] recovered [<span class="hljs-number">2</span>] indices into cluster_state</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">850</span>][INFO ][o.e.c.r.a.AllocationService] [iobPZcg] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[twitter][<span class="hljs-number">3</span>]] ...]).</span><br></pre></td></tr></table></figure>
+<h3 id="可能遇到的异常"><a href="#可能遇到的异常" class="headerlink" title="可能遇到的异常"></a>可能遇到的异常</h3><ul>
+<li><p>ERROR: the system property [es.path.conf] must be set</p>
+<p>原因是没有指定es.path.conf,设置-Des.path.conf=你调试源码版本对应的conf目录</p>
+</li>
+<li><p>Exception in thread “main” java.lang.IllegalStateException: path.home is not configured</p>
+<p>原因是因为没有为elasticsearch配置path.home参数,可以在Edit Configuation中设置虚拟机参数：-Des.path.home=你下载的对应的elasticsearch的安装目录,这么做的原因<br>是elasticsearch在启动中会加载一些默认配置以及插件,我们直接加载elasticsearch安装目录下的配置和插件即可,后面会在源码中体现</p>
+</li>
+<li><p>2017-06-23 14:00:44,760 main ERROR Could not register mbeans java.security.AccessControlException: access denied (“javax.management.MBeanTrustPermission” “register”)</p>
+<p>原因是因为elasticsearch在启动过程中使用到了jmx,我们这里禁止使用即可,配置也是在Edit Configuation中设置虚拟机参数 -Dlog4j2.disable.jmx=true</p>
+</li>
+<li><p>org.elasticsearch.bootstrap.StartupException: org.elasticsearch.bootstrap.BootstrapException: java.lang.IllegalStateException: jar hell!或Classname: org.elasticsearch.search.aggregations.matrix.MatrixAggregationPlugin due to jar hell</p>
+<p>原因是因为elasticsearch中大量存在一个类或一个资源文件存在多个jar中,我们注释掉相应代码即可,主要是PluginsService中374行的JarHell.checkJarHell(union)以及<br>Bootstrap中220行的JarHell.checkJarHell(),最简单的方式就是将JarHell.checkJarHell()中的方法体注释掉</p>
+</li>
+<li><p>org.elasticsearch.bootstrap.StartupException: java.lang.IllegalArgumentException: plugin [aggs-matrix-stats] is incompatible with version [7.0.0-alpha1]; was designed for version [5.6.1]</p>
+<p>原因是一般情况下我们调试的源码非某个发布版本,有些配置项并未发布,我们的配置与当前代码的版本匹配不上,这个时候我们需要将调试的源码设置成某个发布版本,一般来说,Elasticsearch每发布<br>一个稳定版本,都会有一个对应的tag,我们进入到ES源码目录下执行git tag, 我这里调试的版本为v5.6.1,所以执行git checkout v5.6.1,切换到v5.6.1tag.</p>
+</li>
+</ul>
+<h3 id="另一种源码调试方式：远程调试"><a href="#另一种源码调试方式：远程调试" class="headerlink" title="另一种源码调试方式：远程调试"></a>另一种源码调试方式：远程调试</h3><p>如果上面第五个报错之后解决不了无法继续进行，可以选择这种方式:</p>
+<p>在 Elasticsearch 源码目录下打开 CMD，输入下面的命令启动一个 debug 实例</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle run --debug-jvm</span><br></pre></td></tr></table></figure>
+<p>如果启动失败可能需要先执行 <code>gradle clean</code> 再 <code>gradle run --debug-jvm</code> 或者 先退出 IDEA</p>
+<p><img src="http://syxtt.xin/elastic%E8%BF%9C%E7%A8%8Bdebug.png" alt></p>
+<p>在 IDEA 中打开 <code>Edit Configurations</code>，添加 remote</p>
+<p><img src="http://syxtt.xin/elastic%E8%BF%9C%E7%A8%8Bdebug%E9%85%8D%E7%BD%AE.png" alt></p>
+<p>配置 host 和 port</p>
+<p>点击 debug，浏览器访问 <code>http://localhost:9200/</code>，即可看到ES返回的信息</p>
+<p>随机调试一下， 打开 <code>elasticsearch/server/src/main/org/elasticsearch/rest/action/cat</code> 下的 <code>RestHealthAction</code> 类，在第 54 行出设置一个断点，然后浏览器访问 <code>http://localhost:9200/_cat/health</code>，可以看到断点已经捕获到该请求了</p>
+<p>运行成功，可以开始设置断点进行其他调试</p>
+<h3 id="源码本地编译工程包"><a href="#源码本地编译工程包" class="headerlink" title="源码本地编译工程包"></a>源码本地编译工程包</h3><p>在es源码根目录，执行 gradle assemble 命令，编译好之后工程ZIP包位于下图位置。</p>
+<p><img src="http://syxtt.xin/es%E6%BA%90%E7%A0%81%E6%9C%AC%E5%9C%B0%E7%BC%96%E8%AF%91.png" alt="img"></p>
+<h3 id="其他可能遇到的问题"><a href="#其他可能遇到的问题" class="headerlink" title="其他可能遇到的问题"></a>其他可能遇到的问题</h3><p><strong>1. 错误信息如下</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA8_HOME required to run tasks gradle</span><br></pre></td></tr></table></figure>
+<p>配置环境变量 <code>JAVA8_HOME</code>，值为 JDK8 的安装目录</p>
+<p><strong>2. 错误信息如下</strong></p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[2018-08-22T13:07:23,197][INFO ][o.e.t.TransportService   ] [EFQliuV] publish_address &#123;10.100.99.118:9300&#125;, bound_addresses &#123;[::]:9300&#125;</span><br><span class="line">[2018-08-22T13:07:23,211][INFO ][o.e.b.BootstrapChecks    ] [EFQliuV] bound or publishing to a non-loopback address, enforcing bootstrap checks</span><br><span class="line">ERROR: [1] bootstrap checks failed</span><br><span class="line">[1]: initial heap size [268435456] not equal to maximum heap size [4273995776]; this can cause resize pauses and prevents mlockall from locking the entire heap</span><br><span class="line">[2018-08-22T13:07:23,219][INFO ][o.e.n.Node               ] [EFQliuV] stopping ...</span><br><span class="line">2018-08-22 13:07:23,269 Thread-2 ERROR No log4j2 configuration file found. Using default configuration: logging only errors to the console. Set system property &apos;log4j2.debug&apos; to show Log4j2 internal initialization logging.</span><br><span class="line">Disconnected from the target VM, address: &apos;127.0.0.1:5272&apos;, transport: &apos;socket&apos;</span><br></pre></td></tr></table></figure>
+<p>在 <code>Edit Configurations</code> 的 <code>VM options</code> 加入下面配置</p>
+<p>-Xms2g<br>-Xmx2g </p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html" title="elasticSearch权威指南2.x" target="_blank" rel="noopener">elasticSearch权威指南2.x</a><br><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" title="elasticSearch权威指南6.2" target="_blank" rel="noopener">elasticSearch reference 6.2</a></p>
+<p><a href="http://laijianfeng.org/2018/08/%E6%95%99%E4%BD%A0%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95Elasticsearch-6-3-2%E6%BA%90%E7%A0%81/" target="_blank" rel="noopener">http://laijianfeng.org/2018/08/%E6%95%99%E4%BD%A0%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95Elasticsearch-6-3-2%E6%BA%90%E7%A0%81/</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                    <figure class="image is-128x128 has-mb-6">
+                        <img class="" src="/images/avatar.png" alt="Your name">
+                    </figure>
+                    
+                    <p class="is-size-4 is-block">
+                        Your name
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Your title
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Your location</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        48
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        8
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        48
+                    </p>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/ppoffice" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Github" href="https://github.com/ppoffice">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Facebook" href="https://facebook.com">
+                
+                <i class="fab fa-facebook"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Twitter" href="https://twitter.com">
+                
+                <i class="fab fa-twitter"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Dribbble" href="https://dribbble.com">
+                
+                <i class="fab fa-dribbble"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://hexo.io" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hexo.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://github.com/ppoffice" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">PPOffice</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">github.com</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Java/">
+            <span class="level-start">
+                <span class="level-item">Java</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/SpringCloud/">
+            <span class="level-start">
+                <span class="level-item">SpringCloud</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">9</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/reactor/">
+            <span class="level-start">
+                <span class="level-item">reactor</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/大数据技术/">
+            <span class="level-start">
+                <span class="level-item">大数据技术</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/开发工具/">
+            <span class="level-start">
+                <span class="level-item">开发工具</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/搜索/">
+            <span class="level-start">
+                <span class="level-item">搜索</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">13</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/">
+            <span class="level-start">
+                <span class="level-item">机器学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/软件架构/">
+            <span class="level-start">
+                <span class="level-item">软件架构</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 11.43px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactive/" style="font-size: 10px;">reactive</a> <a href="/tags/reactor/" style="font-size: 11.43px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
+    </div>
+</div>
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/10/28/reactor/reactive&rector 简介/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactive&amp;reactor简介">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-28T15:33:16.000Z">2019-10-28</time></div>
+                    <a href="/2019/10/28/reactor/reactive&rector 简介/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactive&amp;reactor简介</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/reactor/">reactor</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(2)-反应式编程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(2)-反应式编程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(3)- 路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(3)- 路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/6entinel/">
+                        <span class="tag">6entinel</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/APR/">
+                        <span class="tag">APR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Apollo/">
+                        <span class="tag">Apollo</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BM25/">
+                        <span class="tag">BM25</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ElasticSearch/">
+                        <span class="tag">ElasticSearch</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Embedded-Tomcat/">
+                        <span class="tag">Embedded Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAProxy/">
+                        <span class="tag">HAProxy</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Hbase/">
+                        <span class="tag">Hbase</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/IK/">
+                        <span class="tag">IK</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JVM/">
+                        <span class="tag">JVM</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LTR/">
+                        <span class="tag">LTR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LVS/">
+                        <span class="tag">LVS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Nginx/">
+                        <span class="tag">Nginx</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Boot/">
+                        <span class="tag">Spring Boot</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud/">
+                        <span class="tag">Spring Cloud</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud-Gateway/">
+                        <span class="tag">Spring Cloud Gateway</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/SpringCloud/">
+                        <span class="tag">SpringCloud</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/TF-IDF/">
+                        <span class="tag">TF-IDF</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Tomcat/">
+                        <span class="tag">Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jenkins/">
+                        <span class="tag">jenkins</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jmeter/">
+                        <span class="tag">jmeter</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lucene/">
+                        <span class="tag">lucene</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactive/">
+                        <span class="tag">reactive</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactor/">
+                        <span class="tag">reactor</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring/">
+                        <span class="tag">spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-boot/">
+                        <span class="tag">spring-boot</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-cloud/">
+                        <span class="tag">spring-cloud</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/webFlux/">
+                        <span class="tag">webFlux</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/倒排索引/">
+                        <span class="tag">倒排索引</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/分词/">
+                        <span class="tag">分词</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/反应式编程/">
+                        <span class="tag">反应式编程</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/向量空间模型/">
+                        <span class="tag">向量空间模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工厂模式/">
+                        <span class="tag">工厂模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/布尔模型/">
+                        <span class="tag">布尔模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/建造者模式/">
+                        <span class="tag">建造者模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/开发工具/">
+                        <span class="tag">开发工具</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/微服务/">
+                        <span class="tag">微服务</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/搜索/">
+                        <span class="tag">搜索</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/相关性/">
+                        <span class="tag">相关性</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/线程/">
+                        <span class="tag">线程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/网关/">
+                        <span class="tag">网关</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/自动部署/">
+                        <span class="tag">自动部署</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/设计模式/">
+                        <span class="tag">设计模式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/负载均衡/">
+                        <span class="tag">负载均衡</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/责任链模式/">
+                        <span class="tag">责任链模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/配置中心/">
+                        <span class="tag">配置中心</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/10/28/reactor/reactive&rector 简介/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactive&amp;reactor简介">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-28T15:33:16.000Z">2019-10-28</time></div>
+                    <a href="/2019/10/28/reactor/reactive&rector 简介/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactive&amp;reactor简介</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/reactor/">reactor</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(2)-反应式编程">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(2)-反应式编程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(2)-反应式编程</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(3)- 路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(3)- 路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-17T15:33:16.000Z">2019-10-17</time></div>
+                    <a href="/2019/10/17/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/6entinel/">
+                        <span class="tag">6entinel</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/APR/">
+                        <span class="tag">APR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Apollo/">
+                        <span class="tag">Apollo</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BM25/">
+                        <span class="tag">BM25</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ElasticSearch/">
+                        <span class="tag">ElasticSearch</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Embedded-Tomcat/">
+                        <span class="tag">Embedded Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAProxy/">
+                        <span class="tag">HAProxy</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Hbase/">
+                        <span class="tag">Hbase</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/IK/">
+                        <span class="tag">IK</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JVM/">
+                        <span class="tag">JVM</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LTR/">
+                        <span class="tag">LTR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LVS/">
+                        <span class="tag">LVS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Nginx/">
+                        <span class="tag">Nginx</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Boot/">
+                        <span class="tag">Spring Boot</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud/">
+                        <span class="tag">Spring Cloud</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud-Gateway/">
+                        <span class="tag">Spring Cloud Gateway</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/SpringCloud/">
+                        <span class="tag">SpringCloud</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/TF-IDF/">
+                        <span class="tag">TF-IDF</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Tomcat/">
+                        <span class="tag">Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jenkins/">
+                        <span class="tag">jenkins</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jmeter/">
+                        <span class="tag">jmeter</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lucene/">
+                        <span class="tag">lucene</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactive/">
+                        <span class="tag">reactive</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactor/">
+                        <span class="tag">reactor</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring/">
+                        <span class="tag">spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-boot/">
+                        <span class="tag">spring-boot</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-cloud/">
+                        <span class="tag">spring-cloud</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/webFlux/">
+                        <span class="tag">webFlux</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/倒排索引/">
+                        <span class="tag">倒排索引</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/分词/">
+                        <span class="tag">分词</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/反应式编程/">
+                        <span class="tag">反应式编程</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/向量空间模型/">
+                        <span class="tag">向量空间模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工厂模式/">
+                        <span class="tag">工厂模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/布尔模型/">
+                        <span class="tag">布尔模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/建造者模式/">
+                        <span class="tag">建造者模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/开发工具/">
+                        <span class="tag">开发工具</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/微服务/">
+                        <span class="tag">微服务</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/搜索/">
+                        <span class="tag">搜索</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/相关性/">
+                        <span class="tag">相关性</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/线程/">
+                        <span class="tag">线程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/网关/">
+                        <span class="tag">网关</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/自动部署/">
+                        <span class="tag">自动部署</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/设计模式/">
+                        <span class="tag">设计模式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/负载均衡/">
+                        <span class="tag">负载均衡</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/责任链模式/">
+                        <span class="tag">责任链模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/配置中心/">
+                        <span class="tag">配置中心</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="CrowleyBlog" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 crowley&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'unfolded'
+        }
+    }
+};
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+
+
+
+    
+    
+<script src="/js/animation.js"></script>
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+<script src="/js/gallery.js" defer></script>
+
+    
+    
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+    
+    
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
