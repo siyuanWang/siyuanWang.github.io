@@ -102,6 +102,125 @@
                 <span class="level-item has-text-grey">
                     
                     
+                    3 分钟 读完 (大约 456 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/java/WeekHashMap原理分析/">WeakHashMap原理分析</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="WeakHashMap总体介绍"><a href="#WeakHashMap总体介绍" class="headerlink" title="WeakHashMap总体介绍"></a>WeakHashMap总体介绍</h1><p>​        WeakHashMap继承自AbstractMap，实现了Map接口，拥有了Map的基础功能。但是与常用的Map（比如HashMap）不同的是，WeakHashMap底层的存储单元Entry采用WeakReference，在GC的时候，会回收K,V。所以WeakHashMap天然比较适合用作缓存，即使K,V丢失，也不会对业务造成影响。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Entry</span>&lt;<span class="hljs-title">K</span>,<span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">WeakReference</span>&lt;<span class="hljs-title">Object</span>&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title">Map</span>.<span class="hljs-title">Entry</span>&lt;<span class="hljs-title">K</span>,<span class="hljs-title">V</span>&gt; </span>&#123;</span><br><span class="line">    V value;</span><br><span class="line">    <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> hash;</span><br><span class="line">    Entry&lt;K,V&gt; next;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * Creates new entry.</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    Entry(Object key, V value,</span><br><span class="line">          ReferenceQueue&lt;Object&gt; queue,</span><br><span class="line">          <span class="hljs-keyword">int</span> hash, Entry&lt;K,V&gt; next) &#123;</span><br><span class="line">        <span class="hljs-keyword">super</span>(key, queue);</span><br><span class="line">        <span class="hljs-keyword">this</span>.value = value;</span><br><span class="line">        <span class="hljs-keyword">this</span>.hash  = hash;</span><br><span class="line">        <span class="hljs-keyword">this</span>.next  = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    如上代码可以看到Entry继承了WeakReference，在构造函数中<code>super(key, queue)</code>传入了key和ReferenceQueue。</p>
+<p>​    在调用get(),put(),size()等方法的时候，会执行一个私有方法expungeStaleEntries，如下所示。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">expungeStaleEntries</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">//迭代弱引用队列中要被回收的对象</span></span><br><span class="line">    <span class="hljs-keyword">for</span> (Object x; (x = queue.poll()) != <span class="hljs-keyword">null</span>; ) &#123;</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (queue) &#123;</span><br><span class="line">            <span class="hljs-meta">@SuppressWarnings</span>(<span class="hljs-string">"unchecked"</span>)</span><br><span class="line">                Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) x;</span><br><span class="line">            <span class="hljs-keyword">int</span> i = indexFor(e.hash, table.length);</span><br><span class="line">			<span class="hljs-comment">//操作链表</span></span><br><span class="line">            Entry&lt;K,V&gt; prev = table[i];</span><br><span class="line">            Entry&lt;K,V&gt; p = prev;</span><br><span class="line">            <span class="hljs-keyword">while</span> (p != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                Entry&lt;K,V&gt; next = p.next;</span><br><span class="line">                <span class="hljs-keyword">if</span> (p == e) &#123;</span><br><span class="line">                    <span class="hljs-keyword">if</span> (prev == e)</span><br><span class="line">                        table[i] = next;</span><br><span class="line">                    <span class="hljs-keyword">else</span></span><br><span class="line">                        prev.next = next;</span><br><span class="line">                    <span class="hljs-comment">// Must not null out e.next;</span></span><br><span class="line">                    <span class="hljs-comment">// stale entries may be in use by a HashIterator</span></span><br><span class="line">                    <span class="hljs-comment">//敲黑板，这行代码很重要，如果不执行e.value = null，map的value会泄漏。</span></span><br><span class="line">                    e.value = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// Help GC</span></span><br><span class="line">                    size--;</span><br><span class="line">                    <span class="hljs-keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                prev = p;</span><br><span class="line">                p = next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>#图解WeakHashMap原理</p>
+<p><img src="http://syxtt.xin/%E8%99%9A%E5%BC%95%E7%94%A8.png" alt="img"></p>
+<p>​    </p>
+<p>​                                                    图1</p>
+<p>​    如图1所示，key1,key2,key3虚引用指向Entry1,Entry2,Entry3，每个entry又分别指向v1,v2,v3。GC之后，key2虚引用被垃圾回收。通过执行expungeStaleEntries方法，使得Entry2变成游离态，Entry2也和v2脱离了引用关系。所以Entry2,v2都变成了可被垃圾回收的状态。</p>
+<p><img src="http://syxtt.xin/%E8%99%9A%E5%BC%95%E7%94%A82.png" alt="img"></p>
+<p>​                                                图2</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    10 分钟 读完 (大约 1449 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/java/java类加载之ClassLoader/">java类加载之ClassLoader</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="何为类加载"><a href="#何为类加载" class="headerlink" title="何为类加载"></a>何为类加载</h1><p>大家知道Java是一门编译型语言，源代码文件是以.java结尾的。通过编译器编译之后，会形成一个字节码文件，也就是class文件。在一个应用中，不同的class文件中封装着不同的功能，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
+<h1 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h1><p><strong>BootstrapClassLoader</strong>：称为启动类加载器，是Java类加载层次中最顶层的类加载器，负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();</span><br><span class="line"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; urls.length; i++) &#123;</span><br><span class="line">	System.out.println(urls[i].toExternalForm());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如下是BootstrapClassLoader加载的类：</p>
+<p>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/resources.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/sunrsasign.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jsse.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jce.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/charsets.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jfr.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/classes</p>
+<p><strong>ExtClassLoader</strong>：</p>
+<p>称为扩展类加载器，负责加载Java的扩展类库，默认加载JAVA_HOME/jre/lib/ext/目下的所有jar。</p>
+<p><strong>AppClassLoader</strong>：</p>
+<p>称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。可以说应用程序自己定义的类，都是由AppClassLoader负责加载。</p>
+<p><strong>CustomClassLoader</strong>：</p>
+<p>除了Java默认提供的三个ClassLoader之外，用户还可以根据需要定义自已的ClassLoader，而这些自定义的ClassLoader都必须继承自java.lang.ClassLoader类，也包括Java提供的另外二个ClassLoader（Extension ClassLoader和App ClassLoader）在内，但是<strong>Bootstrap ClassLoader不继承自ClassLoader</strong>，因为它不是一个普通的Java类，底层由C++编写，已嵌入到了JVM内核当中，当JVM启动后，Bootstrap ClassLoader也随着启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。</p>
+<h1 id="ClassLoader加载类原理"><a href="#ClassLoader加载类原理" class="headerlink" title="ClassLoader加载类原理"></a>ClassLoader加载类原理</h1><p>ClassLoader使用的是<span style="color:red">双亲委托</span>模型来搜索类的，每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个包含的关系），虚拟机内置的类加载器（Bootstrap ClassLoader）本身没有父类加载器，但可以用作其它ClassLoader实例的的父类加载器。当一个ClassLoader实例需要加载某个类时，它会试图亲自搜索某个类之前，先把这个任务委托给它的父类加载器，这个过程是由上至下依次检查的，首先由最顶层的类加载器Bootstrap ClassLoader试图加载，如果没加载到，则把任务转交给Extension ClassLoader试图加载，如果也没加载到，则转交给App ClassLoader 进行加载，如果它也没有加载得到的话，则返回给委托的发起者，由它到指定的文件系统或网络等URL中加载该类。如果它们都没有加载到这个类时，则抛出ClassNotFoundException异常。否则将这个找到的类生成一个类的定义，并将它加载到内存当中，最后返回这个类在内存中的Class实例对象。</p>
+<p>##为何需要双亲委派</p>
+<p>因为这样可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次。考虑到<strong>安全因素</strong>，我们试想一下，如果不使用这种委托模式，那我们就可以随时使用自定义的String来动态替代java核心api中定义的类型，这样会存在非常大的安全隐患，而双亲委托的方式，就可以避免这种情况，因为String已经在启动时就被引导类加载器（Bootstrcp ClassLoader）加载，所以用户自定义的ClassLoader永远也无法加载一个自己写的String，除非你改变JDK中ClassLoader搜索类的默认算法。</p>
+<h2 id="JDK如何判定Class相同"><a href="#JDK如何判定Class相同" class="headerlink" title="JDK如何判定Class相同"></a>JDK如何判定Class相同</h2><p><strong>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的</strong>。只有两者同时满足的情况下，JVM才认为这两个class是相同的。</p>
+<h1 id="如何定义CustomClassLoader"><a href="#如何定义CustomClassLoader" class="headerlink" title="如何定义CustomClassLoader"></a>如何定义CustomClassLoader</h1><p>如下代码，展示了本地目录的类加载器。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FileSystemClassLoader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClassLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> String rootDir;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">FileSystemClassLoader</span><span class="hljs-params">(String rootDir)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.rootDir = rootDir;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="hljs-keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        <span class="hljs-keyword">byte</span>[] classData = getClassData(name);</span><br><span class="line">        <span class="hljs-keyword">if</span> (classData == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ClassNotFoundException();</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> defineClass(name, classData, <span class="hljs-number">0</span>, classData.length);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">byte</span>[] getClassData(String className) &#123;</span><br><span class="line">        String path = classNameToPath(className);</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            InputStream ins = <span class="hljs-keyword">new</span> FileInputStream(path);</span><br><span class="line">            ByteArrayOutputStream baos = <span class="hljs-keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">            <span class="hljs-keyword">int</span> bufferSize = <span class="hljs-number">4096</span>;</span><br><span class="line">            <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[bufferSize];</span><br><span class="line">            <span class="hljs-keyword">int</span> bytesNumRead = <span class="hljs-number">0</span>;</span><br><span class="line">            <span class="hljs-keyword">while</span> ((bytesNumRead = ins.read(buffer)) != -<span class="hljs-number">1</span>) &#123;</span><br><span class="line">                baos.write(buffer, <span class="hljs-number">0</span>, bytesNumRead);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">return</span> baos.toByteArray();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> String <span class="hljs-title">classNameToPath</span><span class="hljs-params">(String className)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> rootDir + File.separatorChar + className.replace(<span class="hljs-string">'.'</span>, File.separatorChar) + <span class="hljs-string">".class"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
                     8 分钟 读完 (大约 1197 个字)
                 </span>
                 
@@ -232,125 +351,6 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    10 分钟 读完 (大约 1449 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/08/11/java/java类加载之ClassLoader/">java类加载之ClassLoader</a>
-            
-        </h1>
-        <div class="content">
-            <h1 id="何为类加载"><a href="#何为类加载" class="headerlink" title="何为类加载"></a>何为类加载</h1><p>大家知道Java是一门编译型语言，源代码文件是以.java结尾的。通过编译器编译之后，会形成一个字节码文件，也就是class文件。在一个应用中，不同的class文件中封装着不同的功能，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
-<h1 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h1><p><strong>BootstrapClassLoader</strong>：称为启动类加载器，是Java类加载层次中最顶层的类加载器，负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件：</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();</span><br><span class="line"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; urls.length; i++) &#123;</span><br><span class="line">	System.out.println(urls[i].toExternalForm());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如下是BootstrapClassLoader加载的类：</p>
-<p>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/resources.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/sunrsasign.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jsse.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jce.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/charsets.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jfr.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/classes</p>
-<p><strong>ExtClassLoader</strong>：</p>
-<p>称为扩展类加载器，负责加载Java的扩展类库，默认加载JAVA_HOME/jre/lib/ext/目下的所有jar。</p>
-<p><strong>AppClassLoader</strong>：</p>
-<p>称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。可以说应用程序自己定义的类，都是由AppClassLoader负责加载。</p>
-<p><strong>CustomClassLoader</strong>：</p>
-<p>除了Java默认提供的三个ClassLoader之外，用户还可以根据需要定义自已的ClassLoader，而这些自定义的ClassLoader都必须继承自java.lang.ClassLoader类，也包括Java提供的另外二个ClassLoader（Extension ClassLoader和App ClassLoader）在内，但是<strong>Bootstrap ClassLoader不继承自ClassLoader</strong>，因为它不是一个普通的Java类，底层由C++编写，已嵌入到了JVM内核当中，当JVM启动后，Bootstrap ClassLoader也随着启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。</p>
-<h1 id="ClassLoader加载类原理"><a href="#ClassLoader加载类原理" class="headerlink" title="ClassLoader加载类原理"></a>ClassLoader加载类原理</h1><p>ClassLoader使用的是<span style="color:red">双亲委托</span>模型来搜索类的，每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个包含的关系），虚拟机内置的类加载器（Bootstrap ClassLoader）本身没有父类加载器，但可以用作其它ClassLoader实例的的父类加载器。当一个ClassLoader实例需要加载某个类时，它会试图亲自搜索某个类之前，先把这个任务委托给它的父类加载器，这个过程是由上至下依次检查的，首先由最顶层的类加载器Bootstrap ClassLoader试图加载，如果没加载到，则把任务转交给Extension ClassLoader试图加载，如果也没加载到，则转交给App ClassLoader 进行加载，如果它也没有加载得到的话，则返回给委托的发起者，由它到指定的文件系统或网络等URL中加载该类。如果它们都没有加载到这个类时，则抛出ClassNotFoundException异常。否则将这个找到的类生成一个类的定义，并将它加载到内存当中，最后返回这个类在内存中的Class实例对象。</p>
-<p>##为何需要双亲委派</p>
-<p>因为这样可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次。考虑到<strong>安全因素</strong>，我们试想一下，如果不使用这种委托模式，那我们就可以随时使用自定义的String来动态替代java核心api中定义的类型，这样会存在非常大的安全隐患，而双亲委托的方式，就可以避免这种情况，因为String已经在启动时就被引导类加载器（Bootstrcp ClassLoader）加载，所以用户自定义的ClassLoader永远也无法加载一个自己写的String，除非你改变JDK中ClassLoader搜索类的默认算法。</p>
-<h2 id="JDK如何判定Class相同"><a href="#JDK如何判定Class相同" class="headerlink" title="JDK如何判定Class相同"></a>JDK如何判定Class相同</h2><p><strong>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的</strong>。只有两者同时满足的情况下，JVM才认为这两个class是相同的。</p>
-<h1 id="如何定义CustomClassLoader"><a href="#如何定义CustomClassLoader" class="headerlink" title="如何定义CustomClassLoader"></a>如何定义CustomClassLoader</h1><p>如下代码，展示了本地目录的类加载器。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FileSystemClassLoader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClassLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> String rootDir;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">FileSystemClassLoader</span><span class="hljs-params">(String rootDir)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.rootDir = rootDir;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="hljs-keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        <span class="hljs-keyword">byte</span>[] classData = getClassData(name);</span><br><span class="line">        <span class="hljs-keyword">if</span> (classData == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ClassNotFoundException();</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> defineClass(name, classData, <span class="hljs-number">0</span>, classData.length);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">byte</span>[] getClassData(String className) &#123;</span><br><span class="line">        String path = classNameToPath(className);</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            InputStream ins = <span class="hljs-keyword">new</span> FileInputStream(path);</span><br><span class="line">            ByteArrayOutputStream baos = <span class="hljs-keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">            <span class="hljs-keyword">int</span> bufferSize = <span class="hljs-number">4096</span>;</span><br><span class="line">            <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[bufferSize];</span><br><span class="line">            <span class="hljs-keyword">int</span> bytesNumRead = <span class="hljs-number">0</span>;</span><br><span class="line">            <span class="hljs-keyword">while</span> ((bytesNumRead = ins.read(buffer)) != -<span class="hljs-number">1</span>) &#123;</span><br><span class="line">                baos.write(buffer, <span class="hljs-number">0</span>, bytesNumRead);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">return</span> baos.toByteArray();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> String <span class="hljs-title">classNameToPath</span><span class="hljs-params">(String className)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> rootDir + File.separatorChar + className.replace(<span class="hljs-string">'.'</span>, File.separatorChar) + <span class="hljs-string">".class"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    1 分钟 读完 (大约 211 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/08/11/spring/Spring的配置文件管理/">Spring初始化源码分析</a>
-            
-        </h1>
-        <div class="content">
-            <p>spring配置文件，需要关注如下两个类。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.beans.factory.config.PropertiesFactoryBean</span><br><span class="line">org.springframework.context.support.PropertySourcesPlaceholderConfigurer</span><br></pre></td></tr></table></figure>
-<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAo9UxSWkxnmNCy8xB%2Fimage.png?alt=media&amp;token=709211c5-2130-444b-908f-55e5dba42072" alt="img"></p>
-<p>​                                PropertiesFactoryBean类图</p>
-<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAoO5fKKIeQCNgJdpk%2Fimage.png?alt=media&amp;token=ba3e75b1-89f6-477e-8170-effa329b2e29" alt="img"></p>
-<p>​                            PropertySourcesPlaceholderConfigurer</p>
-<p>如下是配置方式</p>
-<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">context:property-placeholder</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">util:properties</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig1"</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"spc"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.context.support.PropertySourcesPlaceholderConfigurer"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"ignoreResourceNotFound"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span>/&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>​                                    使用方式上，用@Value注解</p>
-<p>PropertiesFactoryBean用#{}的方式</p>
-<p>PropertySourcesPlaceholderConfigurer用${}的方式</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Value</span>(value = <span class="hljs-string">"$&#123;driveClass&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String driveClass;</span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"$&#123;url&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String url;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['userName']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String userName;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['config1']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String password;</span><br></pre></td></tr></table></figure>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
                     5 分钟 读完 (大约 776 个字)
                 </span>
                 
@@ -411,7 +411,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    3 分钟 读完 (大约 456 个字)
+                    1 分钟 读完 (大约 211 个字)
                 </span>
                 
                 
@@ -420,22 +420,22 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2018/08/11/java/WeekHashMap原理分析/">WeakHashMap原理分析</a>
+                <a class="has-link-black-ter" href="/2018/08/11/spring/Spring的配置文件管理/">Spring初始化源码分析</a>
             
         </h1>
         <div class="content">
-            <h1 id="WeakHashMap总体介绍"><a href="#WeakHashMap总体介绍" class="headerlink" title="WeakHashMap总体介绍"></a>WeakHashMap总体介绍</h1><p>​        WeakHashMap继承自AbstractMap，实现了Map接口，拥有了Map的基础功能。但是与常用的Map（比如HashMap）不同的是，WeakHashMap底层的存储单元Entry采用WeakReference，在GC的时候，会回收K,V。所以WeakHashMap天然比较适合用作缓存，即使K,V丢失，也不会对业务造成影响。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Entry</span>&lt;<span class="hljs-title">K</span>,<span class="hljs-title">V</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">WeakReference</span>&lt;<span class="hljs-title">Object</span>&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title">Map</span>.<span class="hljs-title">Entry</span>&lt;<span class="hljs-title">K</span>,<span class="hljs-title">V</span>&gt; </span>&#123;</span><br><span class="line">    V value;</span><br><span class="line">    <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> hash;</span><br><span class="line">    Entry&lt;K,V&gt; next;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * Creates new entry.</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    Entry(Object key, V value,</span><br><span class="line">          ReferenceQueue&lt;Object&gt; queue,</span><br><span class="line">          <span class="hljs-keyword">int</span> hash, Entry&lt;K,V&gt; next) &#123;</span><br><span class="line">        <span class="hljs-keyword">super</span>(key, queue);</span><br><span class="line">        <span class="hljs-keyword">this</span>.value = value;</span><br><span class="line">        <span class="hljs-keyword">this</span>.hash  = hash;</span><br><span class="line">        <span class="hljs-keyword">this</span>.next  = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​    如上代码可以看到Entry继承了WeakReference，在构造函数中<code>super(key, queue)</code>传入了key和ReferenceQueue。</p>
-<p>​    在调用get(),put(),size()等方法的时候，会执行一个私有方法expungeStaleEntries，如下所示。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">expungeStaleEntries</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">//迭代弱引用队列中要被回收的对象</span></span><br><span class="line">    <span class="hljs-keyword">for</span> (Object x; (x = queue.poll()) != <span class="hljs-keyword">null</span>; ) &#123;</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (queue) &#123;</span><br><span class="line">            <span class="hljs-meta">@SuppressWarnings</span>(<span class="hljs-string">"unchecked"</span>)</span><br><span class="line">                Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) x;</span><br><span class="line">            <span class="hljs-keyword">int</span> i = indexFor(e.hash, table.length);</span><br><span class="line">			<span class="hljs-comment">//操作链表</span></span><br><span class="line">            Entry&lt;K,V&gt; prev = table[i];</span><br><span class="line">            Entry&lt;K,V&gt; p = prev;</span><br><span class="line">            <span class="hljs-keyword">while</span> (p != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                Entry&lt;K,V&gt; next = p.next;</span><br><span class="line">                <span class="hljs-keyword">if</span> (p == e) &#123;</span><br><span class="line">                    <span class="hljs-keyword">if</span> (prev == e)</span><br><span class="line">                        table[i] = next;</span><br><span class="line">                    <span class="hljs-keyword">else</span></span><br><span class="line">                        prev.next = next;</span><br><span class="line">                    <span class="hljs-comment">// Must not null out e.next;</span></span><br><span class="line">                    <span class="hljs-comment">// stale entries may be in use by a HashIterator</span></span><br><span class="line">                    <span class="hljs-comment">//敲黑板，这行代码很重要，如果不执行e.value = null，map的value会泄漏。</span></span><br><span class="line">                    e.value = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// Help GC</span></span><br><span class="line">                    size--;</span><br><span class="line">                    <span class="hljs-keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                prev = p;</span><br><span class="line">                p = next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>#图解WeakHashMap原理</p>
-<p><img src="http://syxtt.xin/%E8%99%9A%E5%BC%95%E7%94%A8.png" alt="img"></p>
-<p>​    </p>
-<p>​                                                    图1</p>
-<p>​    如图1所示，key1,key2,key3虚引用指向Entry1,Entry2,Entry3，每个entry又分别指向v1,v2,v3。GC之后，key2虚引用被垃圾回收。通过执行expungeStaleEntries方法，使得Entry2变成游离态，Entry2也和v2脱离了引用关系。所以Entry2,v2都变成了可被垃圾回收的状态。</p>
-<p><img src="http://syxtt.xin/%E8%99%9A%E5%BC%95%E7%94%A82.png" alt="img"></p>
-<p>​                                                图2</p>
+            <p>spring配置文件，需要关注如下两个类。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.beans.factory.config.PropertiesFactoryBean</span><br><span class="line">org.springframework.context.support.PropertySourcesPlaceholderConfigurer</span><br></pre></td></tr></table></figure>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAo9UxSWkxnmNCy8xB%2Fimage.png?alt=media&amp;token=709211c5-2130-444b-908f-55e5dba42072" alt="img"></p>
+<p>​                                PropertiesFactoryBean类图</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAoO5fKKIeQCNgJdpk%2Fimage.png?alt=media&amp;token=ba3e75b1-89f6-477e-8170-effa329b2e29" alt="img"></p>
+<p>​                            PropertySourcesPlaceholderConfigurer</p>
+<p>如下是配置方式</p>
+<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">context:property-placeholder</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">util:properties</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig1"</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"spc"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.context.support.PropertySourcesPlaceholderConfigurer"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"ignoreResourceNotFound"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span>/&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​                                    使用方式上，用@Value注解</p>
+<p>PropertiesFactoryBean用#{}的方式</p>
+<p>PropertySourcesPlaceholderConfigurer用${}的方式</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Value</span>(value = <span class="hljs-string">"$&#123;driveClass&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String driveClass;</span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"$&#123;url&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String url;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['userName']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String userName;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['config1']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String password;</span><br></pre></td></tr></table></figure>
 
         </div>
         
@@ -673,7 +673,7 @@
             
             <a href="/2019/10/27/spring/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/springcloudgateway.webp" alt="SpringCloudGateway源码解析(6)- 常用功能实现">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring6.jpg" alt="SpringCloudGateway源码解析(6)- 常用功能实现">
                 </p>
             </a>
             
@@ -692,7 +692,7 @@
             
             <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/springcloudgateway.webp" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring5.jpg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
                 </p>
             </a>
             
@@ -711,7 +711,7 @@
             
             <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/springcloudgateway.webp" alt="SpringCloudGateway源码解析(4)- 核心流程">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring4.jpg" alt="SpringCloudGateway源码解析(4)- 核心流程">
                 </p>
             </a>
             
@@ -730,7 +730,7 @@
             
             <a href="/2019/10/20/spring/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/springcloudgateway.webp" alt="SpringCloudGateway源码解析(3)- 路由">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring3.jpg" alt="SpringCloudGateway源码解析(3)- 路由">
                 </p>
             </a>
             
@@ -1253,7 +1253,7 @@
             
             <a href="/2019/10/27/spring/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/springcloudgateway.webp" alt="SpringCloudGateway源码解析(6)- 常用功能实现">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring6.jpg" alt="SpringCloudGateway源码解析(6)- 常用功能实现">
                 </p>
             </a>
             
@@ -1272,7 +1272,7 @@
             
             <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/springcloudgateway.webp" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring5.jpg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
                 </p>
             </a>
             
@@ -1291,7 +1291,7 @@
             
             <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/springcloudgateway.webp" alt="SpringCloudGateway源码解析(4)- 核心流程">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring4.jpg" alt="SpringCloudGateway源码解析(4)- 核心流程">
                 </p>
             </a>
             
@@ -1310,7 +1310,7 @@
             
             <a href="/2019/10/20/spring/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/springcloudgateway.webp" alt="SpringCloudGateway源码解析(3)- 路由">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring3.jpg" alt="SpringCloudGateway源码解析(3)- 路由">
                 </p>
             </a>
             
