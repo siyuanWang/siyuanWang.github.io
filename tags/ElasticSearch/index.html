@@ -264,6 +264,101 @@
                 <span class="level-item has-text-grey">
                     
                     
+                    几秒 读完 (大约 25 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/tool/mac安装mysql指南/">mac安装mysql记录</a>
+            
+        </h1>
+        <div class="content">
+            <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install mysql</span><br></pre></td></tr></table></figure>
+<p>CREATE USER ‘test‘@’%’ IDENTIFIED BY ‘root@12’;</p>
+<p>grant all privileges on <em>.</em> to ‘test‘@’%’;</p>
+<p>Flush privileges;</p>
+<p>下载Sequel Pro开始使用</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    几秒 读完 (大约 22 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/search/elasticSearch-sniff/">elasticSearch系列笔记(5)-客户端负载均衡</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="常用负载均衡策略"><a href="#常用负载均衡策略" class="headerlink" title="常用负载均衡策略"></a>常用负载均衡策略</h2><h2 id="ES客户端负载均衡策略"><a href="#ES客户端负载均衡策略" class="headerlink" title="ES客户端负载均衡策略"></a>ES客户端负载均衡策略</h2><h2 id="集群嗅探"><a href="#集群嗅探" class="headerlink" title="集群嗅探"></a>集群嗅探</h2>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
                     8 分钟 读完 (大约 1255 个字)
                 </span>
                 
@@ -444,51 +539,6 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 <span class="level-item has-text-grey">
                     
                     
-                    几秒 读完 (大约 22 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/07/11/search/elasticSearch-sniff/">elasticSearch系列笔记(5)-客户端负载均衡</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="常用负载均衡策略"><a href="#常用负载均衡策略" class="headerlink" title="常用负载均衡策略"></a>常用负载均衡策略</h2><h2 id="ES客户端负载均衡策略"><a href="#ES客户端负载均衡策略" class="headerlink" title="ES客户端负载均衡策略"></a>ES客户端负载均衡策略</h2><h2 id="集群嗅探"><a href="#集群嗅探" class="headerlink" title="集群嗅探"></a>集群嗅探</h2>
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
                     几秒 读完 (大约 2 个字)
                 </span>
                 
@@ -574,56 +624,6 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
 <p>从es的官方网站我们可以指定，初始化散发其实就是在进行真正的查询之前，先把各个分片的词频率和文档频率收集一下，然后进行词搜索的时候，各分片依据全局的词频率和文档频率进行搜索和排名。显然如果使用DFS_QUERY_THEN_FETCH这种查询方式，效率是最低的，因为一个搜索，可能要请求3次分片。但，使用DFS方法，搜索精度应该是最高的。</p>
 <p>至于DFS是什么缩写，没有找到相关资料，这个D可能是Distributed，F可能是frequency的缩写，至于S可能是Scatter的缩写，整个单词可能是分布式词频率和文档频率散发的缩写。</p>
 <p>总结一下，从性能考虑QUERY_AND_FETCH是最快的，DFS_QUERY_THEN_FETCH是最慢的。从搜索的准确度来说，DFS要比非DFS的准确度更高。</p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    几秒 读完 (大约 25 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/07/11/tool/mac安装mysql指南/">mac安装mysql记录</a>
-            
-        </h1>
-        <div class="content">
-            <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install mysql</span><br></pre></td></tr></table></figure>
-<p>CREATE USER ‘test‘@’%’ IDENTIFIED BY ‘root@12’;</p>
-<p>grant all privileges on <em>.</em> to ‘test‘@’%’;</p>
-<p>Flush privileges;</p>
-<p>下载Sequel Pro开始使用</p>
 
         </div>
         
@@ -1004,25 +1004,6 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
         
         <article class="media">
             
-            <a href="/2019/10/28/reactor/reactive&rector 简介/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactive&amp;reactor简介">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-28T15:33:16.000Z">2019-10-28</time></div>
-                    <a href="/2019/10/28/reactor/reactive&rector 简介/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactive&amp;reactor简介</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/reactor/">reactor</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
             <a href="/2019/10/27/spring/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/logospringLogo.jpg" alt="SpringCloudGateway源码解析(6)- 常用功能实现">
@@ -1078,6 +1059,25 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
             </div>
         </article>
         
+        <article class="media">
+            
+            <a href="/2019/10/20/spring/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logospringLogo.jpg" alt="SpringCloudGateway源码解析(3)- 路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-20T12:33:16.000Z">2019-10-20</time></div>
+                    <a href="/2019/10/20/spring/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(3)- 路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
     </div>
 </div>
         
@@ -1095,7 +1095,7 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                     <span class="level-item">十月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">7</span>
                 </span>
             </a>
         </li>
@@ -1173,6 +1173,17 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
                 </span>
             </a>
         </li>
@@ -1591,25 +1602,6 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
         
         <article class="media">
             
-            <a href="/2019/10/28/reactor/reactive&rector 简介/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="reactive&amp;reactor简介">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-28T15:33:16.000Z">2019-10-28</time></div>
-                    <a href="/2019/10/28/reactor/reactive&rector 简介/" class="title has-link-black-ter is-size-6 has-text-weight-normal">reactive&amp;reactor简介</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/reactor/">reactor</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
             <a href="/2019/10/27/spring/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/logospringLogo.jpg" alt="SpringCloudGateway源码解析(6)- 常用功能实现">
@@ -1665,6 +1657,25 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
             </div>
         </article>
         
+        <article class="media">
+            
+            <a href="/2019/10/20/spring/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logospringLogo.jpg" alt="SpringCloudGateway源码解析(3)- 路由">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-20T12:33:16.000Z">2019-10-20</time></div>
+                    <a href="/2019/10/20/spring/springcloud/gateway/SpringCloudGateway源码解析(3)-路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(3)- 路由</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
     </div>
 </div>
     
@@ -1682,7 +1693,7 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                     <span class="level-item">十月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">7</span>
                 </span>
             </a>
         </li>
@@ -1760,6 +1771,17 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
                 </span>
             </a>
         </li>
