@@ -107,7 +107,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    5 分钟 读完 (大约 735 个字)
+                    5 分钟 读完 (大约 819 个字)
                 </span>
                 
                 
@@ -120,22 +120,17 @@
             
         </h1>
         <div class="content">
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​        使用过SpringBoot的同学，都知道<code>java -jar application.jar</code>就可以启动一个tomcat应用，十分的简单。之所这么方便，是因为SpringBoot帮我们整合了Embedded Tomcat，那么Native Tomcat和Embedded的相比，有什么差别呢？是不是Embedded Tomcat比Native版的差太多？</p>
-<h1 id="话说Embedded-Tomcat"><a href="#话说Embedded-Tomcat" class="headerlink" title="话说Embedded Tomcat"></a>话说Embedded Tomcat</h1><h2 id="Connector"><a href="#Connector" class="headerlink" title="Connector"></a>Connector</h2><p>​        要讲Embedded和Native版的区别，先要了解tomcat的<a href="https://tomcat.apache.org/tomcat-9.0-doc/config/http.html#NIO_specific_configuration" target="_blank" rel="noopener">Connector</a>：</p>
-<ul>
-<li>BIO 即同步阻塞式I/O，每一个请求，都会创建一个线程来处理，在高并发的场景下不适合。</li>
-<li>NIO  即同步非阻塞I/O，在Java中，采用的多路复用I/O（epoll），适合高并发场景。</li>
-<li>NIO2 即异步非阻塞I/O，在NIO的基础上，进一步提高I/O的性能。</li>
-<li>APR/native APR全称是<strong>Apache Portable Runtime</strong>，是一个高度可移植的库，APR有许多用途，包括访问高级IO功能（例如sendfile，epoll和OpenSSL），操作系统级别的功能（生成随机数，系统状态等）以及本机进程处理（共享内存，NT管道和Unix套接字）。这些功能使Tomcat成为通用的Web服务器，可以更好地与其他本机Web技术集成，并且总体上使Java作为完整的Web服务器平台而不是仅以后端为中心的技术，更加可行。可以认为，APR是<strong>NIO的操作系统级别的实现</strong>，理论上比NIO要快一些。</li>
-</ul>
-<p><img src="http://syxtt.xin/image/blog/tomcat/connectortomcat-Connector%E5%AF%B9%E6%AF%94.png" alt="img"></p>
-<p>##区别&amp;Embedded利好</p>
-<p>​        从Tomcat7.0开始，Embedded版本便与Native版的一同发布，不过官方文档上没有介绍Embedded Tomcat的特性，理论上源码是一套，只是适配层略有区别。而已知的最大区别，便是Embedded不支持<a href="https://tomcat.apache.org/tomcat-9.0-doc/apr.html" target="_blank" rel="noopener">APR</a>，换句话说，如果你不使用APR，那么Embedded和Native版是没什么区别的！这个很重要，如果没有区别，谁还会在服务器上安装tomcat，还需要打WAR包扔到tomcat目录下等等繁琐的操作。在SpringBoot中，只需要<code>java -jar app.jar</code>,就能启动一个高性能应用，岂不美哉。</p>
-<p>​        而且在网上搜到一封tomcat开发团队的一封邮件，就是关于在<a href="[http://mail-archives.apache.org/mod_mbox/tomcat-dev/201910.mbox/%3C74954cbc-5e24-eea9-b5ff-5ee5f69d7d95@kippdata.de%3E](http://mail-archives.apache.org/mod_mbox/tomcat-dev/201910.mbox/&lt;74954cbc-5e24-eea9-b5ff-5ee5f69d7d95@kippdata.de">Tomcat10中废弃APR的讨论</a>)。我们拭目以待吧。总之放心用内置版tomcat吧</p>
-<p>​        <img src="http://syxtt.xin/image/blog/tomcat/connectortomcat10%E5%BA%9F%E5%BC%83APR%E7%9A%84%E8%AE%A8%E8%AE%BA.png" alt></p>
-
+            <p>​        使用过SpringBoot的同学，都知道<code>java -jar application.jar</code>就可以启动一个tomcat应用，十分的简单。之所这么方便，是因为SpringBoot帮我们整合了Embedded Tomcat，那么Native Tomcat和Embedded的相比，有什么差别呢？是不是Embedded Tomcat比Native版的差太多？</p>
         </div>
         
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/10/30/springcloud/springboot/tomcat/SpringBoot可以放心使用Embedded Tomcat/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
         
         
     </div>
