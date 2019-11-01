@@ -286,21 +286,22 @@
     <div class="card-content">
         <h3 class="title is-5 has-text-weight-normal">评论</h3>
         
-<div id="comment-container"></div>
-<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-<script>
-	var gitment = new Gitment({
-		id: '4d8bba77e39ba6516aaeb47c5e94cd26',
-		owner: 'siyuanWang',
-		repo: 'blog_issue',
-		oauth: {
-			client_id: 'e3e1d2680a4935081163',
-			client_secret: '364eb18119bda5afd5daa7c6fa7129c792c36650',
-		},
-	})
-	gitment.render('comment-container')
-</script>
+ <div id="gitmentContainer"></div>
+ <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
+ <script src="https://billts.site/js/gitment.js"></script>
+ <script>
+ var gitment = new Gitment({
+ 	id: 'Tue Dec 11 2018 23:33:16 GMT+0800',
+     owner: 'your_github_name',
+     repo: 'your_blog_github_repo',
+     oauth: {
+         client_id: 'your_client_id',
+         client_secret: 'your_client_secret_id',
+     },
+ });
+ gitment.render('gitmentContainer');
+ </script>
+
 
     </div>
 </div>

@@ -216,6 +216,13 @@
         </div>
         
         
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2018/07/11/tool/mac安装mysql指南/">
+                <span class="level-item">mac安装mysql记录</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
     </div>
 </div>
 
@@ -225,21 +232,22 @@
     <div class="card-content">
         <h3 class="title is-5 has-text-weight-normal">评论</h3>
         
-<div id="comment-container"></div>
-<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-<script>
-	var gitment = new Gitment({
-		id: '66fd66a8910704111d1d9bf3ba0c4003',
-		owner: 'siyuanWang',
-		repo: 'blog_issue',
-		oauth: {
-			client_id: 'e3e1d2680a4935081163',
-			client_secret: '364eb18119bda5afd5daa7c6fa7129c792c36650',
-		},
-	})
-	gitment.render('comment-container')
-</script>
+ <div id="gitmentContainer"></div>
+ <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
+ <script src="https://billts.site/js/gitment.js"></script>
+ <script>
+ var gitment = new Gitment({
+ 	id: 'Wed Jul 11 2018 23:33:16 GMT+0800',
+     owner: 'your_github_name',
+     repo: 'your_blog_github_repo',
+     oauth: {
+         client_id: 'your_client_id',
+         client_secret: 'your_client_secret_id',
+     },
+ });
+ gitment.render('gitmentContainer');
+ </script>
+
 
     </div>
 </div>
