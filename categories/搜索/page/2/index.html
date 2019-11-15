@@ -102,7 +102,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    几秒 读完 (大约 25 个字)
+                    8 分钟 读完 (大约 1255 个字)
                 </span>
                 
                 
@@ -111,15 +111,145 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2018/07/11/tool/mac安装mysql指南/">mac安装mysql记录</a>
+                <a class="has-link-black-ter" href="/2018/07/11/search/elasticSearch-初体验/">elasticSearch系列笔记(1)-Hello ElasticSearch</a>
             
         </h1>
         <div class="content">
-            <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install mysql</span><br></pre></td></tr></table></figure>
-<p>CREATE USER ‘test‘@’%’ IDENTIFIED BY ‘root@12’;</p>
-<p>grant all privileges on <em>.</em> to ‘test‘@’%’;</p>
-<p>Flush privileges;</p>
-<p>下载Sequel Pro开始使用</p>
+            <p>读了上面的小故事，是不是觉得对ElasticSearch的前世今生，兴趣十足呢？！我计划写一篇ElasticSearch的系列学习笔记，深入浅出，不仅方便大家学习，还能够让我更加深入的了解这门技术。学习一门新技术的第一课就是hello world.<br>接下来的章节，实操ElasticSearch hello world。</p>
+<h2 id="ElasticSearch简介"><a href="#ElasticSearch简介" class="headerlink" title="ElasticSearch简介"></a>ElasticSearch简介</h2><h3 id="回忆时光"><a href="#回忆时光" class="headerlink" title="回忆时光"></a>回忆时光</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>许多年前，一个刚结婚的名叫 Shay Banon 的失业开发者，跟着他的妻子去了伦敦，他的妻子在那里学习厨师（感觉国内的女生很少有喜欢做饭的，反而男生喜欢做饭）。 在寻找一个赚钱的工作的时候，为了给他的妻子做一个食谱搜索引擎，他开始使用 Lucene 的一个早期版本。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>直接使用 Lucene 是很难的，因此 Shay 开始做一个抽象层，Java 开发者使用它可以很简单的给他们的程序添加搜索功能。 他发布了他的第一个开源项目 Compass。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>后来 Shay 获得了一份工作，主要是高性能，分布式环境下的内存数据网格。这个对于高性能，实时，分布式搜索引擎的需求尤为突出， 他决定重写 Compass，把它变为一个独立的服务并取名 Elasticsearch。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>第一个公开版本在2010年2月发布，从此以后，Elasticsearch 已经成为了 Github 上最活跃的项目之一，他拥有超过300名 contributors(目前736名 contributors )。 一家公司已经开始围绕 Elasticsearch 提供商业服务，并开发新的特性，但是，Elasticsearch 将永远开源并对所有人可用。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>据说，Shay 的妻子还在等着她的食谱搜索引擎…<br></p>
+<h3 id="切入正题"><a href="#切入正题" class="headerlink" title="切入正题"></a>切入正题</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>读了上面的小故事，是不是觉得对ElasticSearch的前世今生，兴趣十足呢？！我计划写一篇ElasticSearch的系列学习笔记，深入浅出，不仅方便大家学习，还能够让我更加深入的了解这门技术。学习一门新技术的第一课就是hello world.<br>接下来的章节，实操ElasticSearch hello world。</p>
+<h3 id="Mac-ElasticSearch-安装"><a href="#Mac-ElasticSearch-安装" class="headerlink" title="Mac ElasticSearch 安装"></a>Mac ElasticSearch 安装</h3><p>1、Java环境的安装配置<br><br>2、brew install elasticSearch（仅适用于Mac）<br><br>3、brew info elasticSearch,会显示如下信息表示安装成功</p>
+<pre><code>elasticSearch: stable 6.2.4, HEAD
+Distributed search &amp; analytics engine
+https://www.elastic.co/products/elasticsearch
+/usr/local/Cellar/elasticSearch/6.2.4 (112 files, 30.8MB)
+  Built from source on 2018-05-29 at 11:10:53
+From: https://github.com/Homebrew/homebrew-core/blob/master/Formula/elasticsearch.rb
+==&gt; Requirements
+Required: java = 1.8 ✔
+==&gt; Options
+--HEAD
+    Install HEAD version
+==&gt; Caveats
+</code></pre><p>4、brew services start elasticsearch</p>
+<pre><code>启动后localhost:9200，打印如下，说明ElasticSearch启动成功
+{
+  &quot;name&quot; : &quot;yptOhLD&quot;,
+  &quot;cluster_name&quot; : &quot;elasticsearch_1&quot;,
+  &quot;cluster_uuid&quot; : &quot;_na_&quot;,
+  &quot;version&quot; : {
+    &quot;number&quot; : &quot;6.2.4&quot;,
+    &quot;build_hash&quot; : &quot;ccec39f&quot;,
+    &quot;build_date&quot; : &quot;2018-04-12T20:37:28.497551Z&quot;,
+    &quot;build_snapshot&quot; : false,
+    &quot;lucene_version&quot; : &quot;7.2.1&quot;,
+    &quot;minimum_wire_compatibility_version&quot; : &quot;5.6.0&quot;,
+    &quot;minimum_index_compatibility_version&quot; : &quot;5.0.0&quot;
+  },
+  &quot;tagline&quot; : &quot;You Know, for Search&quot;
+}
+</code></pre><p>5、brew install kibana（仅适用于Mac）<br>6、brew services start kibana <br><br>7、打开kibana localhost:5601<br></p>
+<p>基于以上7个步骤，环境问题搞定，下面来真实的操作一下ElasticSearch。</p>
+<h2 id="ElasticSearch-Hello-World"><a href="#ElasticSearch-Hello-World" class="headerlink" title="ElasticSearch Hello World"></a>ElasticSearch Hello World</h2><h3 id="创建索引-create-index"><a href="#创建索引-create-index" class="headerlink" title="创建索引(create index)"></a>创建索引(create index)</h3><pre><code>curl -XPUT &quot;http://localhost:9200/goods_index&quot;
+
+curl -XGET &quot;http://localhost:9200/goods_index&quot;
+
+{
+  &quot;goods_index&quot;: { #索引名称
+    &quot;aliases&quot;: {},
+    &quot;mappings&quot;: {},
+    &quot;settings&quot;: {
+      &quot;index&quot;: {
+        &quot;creation_date&quot;: &quot;1530627979046&quot;,
+        &quot;number_of_shards&quot;: &quot;5&quot;, #5个分片
+        &quot;number_of_replicas&quot;: &quot;1&quot;, #一个备份
+        &quot;uuid&quot;: &quot;kTy_hHlQQRaVPygKHZpUYQ&quot;,
+        &quot;version&quot;: {
+          &quot;created&quot;: &quot;6020499&quot;
+        },
+        &quot;provided_name&quot;: &quot;goods_index&quot;
+      }
+    }
+  }
+}
+</code></pre><h3 id="索引文档-index-document"><a href="#索引文档-index-document" class="headerlink" title="索引文档(index document)"></a>索引文档(index document)</h3><pre><code>curl -XPUT &quot;http://localhost:9200/goods_index/goods/12343333&quot; -H &apos;Content-Type:application/json&apos; -d&apos;
+{
+  &quot;skuName&quot;: &quot;华为手机&quot;,
+  &quot;url&quot;:&quot;https://item.jd.com/6946605.html&quot;
+}&apos;
+
+索引数据之后，再执行查看索引详情，会发现mappings属性多了一个名字叫goods的type,goods下面多了skuName和url两个properties。
+{
+  &quot;goods_index&quot;: {
+    &quot;aliases&quot;: {},
+    &quot;mappings&quot;: {
+      &quot;goods&quot;: {
+        &quot;properties&quot;: {
+          &quot;skuName&quot;: {
+            &quot;type&quot;: &quot;text&quot;,
+            &quot;fields&quot;: {
+              &quot;keyword&quot;: {
+                &quot;type&quot;: &quot;keyword&quot;,
+                &quot;ignore_above&quot;: 256
+              }
+            }
+          },
+          &quot;url&quot;: {
+            &quot;type&quot;: &quot;text&quot;,
+            &quot;fields&quot;: {
+              &quot;keyword&quot;: {
+                &quot;type&quot;: &quot;keyword&quot;,
+                &quot;ignore_above&quot;: 256
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;settings&quot;: {
+      &quot;index&quot;: {
+        &quot;creation_date&quot;: &quot;1530627979046&quot;,
+        &quot;number_of_shards&quot;: &quot;5&quot;,
+        &quot;number_of_replicas&quot;: &quot;1&quot;,
+        &quot;uuid&quot;: &quot;kTy_hHlQQRaVPygKHZpUYQ&quot;,
+        &quot;version&quot;: {
+          &quot;created&quot;: &quot;6020499&quot;
+        },
+        &quot;provided_name&quot;: &quot;goods_index&quot;
+      }
+    }
+  }
+}
+</code></pre><h3 id="查询文档-query-document"><a href="#查询文档-query-document" class="headerlink" title="查询文档(query document)"></a>查询文档(query document)</h3><pre><code>curl -XGET &quot;http://localhost:9200/goods_index/goods/_search&quot;
+</code></pre><p>执行上面的查询语句，得到如下的结果集。</p>
+<pre><code>{
+  &quot;took&quot;: 1,
+  &quot;timed_out&quot;: false,
+  &quot;_shards&quot;: {
+    &quot;total&quot;: 5,
+    &quot;successful&quot;: 5,
+    &quot;skipped&quot;: 0,
+    &quot;failed&quot;: 0
+  },
+  &quot;hits&quot;: {
+    &quot;total&quot;: 1,
+    &quot;max_score&quot;: 1,
+    &quot;hits&quot;: [
+      {
+        &quot;_index&quot;: &quot;goods_index&quot;,
+        &quot;_type&quot;: &quot;goods&quot;,
+        &quot;_id&quot;: &quot;12343333&quot;,
+        &quot;_score&quot;: 1,
+        &quot;_source&quot;: {
+          &quot;skuName&quot;: &quot;华为手机&quot;,
+          &quot;url&quot;: &quot;https://item.jd.com/6946605.html&quot;
+        }
+      }
+    ]
+  }
+}
+</code></pre><h2 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>ElasticSearch的Hello world，是不是比java，python难一些呢？不过还好，一个检索系统，就此拉开了帷幕。这就是ElasticSearch推崇的“开箱即用”的理念。但是要学好ElasticSearch可不是一件容易的事情，细心的同学，可能会发现有一些细节：<br><br>1、什么是索引？<br><br>2、什么是文档？<br><br>3、索引和文档是什么样的关系？<br><br>……<br><br>请持续关注我的博客，我们逐渐从ElasticSearch小白，变成大牛。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html" title="elasticSearch权威指南2.x" target="_blank" rel="noopener">elasticSearch权威指南2.x</a><br><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" title="elasticSearch权威指南6.2" target="_blank" rel="noopener">elasticSearch reference 6.2</a></p>
 
         </div>
         
