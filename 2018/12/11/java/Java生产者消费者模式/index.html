@@ -103,7 +103,7 @@
             
         </h1>
         <div class="content">
-            <h1 id="生产者消费者模式"><a href="#生产者消费者模式" class="headerlink" title="生产者消费者模式"></a>生产者消费者模式</h1><p>生产者-消费者模式在服务端编程中，是一种很常见的设计模式，比如消息队列的实现，就是这种思想。本文就是用Java语言编写一个简单的生产者消费者例子，从而引出concurrent包下的阻塞队列和ReentrantLock一些玩法。</p>
+            <h1><span id="生产者消费者模式">生产者消费者模式</span></h1><p>生产者-消费者模式在服务端编程中，是一种很常见的设计模式，比如消息队列的实现，就是这种思想。本文就是用Java语言编写一个简单的生产者消费者例子，从而引出concurrent包下的阻塞队列和ReentrantLock一些玩法。</p>
 <p>##基础知识</p>
 <p>首先复习下基础知识，在Java中concurrent包下并发队列分为<strong>阻塞队列</strong>和<strong>非阻塞队列</strong>，ConcurrentLinkedQueue是非阻塞队列，底层实现用了CAS。阻塞队列包括LinkedBlockingQueue，LinkedBlockingDeque，LinkedTransferQueue，ArrayBlockingQueue，阻塞队列底层是靠ReentrantLock实现。Condition包括await，signal，signalAll，Condition作为条件锁</p>
 <p>我们知道Lock的本质是AQS，AQS自己维护的队列是当前等待资源的队列，AQS会在被释放后，依次唤醒队列中从前到后的所有节点，使他们对应的线程恢复执行，直到队列为空。</p>
