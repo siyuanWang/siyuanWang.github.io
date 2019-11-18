@@ -103,7 +103,7 @@
             
         </h1>
         <div class="content">
-            <h2><span id="elasticsearch本地源码调试">ElasticSearch本地源码调试</span></h2><p>转自：<a href="https://donlianli.iteye.com/blog/2094305" target="_blank" rel="noopener">https://donlianli.iteye.com/blog/2094305</a></p>
+            <h2 id="ElasticSearch本地源码调试"><a href="#ElasticSearch本地源码调试" class="headerlink" title="ElasticSearch本地源码调试"></a>ElasticSearch本地源码调试</h2><p>转自：<a href="https://donlianli.iteye.com/blog/2094305" target="_blank" rel="noopener">https://donlianli.iteye.com/blog/2094305</a></p>
 <p>es在查询时，可以指定搜索类型为QUERY_THEN_FETCH,QUERY_AND_FEATCH,DFS_QUERY_THEN_FEATCH和DFS_QUERY_AND_FEATCH。那么这4种搜索类型有什么区别？</p>
 <p>分布式搜索背景介绍：</p>
 <p>ES天生就是为分布式而生，但分布式有分布式的缺点。比如要搜索某个单词，但是数据却分别在5个分片（Shard)上面，这5个分片可能在5台主机上面。因为全文搜索天生就要排序（按照匹配度进行排名）,但数据却在5个分片上，如何得到最后正确的排序呢？ES是这样做的，大概分两步。</p>
@@ -177,9 +177,9 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/07/11/search/elasticSearch-sniff/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/07/11/search/elasticSearch-term_vector/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">elasticSearch系列笔记(5)-客户端负载均衡</span>
+                <span class="level-item">elasticSearch系列笔记(4)-term_vector</span>
             </a>
         </div>
         

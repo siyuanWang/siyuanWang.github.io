@@ -104,7 +104,7 @@
         </h1>
         <div class="content">
             <p>原文：<a href="http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html" target="_blank" rel="noopener">http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html</a></p>
-<h2><span id="hbase架构组成">HBase架构组成</span></h2><p>HBase采用Master/Slave架构搭建集群，它隶属于Hadoop生态系统，由一下类型节点组成：HMaster节点、HRegionServer节点、ZooKeeper集群，而在底层，它将数据存储于HDFS中，因而涉及到HDFS的NameNode、DataNode等，总体结构如下：</p>
+<h2 id="HBase架构组成"><a href="#HBase架构组成" class="headerlink" title="HBase架构组成"></a>HBase架构组成</h2><p>HBase采用Master/Slave架构搭建集群，它隶属于Hadoop生态系统，由一下类型节点组成：HMaster节点、HRegionServer节点、ZooKeeper集群，而在底层，它将数据存储于HDFS中，因而涉及到HDFS的NameNode、DataNode等，总体结构如下：</p>
 <p><img src="http://syxtt.xin/f762fab9-ad5d-42eb-abe1-ca0601879088.png" alt="img"></p>
 <p>其中HMaster节点用于：</p>
 <ol>
@@ -127,10 +127,10 @@
 </ol>
 <p>HBase Client通过RPC方式和HMaster、HRegionServer通信；一个HRegionServer可以存放1000个HRegion；底层Table数据存储于HDFS中，而HRegion所处理的数据尽量和数据所在的DataNode在一起，实现数据的本地化；数据本地化并不是总能实现，比如在HRegion移动(如因Split)时，需要等下一次Compact才能继续回到本地化。</p>
 <p>这个架构图比较清晰的表达了HMaster和NameNode都支持多个热备份，使用ZooKeeper来做协调；ZooKeeper并不是云般神秘，它一般由三台机器组成一个集群，内部使用PAXOS算法支持三台Server中的一台宕机，也有使用五台机器的，此时则可以支持同时两台宕机，既少于半数的宕机，然而随着机器的增加，它的性能也会下降；RegionServer和DataNode一般会放在相同的Server上实现数据的本地化。</p>
-<h2><span id="hregion">HRegion</span></h2><p>HBase使用RowKey将表水平切割成多个HRegion，从HMaster的角度，每个HRegion都纪录了它的StartKey和EndKey（第一个HRegion的StartKey为空，最后一个HRegion的EndKey为空），由于RowKey是排序的，因而Client可以通过HMaster快速的定位每个RowKey在哪个HRegion中。HRegion由HMaster分配到相应的HRegionServer中，然后由HRegionServer负责HRegion的启动和管理，和Client的通信，负责数据的读(使用HDFS)。每个HRegionServer可以同时管理1000个左右的HRegion（这个数字怎么来的？没有从代码中看到限制，难道是出于经验？超过1000个会引起性能问题？</p>
+<h2 id="HRegion"><a href="#HRegion" class="headerlink" title="HRegion"></a>HRegion</h2><p>HBase使用RowKey将表水平切割成多个HRegion，从HMaster的角度，每个HRegion都纪录了它的StartKey和EndKey（第一个HRegion的StartKey为空，最后一个HRegion的EndKey为空），由于RowKey是排序的，因而Client可以通过HMaster快速的定位每个RowKey在哪个HRegion中。HRegion由HMaster分配到相应的HRegionServer中，然后由HRegionServer负责HRegion的启动和管理，和Client的通信，负责数据的读(使用HDFS)。每个HRegionServer可以同时管理1000个左右的HRegion（这个数字怎么来的？没有从代码中看到限制，难道是出于经验？超过1000个会引起性能问题？</p>
 <p>来回答这个问题：感觉这个1000的数字是从BigTable的论文中来的（5 Implementation节）：Each tablet server manages a set of tablets(typically we have somewhere between ten to a thousand tablets per tablet server)）。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig2.png" alt="img"></p>
-<h2><span id="hmaster">HMaster</span></h2><p>HMaster没有单点故障问题，可以启动多个HMaster，通过ZooKeeper的Master Election机制保证同时只有一个HMaster出于Active状态，其他的HMaster则处于热备份状态。一般情况下会启动两个HMaster，非Active的HMaster会定期的和Active HMaster通信以获取其最新状态，从而保证它是实时更新的，因而如果启动了多个HMaster反而增加了Active HMaster的负担。前文已经介绍过了HMaster的主要用于HRegion的分配和管理，DDL(Data Definition Language，既Table的新建、删除、修改等)的实现等，既它主要有两方面的职责：</p>
+<h2 id="HMaster"><a href="#HMaster" class="headerlink" title="HMaster"></a>HMaster</h2><p>HMaster没有单点故障问题，可以启动多个HMaster，通过ZooKeeper的Master Election机制保证同时只有一个HMaster出于Active状态，其他的HMaster则处于热备份状态。一般情况下会启动两个HMaster，非Active的HMaster会定期的和Active HMaster通信以获取其最新状态，从而保证它是实时更新的，因而如果启动了多个HMaster反而增加了Active HMaster的负担。前文已经介绍过了HMaster的主要用于HRegion的分配和管理，DDL(Data Definition Language，既Table的新建、删除、修改等)的实现等，既它主要有两方面的职责：</p>
 <ol>
 <li>协调HRegionServer<ol>
 <li>启动时HRegion的分配，以及负载均衡和修复时HRegion的重新分配。</li>
@@ -143,12 +143,12 @@
 </li>
 </ol>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig3.png" alt="img"></p>
-<h2><span id="zookeeper协调者">ZooKeeper：协调者</span></h2><p>ZooKeeper为HBase集群提供协调服务，它管理着HMaster和HRegionServer的状态(available/alive等)，并且会在它们宕机时通知给HMaster，从而HMaster可以实现HMaster之间的failover，或对宕机的HRegionServer中的HRegion集合的修复(将它们分配给其他的HRegionServer)。ZooKeeper集群本身使用一致性协议(PAXOS协议)保证每个节点状态的一致性。</p>
+<h2 id="ZooKeeper：协调者"><a href="#ZooKeeper：协调者" class="headerlink" title="ZooKeeper：协调者"></a>ZooKeeper：协调者</h2><p>ZooKeeper为HBase集群提供协调服务，它管理着HMaster和HRegionServer的状态(available/alive等)，并且会在它们宕机时通知给HMaster，从而HMaster可以实现HMaster之间的failover，或对宕机的HRegionServer中的HRegion集合的修复(将它们分配给其他的HRegionServer)。ZooKeeper集群本身使用一致性协议(PAXOS协议)保证每个节点状态的一致性。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig4.png" alt="img"></p>
-<h2><span id="how-the-components-work-together">How The Components Work Together</span></h2><p>ZooKeeper协调集群所有节点的共享信息，在HMaster和HRegionServer连接到ZooKeeper后创建Ephemeral节点，并使用Heartbeat机制维持这个节点的存活状态，如果某个Ephemeral节点实效，则HMaster会收到通知，并做相应的处理。</p>
+<h2 id="How-The-Components-Work-Together"><a href="#How-The-Components-Work-Together" class="headerlink" title="How The Components Work Together"></a>How The Components Work Together</h2><p>ZooKeeper协调集群所有节点的共享信息，在HMaster和HRegionServer连接到ZooKeeper后创建Ephemeral节点，并使用Heartbeat机制维持这个节点的存活状态，如果某个Ephemeral节点实效，则HMaster会收到通知，并做相应的处理。</p>
 <p>另外，HMaster通过监听ZooKeeper中的Ephemeral节点(默认：/hbase/rs/*)来监控HRegionServer的加入和宕机。在第一个HMaster连接到ZooKeeper时会创建Ephemeral节点(默认：/hbasae/master)来表示Active的HMaster，其后加进来的HMaster则监听该Ephemeral节点，如果当前Active的HMaster宕机，则该节点消失，因而其他HMaster得到通知，而将自身转换成Active的HMaster，在变为Active的HMaster之前，它会创建在/hbase/back-masters/下创建自己的Ephemeral节点。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig5.png" alt="img"></p>
-<h3><span id="hbase的第一次读写">HBase的第一次读写</span></h3><p>在HBase 0.96以前，HBase有两个特殊的Table：-ROOT-和.META.（如BigTable中的设计），其中-ROOT- Table的位置存储在ZooKeeper，它存储了.META. Table的RegionInfo信息，并且它只能存在一个HRegion，而.META. Table则存储了用户Table的RegionInfo信息，它可以被切分成多个HRegion，因而对第一次访问用户Table时，首先从ZooKeeper中读取-ROOT- Table所在HRegionServer；然后从该HRegionServer中根据请求的TableName，RowKey读取.META. Table所在HRegionServer；最后从该HRegionServer中读取.META. Table的内容而获取此次请求需要访问的HRegion所在的位置，然后访问该HRegionSever获取请求的数据，这需要三次请求才能找到用户Table所在的位置，然后第四次请求开始获取真正的数据。当然为了提升性能，客户端会缓存-ROOT- Table位置以及-ROOT-/.META. Table的内容。如下图所示：</p>
+<h3 id="HBase的第一次读写"><a href="#HBase的第一次读写" class="headerlink" title="HBase的第一次读写"></a>HBase的第一次读写</h3><p>在HBase 0.96以前，HBase有两个特殊的Table：-ROOT-和.META.（如BigTable中的设计），其中-ROOT- Table的位置存储在ZooKeeper，它存储了.META. Table的RegionInfo信息，并且它只能存在一个HRegion，而.META. Table则存储了用户Table的RegionInfo信息，它可以被切分成多个HRegion，因而对第一次访问用户Table时，首先从ZooKeeper中读取-ROOT- Table所在HRegionServer；然后从该HRegionServer中根据请求的TableName，RowKey读取.META. Table所在HRegionServer；最后从该HRegionServer中读取.META. Table的内容而获取此次请求需要访问的HRegion所在的位置，然后访问该HRegionSever获取请求的数据，这需要三次请求才能找到用户Table所在的位置，然后第四次请求开始获取真正的数据。当然为了提升性能，客户端会缓存-ROOT- Table位置以及-ROOT-/.META. Table的内容。如下图所示：</p>
 <p><img src="http://syxtt.xin/image0030.jpg" alt="img"></p>
 <p>可是即使客户端有缓存，在初始阶段需要三次请求才能直到用户Table真正所在的位置也是性能低下的，而且真的有必要支持那么多的HRegion吗？或许对Google这样的公司来说是需要的，但是对一般的集群来说好像并没有这个必要。在BigTable的论文中说，每行METADATA存储1KB左右数据，中等大小的Tablet(HRegion)在128MB左右，3层位置的Schema设计可以支持2^34个Tablet(HRegion)。即使去掉-ROOT- Table，也还可以支持2^17(131072)个HRegion， 如果每个HRegion还是128MB，那就是16TB，这个貌似不够大，但是现在的HRegion的最大大小都会设置的比较大，比如我们设置了2GB，此时支持的大小则变成了4PB，对一般的集群来说已经够了，因而在HBase 0.96以后去掉了-ROOT- Table，只剩下这个特殊的目录表叫做Meta Table(hbase:meta)，它存储了集群中所有用户HRegion的位置信息，而ZooKeeper的节点中(/hbase/meta-region-server)存储的则直接是这个Meta Table的位置，并且这个Meta Table如以前的-ROOT- Table一样是不可split的。这样，客户端在第一次访问用户Table的流程就变成了：</p>
 <ol>
@@ -158,9 +158,9 @@
 </ol>
 <p>从这个过程中，我们发现客户会缓存这些位置信息，然而第二步它只是缓存当前RowKey对应的HRegion的位置，因而如果下一个要查的RowKey不在同一个HRegion中，则需要继续查询hbase:meta所在的HRegion，然而随着时间的推移，客户端缓存的位置信息越来越多，以至于不需要再次查找hbase:meta Table的信息，除非某个HRegion因为宕机或Split被移动，此时需要重新查询并且更新缓存。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig6.png" alt="img"></p>
-<h3><span id="hbasemeta表">hbase:meta表</span></h3><p>hbase:meta表存储了所有用户HRegion的位置信息，它的RowKey:tableName,regionStartKey,regionId,replicaId等，它只有info列族，这个列族包含三个列，他们分别是：info:regioninfo列是RegionInfo的proto格式：regionId,tableName,startKey,endKey,offline,split,replicaId；info:server格式：HRegionServer对应的server:port；info:serverstartcode格式是HRegionServer的启动时间戳。</p>
+<h3 id="hbase-meta表"><a href="#hbase-meta表" class="headerlink" title="hbase:meta表"></a>hbase:meta表</h3><p>hbase:meta表存储了所有用户HRegion的位置信息，它的RowKey:tableName,regionStartKey,regionId,replicaId等，它只有info列族，这个列族包含三个列，他们分别是：info:regioninfo列是RegionInfo的proto格式：regionId,tableName,startKey,endKey,offline,split,replicaId；info:server格式：HRegionServer对应的server:port；info:serverstartcode格式是HRegionServer的启动时间戳。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig7.png" alt="img"></p>
-<h2><span id="hregionserver详解">HRegionServer详解</span></h2><p>HRegionServer一般和DataNode在同一台机器上运行，实现数据的本地性。HRegionServer包含多个HRegion，由WAL(HLog)、BlockCache、MemStore、HFile组成。</p>
+<h2 id="HRegionServer详解"><a href="#HRegionServer详解" class="headerlink" title="HRegionServer详解"></a>HRegionServer详解</h2><p>HRegionServer一般和DataNode在同一台机器上运行，实现数据的本地性。HRegionServer包含多个HRegion，由WAL(HLog)、BlockCache、MemStore、HFile组成。</p>
 <ol>
 <li><strong>WAL即Write Ahead Log</strong>，在早期版本中称为HLog，它是HDFS上的一个文件，如其名字所表示的，所有写操作都会先保证将数据写入这个Log文件后，才会真正更新MemStore，最后写入HFile中。采用这种模式，可以保证HRegionServer宕机后，我们依然可以从该Log文件中读取数据，Replay所有的操作，而不至于数据丢失。这个Log文件会定期Roll出新的文件而删除旧的文件(那些已持久化到HFile中的Log可以删除)。WAL文件存储在/hbase/WALs/${HRegionServer_Name}的目录中(在0.94之前，存储在/hbase/.logs/目录中)，一般一个HRegionServer只有一个WAL实例，也就是说一个HRegionServer的所有WAL写都是串行的(就像log4j的日志写也是串行的)，这当然会引起性能问题，因而在HBase 1.0之后，通过<a href="https://issues.apache.org/jira/browse/HBASE-5699" target="_blank" rel="noopener">HBASE-5699</a>实现了多个WAL并行写(MultiWAL)，该实现采用HDFS的多个管道写，以单个HRegion为单位。关于WAL可以参考Wikipedia的<a href="https://en.wikipedia.org/wiki/Write-ahead_logging" target="_blank" rel="noopener">Write-Ahead Logging</a>。顺便吐槽一句，英文版的维基百科竟然能毫无压力的正常访问了，这是某个GFW的疏忽还是以后的常态？</li>
 <li><strong>BlockCache是一个读缓存</strong>，即“引用局部性”原理（也应用于CPU，<a href="http://baike.baidu.com/link?url=Dh2u9KvowXcl2PloHJFTB9vEOoVS3WxPhDCVvbQGL_piyKFQ2iTHYAYf5mLAsFrcBUig6NC7A4-Aki61qnGCTK#3_1" target="_blank" rel="noopener">分空间局部性和时间局部性</a>，空间局部性是指CPU在某一时刻需要某个数据，那么有很大的概率在一下时刻它需要的数据在其附近；时间局部性是指某个数据在被访问过一次后，它有很大的概率在不久的将来会被再次的访问），将数据预读取到内存中，以提升读的性能。HBase中提供两种BlockCache的实现：默认on-heap LruBlockCache和BucketCache(通常是off-heap)。通常BucketCache的性能要差于LruBlockCache，然而由于GC的影响，LruBlockCache的延迟会变的不稳定，而BucketCache由于是自己管理BlockCache，而不需要GC，因而它的延迟通常比较稳定，这也是有些时候需要选用BucketCache的原因。这篇文章<a href="http://www.n10k.com/blog/blockcache-101/" target="_blank" rel="noopener">BlockCache101</a>对on-heap和off-heap的BlockCache做了详细的比较。</li>
@@ -173,11 +173,11 @@
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig8.png" alt="img"></p>
 <p>虽然上面这张图展现的是最新的HRegionServer的架构(但是并不是那么的精确)，但是我一直比较喜欢看以下这张图，即使它展现的应该是0.94以前的架构。</p>
 <p><img src="http://syxtt.xin/image0060.jpg" alt="img"></p>
-<h3><span id="hregionserver中数据写流程图解">HRegionServer中数据写流程图解</span></h3><p>当客户端发起一个Put请求时，首先它从hbase:meta表中查出该Put数据最终需要去的HRegionServer。然后客户端将Put请求发送给相应的HRegionServer，在HRegionServer中它首先会将该Put操作写入WAL日志文件中(Flush到磁盘中)。</p>
+<h3 id="HRegionServer中数据写流程图解"><a href="#HRegionServer中数据写流程图解" class="headerlink" title="HRegionServer中数据写流程图解"></a>HRegionServer中数据写流程图解</h3><p>当客户端发起一个Put请求时，首先它从hbase:meta表中查出该Put数据最终需要去的HRegionServer。然后客户端将Put请求发送给相应的HRegionServer，在HRegionServer中它首先会将该Put操作写入WAL日志文件中(Flush到磁盘中)。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig9.png" alt="img"></p>
 <p>写完WAL日志文件后，HRegionServer根据Put中的TableName和RowKey找到对应的HRegion，并根据Column Family找到对应的HStore，并将Put写入到该HStore的MemStore中。此时写成功，并返回通知客户端。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig10.png" alt="img"></p>
-<h3><span id="memstore-flush">MemStore Flush</span></h3><p>MemStore是一个In Memory Sorted Buffer，在每个HStore中都有一个MemStore，即它是一个HRegion的一个Column Family对应一个实例。它的排列顺序以RowKey、Column Family、Column的顺序以及Timestamp的倒序，如下所示：</p>
+<h3 id="MemStore-Flush"><a href="#MemStore-Flush" class="headerlink" title="MemStore Flush"></a>MemStore Flush</h3><p>MemStore是一个In Memory Sorted Buffer，在每个HStore中都有一个MemStore，即它是一个HRegion的一个Column Family对应一个实例。它的排列顺序以RowKey、Column Family、Column的顺序以及Timestamp的倒序，如下所示：</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig11.png" alt="img"></p>
 <p>每一次Put/Delete请求都是先写入到MemStore中，当MemStore满后会Flush成一个新的StoreFile(底层实现是HFile)，即一个HStore(Column Family)可以有0个或多个StoreFile(HFile)。有以下三种情况可以触发MemStore的Flush动作，</p>
 <p>需要注意的是MemStore的最小Flush单元是HRegion而不是单个MemStore。据说这是Column Family有个数限制的其中一个原因，估计是因为太多的Column Family一起Flush会引起性能问题？具体原因有待考证。</p>
@@ -188,7 +188,7 @@
 </ol>
 <p>在MemStore Flush过程中，还会在尾部追加一些meta数据，其中就包括Flush时最大的WAL sequence值，以告诉HBase这个StoreFile写入的最新数据的序列，那么在Recover时就直到从哪里开始。在HRegion启动时，这个sequence会被读取，并取最大的作为下一次更新时的起始sequence。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig12.png" alt="img"></p>
-<h2><span id="hfile格式">HFile格式</span></h2><p>HBase的数据以KeyValue(Cell)的形式顺序的存储在HFile中，在MemStore的Flush过程中生成HFile，由于MemStore中存储的Cell遵循相同的排列顺序，因而Flush过程是顺序写，我们直到磁盘的顺序写性能很高，因为不需要不停的移动磁盘指针。</p>
+<h2 id="HFile格式"><a href="#HFile格式" class="headerlink" title="HFile格式"></a>HFile格式</h2><p>HBase的数据以KeyValue(Cell)的形式顺序的存储在HFile中，在MemStore的Flush过程中生成HFile，由于MemStore中存储的Cell遵循相同的排列顺序，因而Flush过程是顺序写，我们直到磁盘的顺序写性能很高，因为不需要不停的移动磁盘指针。</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig13.png" alt="img"></p>
 <p>HFile参考BigTable的SSTable和Hadoop的TFile实现，从HBase开始到现在，HFile经历了三个版本，其中V2在0.92引入，V3在0.98引入。首先我们来看一下V1的格式：</p>
 <p><img src="http://syxtt.xin/image0080.jpg" alt="img"></p>
@@ -203,7 +203,7 @@
 <p>对HFileV2格式具体分析，它是一个多层的类B+树索引，采用这种设计，可以实现查找不需要读取整个文件：</p>
 <p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig14.png" alt="img"></p>
 <p>Data Block中的Cell都是升序排列，每个block都有它自己的Leaf-Index，每个Block的最后一个Key被放入Intermediate-Index中，Root-Index指向Intermediate-Index。在HFile的末尾还有Bloom Filter用于快速定位那么没有在某个Data Block中的Row；TimeRange信息用于给那些使用时间查询的参考。在HFile打开时，这些索引信息都被加载并保存在内存中，以增加以后的读取性能。</p>
-<h2><span id="参考">参考：</span></h2><p><a href="https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx" target="_blank" rel="noopener">https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx</a></p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx" target="_blank" rel="noopener">https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx</a></p>
 <p><a href="http://jimbojw.com/wiki/index.php?title=Understanding_Hbase_and_BigTable" target="_blank" rel="noopener">http://jimbojw.com/wiki/index.php?title=Understanding_Hbase_and_BigTable</a></p>
 <p><a href="http://hbase.apache.org/book.html" target="_blank" rel="noopener">http://hbase.apache.org/book.html</a> </p>
 <p><a href="http://www.searchtb.com/2011/01/understanding-hbase.html" target="_blank" rel="noopener">http://www.searchtb.com/2011/01/understanding-hbase.html</a> </p>
@@ -256,16 +256,16 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/01/21/bigdata/hbase/Hbase系列3-Hbase深入浅出/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/01/21/bigdata/hbase/Hbase系列4-rowkey设计技巧/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">Hbase系列3-Hbase深入浅出</span>
+                <span class="level-item">Hbase系列4-rowkey设计技巧</span>
             </a>
         </div>
         
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2018/12/11/design/单例模式/">
-                <span class="level-item">单例模式</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/01/21/bigdata/hbase/Hbase系列3-Hbase深入浅出/">
+                <span class="level-item">Hbase系列3-Hbase深入浅出</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>

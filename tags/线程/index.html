@@ -114,7 +114,7 @@
             
         </h1>
         <div class="content">
-            <h1><span id="java线程基础">Java线程基础</span></h1><p>如下图所示，Java中线程可分为NEW，RUNABLE，RUNING，BLOCKED，WAITING，TIMED_WAITING，TERMINATED 共七个状态，一个状态是如何过渡到另一个状态图中标识的很清楚。</p>
+            <h1 id="Java线程基础"><a href="#Java线程基础" class="headerlink" title="Java线程基础"></a>Java线程基础</h1><p>如下图所示，Java中线程可分为NEW，RUNABLE，RUNING，BLOCKED，WAITING，TIMED_WAITING，TERMINATED 共七个状态，一个状态是如何过渡到另一个状态图中标识的很清楚。</p>
 <p><img src="http://syxtt.xin/%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81.png" alt="img"></p>
 <ul>
 <li><p><strong>初始状态（NEW）</strong><br>实现Runnable接口和继承Thread可以得到一个线程类，new一个实例出来，线程就进入了初始状态。</p>
@@ -138,7 +138,7 @@
 <li><p><strong>终止状态（TERMINATED）</strong><br>当线程的run()方法完成时，或者主线程的main()方法完成时，我们就认为它终止了。这个线程对象也许是活的，但是，它已经不是一个单独执行的线程。线程一旦终止了，就不能复生。在一个终止的线程上调用start()方法，会抛出java.lang.IllegalThreadStateException异常。</p>
 </li>
 </ul>
-<h1><span id="java线程常用api">Java线程常用API</span></h1><p><img src="http://syxtt.xin/Thread%E6%96%B9%E6%B3%95%E9%9B%86%E5%90%88.png" alt="img"></p>
+<h1 id="Java线程常用API"><a href="#Java线程常用API" class="headerlink" title="Java线程常用API"></a>Java线程常用API</h1><p><img src="http://syxtt.xin/Thread%E6%96%B9%E6%B3%95%E9%9B%86%E5%90%88.png" alt="img"></p>
 <p>其中常用的方法为start()，yield()，sleep()，interrupt()，interrupted()，isInterrupted()，isAlive()，join()，</p>
 <p>setDaemon()，setName()，setPriority()，其中stop方法和destroy方法，都是被废弃的方法在日常使用中不建议用。除了Thread类下的API，Object类下的wait()，notify()，notifyAll()，这三个方法也经常在多线程场景中出现。本文的目的，主要讲解的就是这些方法的使用和内部原理。</p>
 <table>

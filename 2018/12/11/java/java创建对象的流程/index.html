@@ -103,7 +103,7 @@
             
         </h1>
         <div class="content">
-            <h2><span id="如何创建一个对象">如何创建一个对象</span></h2><p>Java创建一个对象，最简单的方式就是</p>
+            <h2 id="如何创建一个对象"><a href="#如何创建一个对象" class="headerlink" title="如何创建一个对象"></a>如何创建一个对象</h2><p>Java创建一个对象，最简单的方式就是</p>
 <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object a = new Object();</span><br></pre></td></tr></table></figure>
 <p>可以，大家有没有想过，在JVM中，创建一个对象的流程是如何呢？其实具体流程入下图所示。</p>
 <p><img src="http://syxtt.xin/new%E6%B5%81%E7%A8%8B.png" alt="img"></p>
@@ -115,8 +115,8 @@
 </ul>
 <p>因此，在使用Serial，ParNew等带Compact过程的收集器时，系统采用的分配方式是指针碰撞法，而使用CMS这种基于Mark-Sweep算法的收集器时，通常采用的是空闲列表法。</p>
 <p>除了分配方法外，还需要考虑同步的问题。实际上虚拟机采用了CAS配上失败重试的方式保证更新的原子性，另一种是把内存分配的动作按照线程划分在不同的空间之中，即每个线程在Java堆中预先分配一小块内存，称为本地线程分配缓冲（Thread Local Allocation Buffer, TLAB）,可以通过-XX:+UseTLAB参数来设定。</p>
-<h2><span id="对象内存布局">对象内存布局</span></h2><p>在HotSpot虚拟机中，对象在内存中存储的布局可以分为3块区域：对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。</p>
-<h3><span id="对象头">对象头</span></h3><p>HotSpot虚拟机对象头包括两部分内容：</p>
+<h2 id="对象内存布局"><a href="#对象内存布局" class="headerlink" title="对象内存布局"></a>对象内存布局</h2><p>在HotSpot虚拟机中，对象在内存中存储的布局可以分为3块区域：对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。</p>
+<h3 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h3><p>HotSpot虚拟机对象头包括两部分内容：</p>
 <ul>
 <li>第一部分</li>
 </ul>
@@ -161,7 +161,7 @@
 <li>第二部分</li>
 </ul>
 <p><strong>类型指针</strong>，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。</p>
-<h2><span id="对象访问定位">对象访问定位</span></h2><p>有两种方式，<strong>句柄访问</strong>和<strong>直接指针访问</strong>。这两种访问方式各有优点，使用句柄的最大好处就是reference中存储的是稳定的句柄地址，在对象被移动（垃圾回收移动对象是很常见的事情）时只会改变句柄中的实例数据指针，而reference本身不需要更新。使用直接指针访问方式最大好处就是速度更快，它节省一次指针定位的时间开销，由于对象访问在Java中非常频繁，这类开销积少成多，将是一个比较可观的提升。HotSpot就是采用直接指针法。</p>
+<h2 id="对象访问定位"><a href="#对象访问定位" class="headerlink" title="对象访问定位"></a>对象访问定位</h2><p>有两种方式，<strong>句柄访问</strong>和<strong>直接指针访问</strong>。这两种访问方式各有优点，使用句柄的最大好处就是reference中存储的是稳定的句柄地址，在对象被移动（垃圾回收移动对象是很常见的事情）时只会改变句柄中的实例数据指针，而reference本身不需要更新。使用直接指针访问方式最大好处就是速度更快，它节省一次指针定位的时间开销，由于对象访问在Java中非常频繁，这类开销积少成多，将是一个比较可观的提升。HotSpot就是采用直接指针法。</p>
 <p><img src="http://syxtt.xin/%E9%80%9A%E8%BF%87%E5%8F%A5%E6%9F%84%E8%AE%BF%E9%97%AE%E5%AF%B9%E8%B1%A1.png" alt="img"></p>
 <p>​                                                       通过句柄访问对象</p>
 <p><img src="http://syxtt.xin/%E9%80%9A%E8%BF%87%E7%9B%B4%E6%8E%A5%E6%8C%87%E9%92%88%E8%AE%BF%E9%97%AE%E5%AF%B9%E8%B1%A1.png" alt="img"></p>

@@ -111,8 +111,8 @@
         <div class="content">
             <p>​        使用过SpringBoot的同学，都知道<code>java -jar application.jar</code>就可以启动一个tomcat应用，十分的简单。之所这么方便，是因为SpringBoot帮我们整合了Embedded Tomcat，那么Native Tomcat和Embedded的相比，有什么差别呢？是不是Embedded Tomcat比Native版的差太多？</p>
 <a id="more"></a>
-<h1><span id="前言">前言</span></h1><p>​        使用过SpringBoot的同学，都知道<code>java -jar application.jar</code>就可以启动一个tomcat应用，十分的简单。之所这么方便，是因为SpringBoot帮我们整合了Embedded Tomcat，那么Native Tomcat和Embedded的相比，有什么差别呢？是不是Embedded Tomcat比Native版的差太多？        </p>
-<h1><span id="话说embedded-tomcat">话说Embedded Tomcat</span></h1><h2><span id="connector">Connector</span></h2><p>​        要讲Embedded和Native版的区别，先要了解tomcat的<a href="https://tomcat.apache.org/tomcat-9.0-doc/config/http.html#NIO_specific_configuration" target="_blank" rel="noopener">Connector</a>：</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​        使用过SpringBoot的同学，都知道<code>java -jar application.jar</code>就可以启动一个tomcat应用，十分的简单。之所这么方便，是因为SpringBoot帮我们整合了Embedded Tomcat，那么Native Tomcat和Embedded的相比，有什么差别呢？是不是Embedded Tomcat比Native版的差太多？        </p>
+<h1 id="话说Embedded-Tomcat"><a href="#话说Embedded-Tomcat" class="headerlink" title="话说Embedded Tomcat"></a>话说Embedded Tomcat</h1><h2 id="Connector"><a href="#Connector" class="headerlink" title="Connector"></a>Connector</h2><p>​        要讲Embedded和Native版的区别，先要了解tomcat的<a href="https://tomcat.apache.org/tomcat-9.0-doc/config/http.html#NIO_specific_configuration" target="_blank" rel="noopener">Connector</a>：</p>
 <ul>
 <li>BIO 即同步阻塞式I/O，每一个请求，都会创建一个线程来处理，在高并发的场景下不适合。</li>
 <li>NIO  即同步非阻塞I/O，在Java中，采用的多路复用I/O（epoll），适合高并发场景。</li>

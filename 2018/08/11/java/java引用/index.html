@@ -107,7 +107,7 @@
 <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object ref = new Object();</span><br></pre></td></tr></table></figure>
 <p>实际上在java中，还有一种不太常用的“弱引用”类型。弱引用中分为了软引用（SoftReference），弱引用（WeakReference），虚引用（PhantomReference）。所谓的强引用，其实就是FinalReference。</p>
 <p>问题随之而来，为什么引用要分为强弱？弱引用又适用于何种场景？本文结合源码，带大家了解java引用的世界。</p>
-<h3><span id="引用强弱之分">引用强弱之分</span></h3><p>如果大家对JVM内存回收（GC）有一定了解，一定知道内存回收的前提是对象引用“不可达‘’，才能在回收阶段真正的释放掉对象占用的内存。强引用下，如果对象的引用一直处于可达状态，这块内存是没有办法回收的。在内存资源充沛的情况下还好，但是如果内存资源吃紧，为了服务的可用性，一些“不必要”，或者说“不那么重要的”内存，是不是可以释放掉？这个时候，弱引用就派上了用场。各个引用类的对比，请参考下标</p>
+<h3 id="引用强弱之分"><a href="#引用强弱之分" class="headerlink" title="引用强弱之分"></a>引用强弱之分</h3><p>如果大家对JVM内存回收（GC）有一定了解，一定知道内存回收的前提是对象引用“不可达‘’，才能在回收阶段真正的释放掉对象占用的内存。强引用下，如果对象的引用一直处于可达状态，这块内存是没有办法回收的。在内存资源充沛的情况下还好，但是如果内存资源吃紧，为了服务的可用性，一些“不必要”，或者说“不那么重要的”内存，是不是可以释放掉？这个时候，弱引用就派上了用场。各个引用类的对比，请参考下标</p>
 <table>
 <thead>
 <tr>
@@ -144,8 +144,8 @@
 </tr>
 </tbody>
 </table>
-<h3><span id="弱引用典型应用">弱引用典型应用</span></h3><p>WeakHashMap，ThreadLocal，JVM缓存实现。</p>
-<h3><span id="源码分析">源码分析</span></h3><p>下图是java.lang.ref包下的类图，四种引用全部继承自Reference。</p>
+<h3 id="弱引用典型应用"><a href="#弱引用典型应用" class="headerlink" title="弱引用典型应用"></a>弱引用典型应用</h3><p>WeakHashMap，ThreadLocal，JVM缓存实现。</p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>下图是java.lang.ref包下的类图，四种引用全部继承自Reference。</p>
 <p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LWQP5HoONfXjt8cwLXh%2F-LWQP7Jau58ATJphzewW%2Fimage.png?alt=media&amp;token=62ca5af6-55c2-4549-bd4a-96412b9029f8" alt="img"></p>
 <p>JDK把引用分为了四个状态。</p>
 <table>
@@ -236,16 +236,16 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/08/11/java/java类加载之ClassLoader/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/08/11/java/WeekHashMap原理分析/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">java类加载之ClassLoader</span>
+                <span class="level-item">WeakHashMap原理分析</span>
             </a>
         </div>
         
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2018/08/11/search/ElasticSearch深分页浅分页/">
-                <span class="level-item">ElasticSearch Scroll</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2018/08/11/java/java类加载之ClassLoader/">
+                <span class="level-item">java类加载之ClassLoader</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>

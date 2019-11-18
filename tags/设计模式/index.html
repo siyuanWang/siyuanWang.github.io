@@ -337,7 +337,7 @@
             
         </h1>
         <div class="content">
-            <h1><span id="单例模式">单例模式</span></h1><p>单例模式分为了饿汉式和懒汉式，总体来说懒汉式要优于饿汉式，饿汉式不管是否其他线程调用了getInstance，都在类加载阶段创建了实例。而懒汉式则只有在调用的时候，才实例化对象，更加节省系统资源。</p>
+            <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式分为了饿汉式和懒汉式，总体来说懒汉式要优于饿汉式，饿汉式不管是否其他线程调用了getInstance，都在类加载阶段创建了实例。而懒汉式则只有在调用的时候，才实例化对象，更加节省系统资源。</p>
 <p>饿汉式：</p>
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span>  </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Singleton INSTANCE = <span class="hljs-keyword">new</span> Singleton();</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>懒汉式-双重检查</p>
@@ -390,7 +390,7 @@
             
         </h1>
         <div class="content">
-            <h1><span id="生产者消费者模式">生产者消费者模式</span></h1><p>生产者-消费者模式在服务端编程中，是一种很常见的设计模式，比如消息队列的实现，就是这种思想。本文就是用Java语言编写一个简单的生产者消费者例子，从而引出concurrent包下的阻塞队列和ReentrantLock一些玩法。</p>
+            <h1 id="生产者消费者模式"><a href="#生产者消费者模式" class="headerlink" title="生产者消费者模式"></a>生产者消费者模式</h1><p>生产者-消费者模式在服务端编程中，是一种很常见的设计模式，比如消息队列的实现，就是这种思想。本文就是用Java语言编写一个简单的生产者消费者例子，从而引出concurrent包下的阻塞队列和ReentrantLock一些玩法。</p>
 <p>##基础知识</p>
 <p>首先复习下基础知识，在Java中concurrent包下并发队列分为<strong>阻塞队列</strong>和<strong>非阻塞队列</strong>，ConcurrentLinkedQueue是非阻塞队列，底层实现用了CAS。阻塞队列包括LinkedBlockingQueue，LinkedBlockingDeque，LinkedTransferQueue，ArrayBlockingQueue，阻塞队列底层是靠ReentrantLock实现。Condition包括await，signal，signalAll，Condition作为条件锁</p>
 <p>我们知道Lock的本质是AQS，AQS自己维护的队列是当前等待资源的队列，AQS会在被释放后，依次唤醒队列中从前到后的所有节点，使他们对应的线程恢复执行，直到队列为空。</p>

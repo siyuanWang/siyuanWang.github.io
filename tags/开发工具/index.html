@@ -114,7 +114,7 @@
             
         </h1>
         <div class="content">
-            <h1><span id="charles搭建网络抓包环境">Charles搭建网络抓包环境</span></h1><p><a href="http://www.charlesproxy.com/" target="_blank" rel="noopener">Charles</a> 是在 Mac 下常用的网络封包截取工具，在做移动开发时，我们为了调试与服务器端的网络通讯协议，常常需要截取网络封包来分析。Charles 通过将自己设置成系统的网络访问代理服务器，使得所有的网络访问请求都通过它来完成，从而实现了网络封包的截取和分析。除了在做移动开发中调试端口外，Charles 也可以用于分析第三方应用的通讯协议。配合 Charles 的 SSL 功能，Charles 还可以分析 Https 协议。</p>
+            <h1 id="Charles搭建网络抓包环境"><a href="#Charles搭建网络抓包环境" class="headerlink" title="Charles搭建网络抓包环境"></a>Charles搭建网络抓包环境</h1><p><a href="http://www.charlesproxy.com/" target="_blank" rel="noopener">Charles</a> 是在 Mac 下常用的网络封包截取工具，在做移动开发时，我们为了调试与服务器端的网络通讯协议，常常需要截取网络封包来分析。Charles 通过将自己设置成系统的网络访问代理服务器，使得所有的网络访问请求都通过它来完成，从而实现了网络封包的截取和分析。除了在做移动开发中调试端口外，Charles 也可以用于分析第三方应用的通讯协议。配合 Charles 的 SSL 功能，Charles 还可以分析 Https 协议。</p>
 <p>Charles 是收费软件，可以免费试用 30 天。试用期过后，未付费的用户仍然可以继续使用，但是每次使用时间不能超过 30 分钟，并且启动时将会有 10 秒种的延时。因此，该付费方案对广大用户还是相当友好的，即使你长期不付费，也能使用完整的软件功能。只是当你需要长时间进行封包调试时，会因为 Charles 强制关闭而遇到影响。</p>
 <p>Charles 主要的功能包括：</p>
 <ol>
@@ -129,10 +129,10 @@
 <li>支持 Http 2。</li>
 <li>支持 IPv6。</li>
 </ol>
-<h2><span id="ios-http抓包">IOS http抓包</span></h2><p>需要在设置-&gt;无线局域网-&gt;连接的WIFI下面，设置HTTP代理：</p>
+<h2 id="IOS-http抓包"><a href="#IOS-http抓包" class="headerlink" title="IOS http抓包"></a>IOS http抓包</h2><p>需要在设置-&gt;无线局域网-&gt;连接的WIFI下面，设置HTTP代理：</p>
 <p>IP为启动Charles的服务器IP，端口默认是8888，如果端口被重新指定，请在Charles -&gt; Proxy -&gt; Proxy Setting中查看。</p>
 <p>以上设置好之后，手机的网络请求，便可以在Charles中体现出来了。</p>
-<h2><span id="ios-https抓包">IOS https抓包</span></h2><p>除了http抓包的设置之外，还需要安装https证书。</p>
+<h2 id="IOS-https抓包"><a href="#IOS-https抓包" class="headerlink" title="IOS https抓包"></a>IOS https抓包</h2><p>除了http抓包的设置之外，还需要安装https证书。</p>
 <p>Step1: Charles -&gt; Help -&gt; SSL Proxy -&gt; Install Charles Root Certificate on a mobile device or remote browser</p>
 <p>Step2: step1执行之后，会出现一个弹窗，需要用apple手机safari访问chls.pro/ssl，安装证书。</p>
 <p>Step3: iOS 10.3系统，需要在 <em>设置→通用→关于本机→证书信任设置</em> 里面启用完全信任Charles证书。</p>
