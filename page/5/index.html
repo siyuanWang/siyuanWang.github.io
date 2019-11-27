@@ -91,63 +91,6 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    1 分钟 读完 (大约 211 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/08/11/spring/Spring的配置文件管理/">Spring初始化源码分析</a>
-            
-        </h1>
-        <div class="content">
-            <p>spring配置文件，需要关注如下两个类。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.beans.factory.config.PropertiesFactoryBean</span><br><span class="line">org.springframework.context.support.PropertySourcesPlaceholderConfigurer</span><br></pre></td></tr></table></figure>
-<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAo9UxSWkxnmNCy8xB%2Fimage.png?alt=media&amp;token=709211c5-2130-444b-908f-55e5dba42072" alt="img"></p>
-<p>​                                PropertiesFactoryBean类图</p>
-<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAoO5fKKIeQCNgJdpk%2Fimage.png?alt=media&amp;token=ba3e75b1-89f6-477e-8170-effa329b2e29" alt="img"></p>
-<p>​                            PropertySourcesPlaceholderConfigurer</p>
-<p>如下是配置方式</p>
-<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">context:property-placeholder</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">util:properties</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig1"</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"spc"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.context.support.PropertySourcesPlaceholderConfigurer"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"ignoreResourceNotFound"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span>/&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>​                                    使用方式上，用@Value注解</p>
-<p>PropertiesFactoryBean用#{}的方式</p>
-<p>PropertySourcesPlaceholderConfigurer用${}的方式</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Value</span>(value = <span class="hljs-string">"$&#123;driveClass&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String driveClass;</span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"$&#123;url&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String url;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['userName']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String userName;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['config1']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String password;</span><br></pre></td></tr></table></figure>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
                     5 分钟 读完 (大约 776 个字)
                 </span>
                 
@@ -176,6 +119,63 @@
 <p>​                                WEB容器的方式Spring Context初始化<br>最后引出最重要的代码，org.springframework.context.support.AbstractApplicationContext#refresh</p>
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">refresh</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">   <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.startupShutdownMonitor) &#123;</span><br><span class="line">      <span class="hljs-comment">// Prepare this context for refreshing.</span></span><br><span class="line">      prepareRefresh();</span><br><span class="line">      <span class="hljs-comment">// Tell the subclass to refresh the internal bean factory.</span></span><br><span class="line">      ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();</span><br><span class="line">      <span class="hljs-comment">// Prepare the bean factory for use in this context.</span></span><br><span class="line">      prepareBeanFactory(beanFactory);</span><br><span class="line">      <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">         <span class="hljs-comment">// Allows post-processing of the bean factory in context subclasses.</span></span><br><span class="line">         postProcessBeanFactory(beanFactory);</span><br><span class="line">         <span class="hljs-comment">// Invoke factory processors registered as beans in the context.</span></span><br><span class="line">         invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line">         <span class="hljs-comment">// Register bean processors that intercept bean creation.</span></span><br><span class="line">         registerBeanPostProcessors(beanFactory);</span><br><span class="line">         <span class="hljs-comment">// Initialize message source for this context.</span></span><br><span class="line">         initMessageSource();</span><br><span class="line">         <span class="hljs-comment">// Initialize event multicaster for this context.</span></span><br><span class="line">         initApplicationEventMulticaster();</span><br><span class="line">         <span class="hljs-comment">// Initialize other special beans in specific context subclasses.</span></span><br><span class="line">         onRefresh();</span><br><span class="line">         <span class="hljs-comment">// Check for listener beans and register them.</span></span><br><span class="line">         registerListeners();</span><br><span class="line">         <span class="hljs-comment">// Instantiate all remaining (non-lazy-init) singletons.</span></span><br><span class="line">         finishBeanFactoryInitialization(beanFactory);</span><br><span class="line">         <span class="hljs-comment">// Last step: publish corresponding event.</span></span><br><span class="line">         finishRefresh();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">         logger.warn(<span class="hljs-string">"Exception encountered during context initialization - cancelling refresh attempt"</span>, ex);</span><br><span class="line">         <span class="hljs-comment">// Destroy already created singletons to avoid dangling resources.</span></span><br><span class="line">         destroyBeans();</span><br><span class="line">         <span class="hljs-comment">// Reset 'active' flag.</span></span><br><span class="line">         cancelRefresh(ex);</span><br><span class="line">         <span class="hljs-comment">// Propagate exception to caller.</span></span><br><span class="line">         <span class="hljs-keyword">throw</span> ex;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这个代码的作用，是初始化整个容器，创建Bean.</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    5 分钟 读完 (大约 806 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/search/ElasticSearch深分页浅分页/">ElasticSearch Scroll</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="ElasticSearch-Scroll"><a href="#ElasticSearch-Scroll" class="headerlink" title="ElasticSearch Scroll"></a>ElasticSearch Scroll</h1><p>##深分页</p>
+<p>比如pageIndex=10，pageSize=20，{“start”: 180, “size”: 20}，相当于每个分片召回了200条数据，排序之后截断前20条返回。但是如果pageIndex=1000，每个分片需要召回20000条数据，排序，最后仍然是取前20条，扔掉19980条。深分页的实现方式代价是很大的。</p>
+<h2 id="Scroll"><a href="#Scroll" class="headerlink" title="Scroll"></a>Scroll</h2><p>为了解决以上深分页，在页码太大情况下性能的问题，ES提供了Scroll方式。</p>
+<p>scroll 查询 可以用来对 Elasticsearch 有效地执行大批量的文档查询，而又不用付出深度分页那种代价。</p>
+<p>游标查询允许我们 先做查询初始化，然后再批量地拉取结果。 这有点儿像传统数据库中的 cursor 。</p>
+<p>游标查询会取某个时间点的快照数据。 查询初始化之后索引上的任何变化会被它忽略。 它通过保存旧的数据文件来实现这个特性，结果就像保留初始化时的索引 视图 一样。</p>
+<p>深度分页的代价根源是结果集全局排序，如果去掉全局排序的特性的话查询结果的成本就会很低。 游标查询用字段 _doc 来排序。 这个指令让 Elasticsearch 仅仅从还有结果的分片返回下一批结果。</p>
+<p>启用游标查询可以通过在查询的时候设置参数 scroll 的值为我们期望的游标查询的过期时间。 游标查询的过期时间会在每次做查询的时候刷新，所以这个时间只需要足够处理当前批的结果就可以了，而不是处理查询结果的所有文档的所需时间。 这个过期时间的参数很重要，因为保持这个游标查询窗口需要消耗资源，所以我们期望如果不再需要维护这种资源就该早点儿释放掉。 设置这个超时能够让 Elasticsearch 在稍后空闲的时候自动释放这部分资源。</p>
+<p>例如：依据查询条件开启滚动，镜像有效期为5分钟。这个查询结果中包含scroll_id</p>
+<figure class="highlight hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST 'http://localhost:9200/es_cluster/goods_index/goods/_search?scroll=5m' -d '&#123;</span><br><span class="line">  "size": 20,</span><br><span class="line">  "query": &#123;</span><br><span class="line">    "bool": &#123;</span><br><span class="line">      "filter": [</span><br><span class="line">        &#123;</span><br><span class="line">          "exists": &#123;</span><br><span class="line">            "field": "skuUpTime"</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
+<p>下次查询的时候，就可以直接用scroll_id来查询了</p>
+<figure class="highlight hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST 'http://localhost:9200/es_cluster/scroll' -d '&#123;</span><br><span class="line">  "scroll": "5m",</span><br><span class="line">  "scroll_id": "DnF1ZXJ5VGhlbkZldGNoJgAAAAA8lsqeFjRwN19JcDBKVFd1cy04dkZucUZ4dHcAAAAAPlQH_BZIMUU1VFA2dVIxMk10M0xoWW1sSEtRAAAAADtYOdcWUVBlYXZCNmRTSEtXV2llZTE4dkEwZwAAAAA6dfbHFkdEMS1VY21CVHFhSFpFS1ZrVnBwSVEAAAAAPaL6vBZsZmRFeHRBeFFJaWlVOXNWV2xnZlB3AAAAADy6UDUWRU9NVVRadG5STnV4cThrb2VMdHhqUQAAAAA9V-f6FnNYSV83SHZVVHpDTHVLZWFiNmVwcVEAAAAAPMlOFhY5Zk5ESlBZdFI5bVVEclI4b2paTld3AAAAADn6zjwWZEJ5RU9VOThTUW1HUnB5UzlOT18xUQAAAAA9EBaGFmM4Ykh6SHkxU3JPYkFFRFZMWVRiQUEAAAAAPSKSJxZVUlRzY0luTFJTQzQ3WTZydUxoQVN3AAAAADyw6E4WS21DZHdWX21TRXlkdzVvYUpRcVBKUQAAAAA7sX3BFnh4UC1rMGhDU1FlZFFSdjVDVVc0d3cAAAAAPMIY9RZla0lLajhFQlMtYUVOZDE1U0tXekRnAAAAADtYOdgWUVBlYXZCNmRTSEtXV2llZTE4dkEwZwAAAAA5-s49FmRCeUVPVTk4U1FtR1JweVM5Tk9fMVEAAAAAPMlOFxY5Zk5ESlBZdFI5bVVEclI4b2paTld3AAAAADzjiUkWMll6VHRaUDRUV2VjNXA4LUxfMlFxdwAAAAA8cKq6FndTQ2JfOWlWUXlHNHdNMUZ3ejZVZUEAAAAAPHCquRZ3U0NiXzlpVlF5RzR3TTFGd3o2VWVBAAAAADzx948Wdlk0dzdJWnBRWHEyRWFsVEhsVUdiQQAAAAA9cxFHFnpwdy1EaXFXUmR5REM5ZW5CYTB0ZEEAAAAAPXMRSBZ6cHctRGlxV1JkeURDOWVuQmEwdGRBAAAAAD1DIxMWM0E3dW1PbkVUQzZMSUJXV21LaHNiZwAAAAA9QyMUFjNBN3VtT25FVEM2TElCV1dtS2hzYmcAAAAAPPeZ9hZyY0luUVRFb1RsNmF1YWhZaVEwWUFBAAAAADz3mfcWcmNJblFURW9UbDZhdWFoWWlRMFlBQQAAAAA6pq_PFjRDZjN6XzBSU25DRE5PWlA2RFRUR2cAAAAAOqavzhY0Q2Yzel8wUlNuQ0ROT1pQNkRUVEdnAAAAADzcYCcWQ2xwZk15U01RNk9oelRQR2w2bTRmdwAAAAA84x3vFk8wYjdmdV9aU2E2QzREc045bUx4UUEAAAAAPPTj5RZoYlctclkyblM3cXpDeEZTa05FNlNnAAAAADzrVQEWLU9xeUFOVHRUQTZtd2R2eG5MTF96UQAAAAA861UAFi1PcXlBTlR0VEE2bXdkdnhuTExfelEAAAAAO1D_vBZheEpkUFp4UFNXS19BWDdvMTNkS1BnAAAAADuxfcIWeHhQLWswaENTUWVkUVJ2NUNVVzR3dwAAAAA7ungNFlpqWVViMnZsVDU2LXg4VzBlTlZ0cWcAAAAAPaL6vRZsZmRFeHRBeFFJaWlVOXNWV2xnZlB3"</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
 
         </div>
         
@@ -660,6 +660,77 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 <span class="level-item has-text-grey">
                     
                     
+                    9 分钟 读完 (大约 1368 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/search/elasticSearch-搜索类型(query type)/">elasticSearch系列笔记(4)-elasticSearch搜索类型</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="ElasticSearch本地源码调试"><a href="#ElasticSearch本地源码调试" class="headerlink" title="ElasticSearch本地源码调试"></a>ElasticSearch本地源码调试</h2><p>转自：<a href="https://donlianli.iteye.com/blog/2094305" target="_blank" rel="noopener">https://donlianli.iteye.com/blog/2094305</a></p>
+<p>es在查询时，可以指定搜索类型为QUERY_THEN_FETCH,QUERY_AND_FEATCH,DFS_QUERY_THEN_FEATCH和DFS_QUERY_AND_FEATCH。那么这4种搜索类型有什么区别？</p>
+<p>分布式搜索背景介绍：</p>
+<p>ES天生就是为分布式而生，但分布式有分布式的缺点。比如要搜索某个单词，但是数据却分别在5个分片（Shard)上面，这5个分片可能在5台主机上面。因为全文搜索天生就要排序（按照匹配度进行排名）,但数据却在5个分片上，如何得到最后正确的排序呢？ES是这样做的，大概分两步。</p>
+<p>step1、ES客户端会将这个搜索词同时向5个分片发起搜索请求，这叫Scatter,</p>
+<p>step2、这5个分片基于本Shard独立完成搜索，然后将符合条件的结果全部返回，这一步叫Gather。</p>
+<p>客户端将返回的结果进行重新排序和排名，最后返回给用户。也就是说，ES的一次搜索，是一次scatter/gather过程（这个跟mapreduce也很类似）.</p>
+<p>然而这其中有两个问题。</p>
+<p>第一、数量问题。比如，用户需要搜索”双黄连”，要求返回最符合条件的前10条。但在5个分片中，可能都存储着双黄连相关的数据。所以ES会向这5个分片都发出查询请求，并且要求每个分片都返回符合条件的10条记录。当ES得到返回的结果后，进行整体排序，然后取最符合条件的前10条返给用户。这种情况，ES5个shard最多会收到10*5=50条记录，这样返回给用户的结果数量会多于用户请求的数量。</p>
+<p>第二、排名问题。上面搜索，每个分片计算分值都是基于自己的分片数据进行计算的。计算分值使用的词频率和其他信息都是基于自己的分片进行的，而ES进行整体排名是基于每个分片计算后的分值进行排序的，这就可能会导致排名不准确的问题。如果我们想更精确的控制排序，应该先将计算排序和排名相关的信息（词频率等）从5个分片收集上来，进行统一计算，然后使用整体的词频率去每个分片进行查询。</p>
+<p>这两个问题，估计ES也没有什么较好的解决方法，最终把选择的权利交给用户，方法就是在搜索的时候指定query type。</p>
+<p><strong>1、query and fetch</strong></p>
+<p>向索引的所有分片（shard）都发出查询请求，各分片返回的时候把元素文档（document）和计算后的排名信息一起返回。这种搜索方式是最快的。因为相比下面的几种搜索方式，这种查询方法只需要去shard查询一次。但是各个shard返回的结果的数量之和可能是用户要求的size的n倍。</p>
+<p><strong>2、query then fetch</strong>（默认的搜索方式）</p>
+<p>如果你搜索时，没有指定搜索方式，就是使用的这种搜索方式。这种搜索方式，大概分两个步骤，第一步，先向所有的shard发出请求，各分片只返回排序和排名相关的信息（注意，不包括文档document)，然后按照各分片返回的分数进行重新排序和排名，取前size个文档。然后进行第二步，去相关的shard取document。这种方式返回的document与用户要求的size是相等的。</p>
+<p><strong>3、DFS query and fetch</strong></p>
+<p>这种方式比第一种方式多了一个初始化散发(initial scatter)步骤，有这一步，据说可以更精确控制搜索打分和排名。</p>
+<p>4、<strong>DFS</strong> <strong>query then fetch</strong></p>
+<p>比第2</p>
+<p>种</p>
+<p>方式多了一个</p>
+<p>初始化散发(initial scatter)步骤。</p>
+<p>DSF是什么缩写？初始化散发是一个什么样的过程？</p>
+<p>从es的官方网站我们可以指定，初始化散发其实就是在进行真正的查询之前，先把各个分片的词频率和文档频率收集一下，然后进行词搜索的时候，各分片依据全局的词频率和文档频率进行搜索和排名。显然如果使用DFS_QUERY_THEN_FETCH这种查询方式，效率是最低的，因为一个搜索，可能要请求3次分片。但，使用DFS方法，搜索精度应该是最高的。</p>
+<p>至于DFS是什么缩写，没有找到相关资料，这个D可能是Distributed，F可能是frequency的缩写，至于S可能是Scatter的缩写，整个单词可能是分布式词频率和文档频率散发的缩写。</p>
+<p>总结一下，从性能考虑QUERY_AND_FETCH是最快的，DFS_QUERY_THEN_FETCH是最慢的。从搜索的准确度来说，DFS要比非DFS的准确度更高。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
                     几秒 读完 (大约 25 个字)
                 </span>
                 
@@ -734,109 +805,6 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 </div>
             </div>
         </div>
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    12 分钟 读完 (大约 1725 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/07/11/search/elasticSearch-本地源码调试/">elasticSearch系列笔记(3)-elastic本地源码调试</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="ElasticSearch本地源码调试"><a href="#ElasticSearch本地源码调试" class="headerlink" title="ElasticSearch本地源码调试"></a>ElasticSearch本地源码调试</h2><p>转自：<a href="https://www.felayman.com/articles/2017/11/10/1510291087246.html" target="_blank" rel="noopener">https://www.felayman.com/articles/2017/11/10/1510291087246.html</a></p>
-<p>Elasticsearch版本为 5.5.1</p>
-<h3 id="1-源码下载"><a href="#1-源码下载" class="headerlink" title="1. 源码下载"></a>1. 源码下载</h3><ul>
-<li>git clone <a href="https://github.com/elastic/elasticsearch" target="_blank" rel="noopener">https://github.com/elastic/elasticsearch</a></li>
-</ul>
-<h3 id="2-分支切换"><a href="#2-分支切换" class="headerlink" title="2. 分支切换"></a>2. 分支切换</h3><ul>
-<li>git checkout v5.5.1</li>
-</ul>
-<h3 id="3-运行gradle-idea-gradle-build-x-test"><a href="#3-运行gradle-idea-gradle-build-x-test" class="headerlink" title="3 运行gradle idea,gradle build -x test"></a>3 运行gradle idea,gradle build -x test</h3><p>如果运行gradle idea会报如下错误:请修改elasticsearch源文件中的BuildPlugin.groory文件中的findJavaHome()方法的第一行代码,源码为 String javaHome = System.getenv(‘JAVA_HOME’),修改为String javaHome = “你的JAVA_HOME地址,输入echo $JAVA_HOME($)”</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">What went wrong:</span><br><span class="line">A problem occurred evaluating project &apos;:benchmarks&apos;.</span><br><span class="line">&gt; Failed to apply plugin [id &apos;elasticsearch.build&apos;]</span><br><span class="line">&gt; JAVA_HOME must be set to build Elasticsearch</span><br></pre></td></tr></table></figure>
-<p>这里我使用的是idea工具来调试源码,因此先不要用idea导入该项目,而是进入到下载的elasticsearch目录下,执行gradle idea,等待漫长的依赖下载,等待下载完成后 执行 gradle build -x test 对源码进行编译,等待编译完成.</p>
-<h3 id="4-注释掉jar-hell相关代码"><a href="#4-注释掉jar-hell相关代码" class="headerlink" title="4. 注释掉jar hell相关代码"></a>4. 注释掉jar hell相关代码</h3><ul>
-<li>全局搜索JarHell.checkJarHell,以及checkJarHell,注释掉相应的代码,否则运行会报错</li>
-</ul>
-<h3 id="5-配置Edit-Configuation"><a href="#5-配置Edit-Configuation" class="headerlink" title="5. 配置Edit Configuation"></a>5. 配置Edit Configuation</h3><ul>
-<li>mainClass为 org.elasticsearch.bootstrap.Elasticsearch VM options为</li>
-<li>Des.path.home=/Users/admin/elk/elasticsearch-5.5.0 -Dlog4j2.disable.jmx=true</li>
-</ul>
-<h3 id="6-运行org-elasticsearch-bootstrap-Elasticsearch中的main方法"><a href="#6-运行org-elasticsearch-bootstrap-Elasticsearch中的main方法" class="headerlink" title="6. 运行org.elasticsearch.bootstrap.Elasticsearch中的main方法"></a>6. 运行org.elasticsearch.bootstrap.Elasticsearch中的main方法</h3><figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"> [<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">396</span>][INFO ][o.e.n.Node               ] [] initializing ...</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">487</span>][INFO ][o.e.e.NodeEnvironment    ] [iobPZcg] using [<span class="hljs-number">1</span>] data paths, mounts [[/ (/dev/disk1)]], net usable_space [<span class="hljs-number">133.3</span>gb], net total_space [<span class="hljs-number">232.6</span>gb], spins? [unknown], types [hfs]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">487</span>][INFO ][o.e.e.NodeEnvironment    ] [iobPZcg] heap size [<span class="hljs-number">3.5</span>gb], compressed ordinary object pointers [<span class="hljs-keyword">true</span>]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">503</span>][INFO ][o.e.n.Node               ] node name [iobPZcg] derived from node ID [iobPZcgEQBKodmURFuo_Gw]; set [node.name] to override</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">503</span>][INFO ][o.e.n.Node               ] version[<span class="hljs-number">5.5</span>.0-SNAPSHOT], pid[<span class="hljs-number">65630</span>], build[Unknown/Unknown], OS[Mac OS X/<span class="hljs-number">10.12</span>/x86_64], JVM[Oracle Corporation/<span class="hljs-function">Java <span class="hljs-title">HotSpot</span><span class="hljs-params">(TM)</span> 64-Bit Server VM/1.8.0_101/25.101-b13]</span></span><br><span class="line"><span class="hljs-function">[2017-07-11T22:00:08,503][INFO ][o.e.n.Node               ] JVM arguments [-Des.path.home</span>=/Users/admin/elk/elasticsearch-<span class="hljs-number">5.5</span>.0, -Dlog4j2.disable.jmx=<span class="hljs-keyword">true</span>, -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=<span class="hljs-number">49964</span>:/Applications/IntelliJ IDEA.app/Contents/bin, -Dfile.encoding=UTF-<span class="hljs-number">8</span>]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">08</span>,<span class="hljs-number">504</span>][WARN ][o.e.n.Node               ] version [<span class="hljs-number">5.5</span>.0-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable <span class="hljs-keyword">for</span> production</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [aggs-matrix-stats]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [ingest-common]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [lang-expression]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [lang-groovy]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [lang-mustache]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [lang-painless]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">201</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [parent-join]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [percolator]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [reindex]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [transport-netty3]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] loaded <span class="hljs-keyword">module</span> [transport-netty4]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">09</span>,<span class="hljs-number">202</span>][INFO ][o.e.p.PluginsService     ] [iobPZcg] no plugins loaded</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">11</span>,<span class="hljs-number">386</span>][INFO ][o.e.d.DiscoveryModule    ] [iobPZcg] using discovery type [zen]</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">068</span>][INFO ][o.e.n.Node               ] initialized</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">068</span>][INFO ][o.e.n.Node               ] [iobPZcg] starting ...</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">120</span>][INFO ][i.n.u.i.PlatformDependent] Your platform does not provide complete low-level API <span class="hljs-keyword">for</span> accessing direct buffers reliably. Unless explicitly requested, heap buffer will always be preferred to avoid potential system instability.</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">291</span>][INFO ][o.e.t.TransportService   ] [iobPZcg] publish_address &#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9300</span>&#125;, bound_addresses &#123;[fe80::<span class="hljs-number">1</span>]:<span class="hljs-number">9300</span>&#125;, &#123;[::<span class="hljs-number">1</span>]:<span class="hljs-number">9300</span>&#125;, &#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9300</span>&#125;</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">12</span>,<span class="hljs-number">308</span>][WARN ][o.e.b.BootstrapChecks    ] [iobPZcg] initial heap size [<span class="hljs-number">268435456</span>] not equal to maximum heap size [<span class="hljs-number">4294967296</span>]; <span class="hljs-keyword">this</span> can cause resize pauses and prevents mlockall from locking the entire heap</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">383</span>][INFO ][o.e.c.s.ClusterService   ] [iobPZcg] new_master &#123;iobPZcg&#125;&#123;iobPZcgEQBKodmURFuo_Gw&#125;&#123;J8yIAMTeS3uOKeW35gG0kw&#125;&#123;<span class="hljs-number">127.0</span>.0.1&#125;&#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9300</span>&#125;, reason: zen-disco-elected-as-master ([<span class="hljs-number">0</span>] nodes joined)</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">408</span>][INFO ][o.e.h.n.Netty4HttpServerTransport] [iobPZcg] publish_address &#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9200</span>&#125;, bound_addresses &#123;[fe80::<span class="hljs-number">1</span>]:<span class="hljs-number">9200</span>&#125;, &#123;[::<span class="hljs-number">1</span>]:<span class="hljs-number">9200</span>&#125;, &#123;<span class="hljs-number">127.0</span>.0.1:<span class="hljs-number">9200</span>&#125;</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">409</span>][INFO ][o.e.n.Node               ] [iobPZcg] started</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">639</span>][INFO ][o.e.g.GatewayService     ] [iobPZcg] recovered [<span class="hljs-number">2</span>] indices into cluster_state</span><br><span class="line">[<span class="hljs-number">2017</span>-<span class="hljs-number">07</span>-<span class="hljs-number">11</span>T22:<span class="hljs-number">00</span>:<span class="hljs-number">15</span>,<span class="hljs-number">850</span>][INFO ][o.e.c.r.a.AllocationService] [iobPZcg] Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[twitter][<span class="hljs-number">3</span>]] ...]).</span><br></pre></td></tr></table></figure>
-<h3 id="可能遇到的异常"><a href="#可能遇到的异常" class="headerlink" title="可能遇到的异常"></a>可能遇到的异常</h3><ul>
-<li><p>ERROR: the system property [es.path.conf] must be set</p>
-<p>原因是没有指定es.path.conf,设置-Des.path.conf=你调试源码版本对应的conf目录</p>
-</li>
-<li><p>Exception in thread “main” java.lang.IllegalStateException: path.home is not configured</p>
-<p>原因是因为没有为elasticsearch配置path.home参数,可以在Edit Configuation中设置虚拟机参数：-Des.path.home=你下载的对应的elasticsearch的安装目录,这么做的原因<br>是elasticsearch在启动中会加载一些默认配置以及插件,我们直接加载elasticsearch安装目录下的配置和插件即可,后面会在源码中体现</p>
-</li>
-<li><p>2017-06-23 14:00:44,760 main ERROR Could not register mbeans java.security.AccessControlException: access denied (“javax.management.MBeanTrustPermission” “register”)</p>
-<p>原因是因为elasticsearch在启动过程中使用到了jmx,我们这里禁止使用即可,配置也是在Edit Configuation中设置虚拟机参数 -Dlog4j2.disable.jmx=true</p>
-</li>
-<li><p>org.elasticsearch.bootstrap.StartupException: org.elasticsearch.bootstrap.BootstrapException: java.lang.IllegalStateException: jar hell!或Classname: org.elasticsearch.search.aggregations.matrix.MatrixAggregationPlugin due to jar hell</p>
-<p>原因是因为elasticsearch中大量存在一个类或一个资源文件存在多个jar中,我们注释掉相应代码即可,主要是PluginsService中374行的JarHell.checkJarHell(union)以及<br>Bootstrap中220行的JarHell.checkJarHell(),最简单的方式就是将JarHell.checkJarHell()中的方法体注释掉</p>
-</li>
-<li><p>org.elasticsearch.bootstrap.StartupException: java.lang.IllegalArgumentException: plugin [aggs-matrix-stats] is incompatible with version [7.0.0-alpha1]; was designed for version [5.6.1]</p>
-<p>原因是一般情况下我们调试的源码非某个发布版本,有些配置项并未发布,我们的配置与当前代码的版本匹配不上,这个时候我们需要将调试的源码设置成某个发布版本,一般来说,Elasticsearch每发布<br>一个稳定版本,都会有一个对应的tag,我们进入到ES源码目录下执行git tag, 我这里调试的版本为v5.6.1,所以执行git checkout v5.6.1,切换到v5.6.1tag.</p>
-</li>
-</ul>
-<h3 id="另一种源码调试方式：远程调试"><a href="#另一种源码调试方式：远程调试" class="headerlink" title="另一种源码调试方式：远程调试"></a>另一种源码调试方式：远程调试</h3><p>如果上面第五个报错之后解决不了无法继续进行，可以选择这种方式:</p>
-<p>在 Elasticsearch 源码目录下打开 CMD，输入下面的命令启动一个 debug 实例</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle run --debug-jvm</span><br></pre></td></tr></table></figure>
-<p>如果启动失败可能需要先执行 <code>gradle clean</code> 再 <code>gradle run --debug-jvm</code> 或者 先退出 IDEA</p>
-<p><img src="http://syxtt.xin/elastic%E8%BF%9C%E7%A8%8Bdebug.png" alt></p>
-<p>在 IDEA 中打开 <code>Edit Configurations</code>，添加 remote</p>
-<p><img src="http://syxtt.xin/elastic%E8%BF%9C%E7%A8%8Bdebug%E9%85%8D%E7%BD%AE.png" alt></p>
-<p>配置 host 和 port</p>
-<p>点击 debug，浏览器访问 <code>http://localhost:9200/</code>，即可看到ES返回的信息</p>
-<p>随机调试一下， 打开 <code>elasticsearch/server/src/main/org/elasticsearch/rest/action/cat</code> 下的 <code>RestHealthAction</code> 类，在第 54 行出设置一个断点，然后浏览器访问 <code>http://localhost:9200/_cat/health</code>，可以看到断点已经捕获到该请求了</p>
-<p>运行成功，可以开始设置断点进行其他调试</p>
-<h3 id="源码本地编译工程包"><a href="#源码本地编译工程包" class="headerlink" title="源码本地编译工程包"></a>源码本地编译工程包</h3><p>在es源码根目录，执行 gradle assemble 命令，编译好之后工程ZIP包位于下图位置。</p>
-<p><img src="http://syxtt.xin/es%E6%BA%90%E7%A0%81%E6%9C%AC%E5%9C%B0%E7%BC%96%E8%AF%91.png" alt="img"></p>
-<h3 id="其他可能遇到的问题"><a href="#其他可能遇到的问题" class="headerlink" title="其他可能遇到的问题"></a>其他可能遇到的问题</h3><p><strong>1. 错误信息如下</strong></p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA8_HOME required to run tasks gradle</span><br></pre></td></tr></table></figure>
-<p>配置环境变量 <code>JAVA8_HOME</code>，值为 JDK8 的安装目录</p>
-<p><strong>2. 错误信息如下</strong></p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[2018-08-22T13:07:23,197][INFO ][o.e.t.TransportService   ] [EFQliuV] publish_address &#123;10.100.99.118:9300&#125;, bound_addresses &#123;[::]:9300&#125;</span><br><span class="line">[2018-08-22T13:07:23,211][INFO ][o.e.b.BootstrapChecks    ] [EFQliuV] bound or publishing to a non-loopback address, enforcing bootstrap checks</span><br><span class="line">ERROR: [1] bootstrap checks failed</span><br><span class="line">[1]: initial heap size [268435456] not equal to maximum heap size [4273995776]; this can cause resize pauses and prevents mlockall from locking the entire heap</span><br><span class="line">[2018-08-22T13:07:23,219][INFO ][o.e.n.Node               ] [EFQliuV] stopping ...</span><br><span class="line">2018-08-22 13:07:23,269 Thread-2 ERROR No log4j2 configuration file found. Using default configuration: logging only errors to the console. Set system property &apos;log4j2.debug&apos; to show Log4j2 internal initialization logging.</span><br><span class="line">Disconnected from the target VM, address: &apos;127.0.0.1:5272&apos;, transport: &apos;socket&apos;</span><br></pre></td></tr></table></figure>
-<p>在 <code>Edit Configurations</code> 的 <code>VM options</code> 加入下面配置</p>
-<p>-Xms2g<br>-Xmx2g </p>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html" title="elasticSearch权威指南2.x" target="_blank" rel="noopener">elasticSearch权威指南2.x</a><br><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" title="elasticSearch权威指南6.2" target="_blank" rel="noopener">elasticSearch reference 6.2</a></p>
-<p><a href="http://laijianfeng.org/2018/08/%E6%95%99%E4%BD%A0%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95Elasticsearch-6-3-2%E6%BA%90%E7%A0%81/" target="_blank" rel="noopener">http://laijianfeng.org/2018/08/%E6%95%99%E4%BD%A0%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95Elasticsearch-6-3-2%E6%BA%90%E7%A0%81/</a></p>
-
-        </div>
-        
         
         
     </div>
