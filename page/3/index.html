@@ -81,6 +81,111 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-04-23T08:33:16.000Z">2019-04-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    3 分钟 读完 (大约 459 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/04/23/search/ElasticSearch集群的搭建/">ElasticSearch集群的搭建</a>
+            
+        </h1>
+        <div class="content">
+            <p>#相关技术点</p>
+<p>in-memory buffer是通过refresh操作写到文件缓冲区的，refresh的过程除了在文件缓冲区生成这个文件以外，还会让底层Lucene的index reader打开这个文件，让新生成的这个文件对搜索可见。</p>
+<p>周五的时候跟同事讨论下了，不知道这样理解对不对–refresh类似于 outputstream flush（此时数据从 java heap 写到 memory buffer），之后（按照大神上面说的）index reader读取新文件，然后等待触发flush（这个则类似于 outputstream close，此时数据从 memory buffer 写到 disk），请大神赐教</p>
+<h1 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h1><p>集群包括3台物理机共12个节点，每台物理机部署1个Master节点，1个Client节点，2个Data节点。</p>
+<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># ---------------------------------- Cluster -----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#集群名称</span></span><br><span class="line"><span class="hljs-string">cluster.name:</span> </span><br><span class="line"><span class="hljs-comment"># ------------------------------------ Node ------------------------------------</span></span><br><span class="line"><span class="hljs-comment">#节点名称</span></span><br><span class="line"><span class="hljs-string">node.name:</span> </span><br><span class="line"><span class="hljs-comment">#是否是Master Node</span></span><br><span class="line"><span class="hljs-string">node.master:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-comment">#是否是Data Node</span></span><br><span class="line"><span class="hljs-string">node.data:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment">#是否是Ingest Node</span></span><br><span class="line"><span class="hljs-string">node.ingest:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-string">node.attr.rack:</span> <span class="hljs-string">first</span></span><br><span class="line"><span class="hljs-comment"># ----------------------------------- Paths ------------------------------------</span></span><br><span class="line"><span class="hljs-comment"># Path to log files:</span></span><br><span class="line"><span class="hljs-comment">#可以指定es的数据存储目录，默认存储在es_home/data目录下</span></span><br><span class="line"><span class="hljs-comment">#path.data: /path/to/data</span></span><br><span class="line"><span class="hljs-comment">#可以指定es的日志存储目录，默认存储在es_home/logs目录下</span></span><br><span class="line"><span class="hljs-comment">#path.logs: /path/to/logs</span></span><br><span class="line"><span class="hljs-comment"># ----------------------------------- Memory -----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#锁定物理内存地址，防止elasticsearch内存被交换出去,也就是避免es使用swap交换分区</span></span><br><span class="line"><span class="hljs-string">bootstrap.memory_lock:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-comment">#CentOS下不支持SecComp，故而需要设置成false</span></span><br><span class="line"><span class="hljs-string">bootstrap.system_call_filter:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment"># ---------------------------------- Network -----------------------------------</span></span><br><span class="line"><span class="hljs-string">network.host:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.97</span></span><br><span class="line"><span class="hljs-string">http.port:</span> <span class="hljs-number">9200</span></span><br><span class="line"><span class="hljs-string">transport.tcp.port:</span> <span class="hljs-number">9300</span></span><br><span class="line"><span class="hljs-comment"># --------------------------------- Discovery ----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#</span></span><br><span class="line"><span class="hljs-string">discovery.zen.ping.unicast.hosts:</span> <span class="hljs-string">["192.168.1.97:9300","192.168.1.98:9300","192.168.1.113:9300"]</span></span><br><span class="line"><span class="hljs-comment">#理论上是 masternum/2+1,防止脑裂</span></span><br><span class="line"><span class="hljs-string">discovery.zen.minimum_master_nodes:</span> <span class="hljs-number">2</span></span><br><span class="line"><span class="hljs-comment"># ---------------------------------- Various -----------------------------------</span></span><br><span class="line"><span class="hljs-string">xpack.security.enabled:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment">#支持跨域访问</span></span><br><span class="line"><span class="hljs-string">http.cors.enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-string">http.cors.allow-origin:</span> <span class="hljs-string">"*"</span></span><br></pre></td></tr></table></figure>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="https://www.jianshu.com/p/62ede45cfb2e" target="_blank" rel="noopener">Linux sandboxing机制</a></p>
+<p><a href="https://www.cnblogs.com/huxiao-tee/p/4657851.html" target="_blank" rel="noopener">从内核文件系统看文件读写过程</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-04-13T12:33:16.000Z">2019-04-13</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    3 分钟 读完 (大约 498 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/04/13/search/Lucene分词原理研究/">Lucence分词原理研究</a>
+            
+        </h1>
+        <div class="content">
+            <p>#研究背景</p>
+<p>​    近期工作需要优化公司的分词器，需要改写IK源码，故而知其然知其所以然，Lucene分词相关的原理和实现研究透彻之后，可以研究ES IK分词器的源码了。以下源码的研究，是基于Lucene 6.6.0版本，Lucene源码中文档很规范，结合文档和源码学习效率很高。本文的所有内容，均来自于Lucene的文档和代码示例。</p>
+<p>#类图</p>
+<p>​    如类图所示，Lucene中和分词相关的最核心的几个类。Analyzer用于构建TokenStream(用于分析文本)，提供了用于提取文本生成词项（term）的策略。为了定义哪些Analyzer就绪，子类必须实现createComponents方法，组件分词时，调用tokenStream方法。</p>
+<p>​    TokenStream枚举了一系列tokens，它们来自documents.field或者query text。TokenStream是一个抽象类，具体的实现分为Tokenizer和TokenFilter。Tokennizer的输入是Reader，TokenFilter的输入是另一个tokenFilter。</p>
+<p><img src="http://syxtt.xin/lucene%E5%88%86%E8%AF%8D%E7%B1%BB%E5%9B%BE.png" alt="img"></p>
+<h1 id="TokenStream-API工作流程"><a href="#TokenStream-API工作流程" class="headerlink" title="TokenStream API工作流程"></a>TokenStream API工作流程</h1><p>1、初始化TokenStream时添加对应的属性<br>2、客户端调用TokenStream.reset()<br>3、客户端获取需要访问的属性的本地引用<br>4、客户端调用incrementToken()直到返回false,每次调用就可以获取对应的token的属性<br>5、客户端调用end()方法让TokenStream执行扫尾操作<br>6、客户端使用完TokenStream后调用close()释放资源</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Analyzer analyzer = <span class="hljs-keyword">new</span> StandardAnalyzer();</span><br><span class="line">        String str = <span class="hljs-string">"中华人民"</span>;</span><br><span class="line">        TokenStream stream = analyzer.tokenStream(<span class="hljs-string">"content"</span>, <span class="hljs-keyword">new</span> StringReader(str));</span><br><span class="line">        CharTermAttribute attr = stream.addAttribute(CharTermAttribute.class); <span class="hljs-comment">//1,3</span></span><br><span class="line">        PositionIncrementAttribute posIncr = stream.addAttribute(PositionIncrementAttribute.class); <span class="hljs-comment">//1,3</span></span><br><span class="line">        OffsetAttribute offset = stream.addAttribute(OffsetAttribute.class); <span class="hljs-comment">//1,3</span></span><br><span class="line">        TypeAttribute type = stream.addAttribute(TypeAttribute.class); <span class="hljs-comment">//1,3</span></span><br><span class="line">        stream.reset(); <span class="hljs-comment">//2</span></span><br><span class="line">        <span class="hljs-keyword">int</span> position = <span class="hljs-number">0</span>;</span><br><span class="line">        <span class="hljs-keyword">while</span> (stream.incrementToken()) &#123; <span class="hljs-comment">//4</span></span><br><span class="line">            <span class="hljs-keyword">int</span> increment = posIncr.getPositionIncrement();</span><br><span class="line">            <span class="hljs-keyword">if</span> (increment &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">                position = position + increment;</span><br><span class="line">                System.out.print(position + <span class="hljs-string">": "</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            System.out.println(attr.toString() + <span class="hljs-string">","</span> + offset.startOffset() + <span class="hljs-string">"-&gt;"</span> + offset.endOffset() + <span class="hljs-string">","</span> + type.type());</span><br><span class="line">        &#125;</span><br><span class="line">        stream.end(); <span class="hljs-comment">//5</span></span><br><span class="line">        stream.close(); <span class="hljs-comment">//6</span></span><br><span class="line">        analyzer.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">执行结果：</span><br><span class="line"><span class="hljs-number">1</span>: 中,<span class="hljs-number">0</span>-&gt;<span class="hljs-number">1</span>,&lt;IDEOGRAPHIC&gt;</span><br><span class="line"><span class="hljs-number">2</span>: 华,<span class="hljs-number">1</span>-&gt;<span class="hljs-number">2</span>,&lt;IDEOGRAPHIC&gt;</span><br><span class="line"><span class="hljs-number">3</span>: 人,<span class="hljs-number">2</span>-&gt;<span class="hljs-number">3</span>,&lt;IDEOGRAPHIC&gt;</span><br><span class="line"><span class="hljs-number">4</span>: 民,<span class="hljs-number">3</span>-&gt;<span class="hljs-number">4</span>,&lt;IDEOGRAPHIC&gt;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-04-09T02:33:16.000Z">2019-04-09</time>
                 
                 <div class="level-item">
@@ -654,156 +759,6 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    37 分钟 读完 (大约 5583 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/01/21/bigdata/hbase/Hbase系列2-Hbase架构深度解析/">Hbase系列2-Hbase架构深度解析</a>
-            
-        </h1>
-        <div class="content">
-            <p>原文：<a href="http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html" target="_blank" rel="noopener">http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html</a></p>
-<h2 id="HBase架构组成"><a href="#HBase架构组成" class="headerlink" title="HBase架构组成"></a>HBase架构组成</h2><p>HBase采用Master/Slave架构搭建集群，它隶属于Hadoop生态系统，由一下类型节点组成：HMaster节点、HRegionServer节点、ZooKeeper集群，而在底层，它将数据存储于HDFS中，因而涉及到HDFS的NameNode、DataNode等，总体结构如下：</p>
-<p><img src="http://syxtt.xin/f762fab9-ad5d-42eb-abe1-ca0601879088.png" alt="img"></p>
-<p>其中HMaster节点用于：</p>
-<ol>
-<li>管理HRegionServer，实现其负载均衡。</li>
-<li>管理和分配HRegion，比如在HRegion split时分配新的HRegion；在HRegionServer退出时迁移其内的HRegion到其他HRegionServer上。</li>
-<li>实现DDL操作（Data Definition Language，namespace和table的增删改，column familiy的增删改等）。</li>
-<li>管理namespace和table的元数据（实际存储在HDFS上）。</li>
-<li>权限控制（ACL）。</li>
-</ol>
-<p>HRegionServer节点用于：</p>
-<ol>
-<li>存放和管理本地HRegion。</li>
-<li>读写HDFS，管理Table中的数据。</li>
-<li>Client直接通过HRegionServer读写数据（从HMaster中获取元数据，找到RowKey所在的HRegion/HRegionServer后）。</li>
-</ol>
-<p>ZooKeeper集群是协调系统用于：</p>
-<ol>
-<li>存放整个 HBase集群的元数据以及集群的状态信息。</li>
-<li>实现HMaster主从节点的failover。</li>
-</ol>
-<p>HBase Client通过RPC方式和HMaster、HRegionServer通信；一个HRegionServer可以存放1000个HRegion；底层Table数据存储于HDFS中，而HRegion所处理的数据尽量和数据所在的DataNode在一起，实现数据的本地化；数据本地化并不是总能实现，比如在HRegion移动(如因Split)时，需要等下一次Compact才能继续回到本地化。</p>
-<p>这个架构图比较清晰的表达了HMaster和NameNode都支持多个热备份，使用ZooKeeper来做协调；ZooKeeper并不是云般神秘，它一般由三台机器组成一个集群，内部使用PAXOS算法支持三台Server中的一台宕机，也有使用五台机器的，此时则可以支持同时两台宕机，既少于半数的宕机，然而随着机器的增加，它的性能也会下降；RegionServer和DataNode一般会放在相同的Server上实现数据的本地化。</p>
-<h2 id="HRegion"><a href="#HRegion" class="headerlink" title="HRegion"></a>HRegion</h2><p>HBase使用RowKey将表水平切割成多个HRegion，从HMaster的角度，每个HRegion都纪录了它的StartKey和EndKey（第一个HRegion的StartKey为空，最后一个HRegion的EndKey为空），由于RowKey是排序的，因而Client可以通过HMaster快速的定位每个RowKey在哪个HRegion中。HRegion由HMaster分配到相应的HRegionServer中，然后由HRegionServer负责HRegion的启动和管理，和Client的通信，负责数据的读(使用HDFS)。每个HRegionServer可以同时管理1000个左右的HRegion（这个数字怎么来的？没有从代码中看到限制，难道是出于经验？超过1000个会引起性能问题？</p>
-<p>来回答这个问题：感觉这个1000的数字是从BigTable的论文中来的（5 Implementation节）：Each tablet server manages a set of tablets(typically we have somewhere between ten to a thousand tablets per tablet server)）。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig2.png" alt="img"></p>
-<h2 id="HMaster"><a href="#HMaster" class="headerlink" title="HMaster"></a>HMaster</h2><p>HMaster没有单点故障问题，可以启动多个HMaster，通过ZooKeeper的Master Election机制保证同时只有一个HMaster出于Active状态，其他的HMaster则处于热备份状态。一般情况下会启动两个HMaster，非Active的HMaster会定期的和Active HMaster通信以获取其最新状态，从而保证它是实时更新的，因而如果启动了多个HMaster反而增加了Active HMaster的负担。前文已经介绍过了HMaster的主要用于HRegion的分配和管理，DDL(Data Definition Language，既Table的新建、删除、修改等)的实现等，既它主要有两方面的职责：</p>
-<ol>
-<li>协调HRegionServer<ol>
-<li>启动时HRegion的分配，以及负载均衡和修复时HRegion的重新分配。</li>
-<li>监控集群中所有HRegionServer的状态(通过Heartbeat和监听ZooKeeper中的状态)。</li>
-</ol>
-</li>
-<li>Admin职能<ol>
-<li>创建、删除、修改Table的定义。</li>
-</ol>
-</li>
-</ol>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig3.png" alt="img"></p>
-<h2 id="ZooKeeper：协调者"><a href="#ZooKeeper：协调者" class="headerlink" title="ZooKeeper：协调者"></a>ZooKeeper：协调者</h2><p>ZooKeeper为HBase集群提供协调服务，它管理着HMaster和HRegionServer的状态(available/alive等)，并且会在它们宕机时通知给HMaster，从而HMaster可以实现HMaster之间的failover，或对宕机的HRegionServer中的HRegion集合的修复(将它们分配给其他的HRegionServer)。ZooKeeper集群本身使用一致性协议(PAXOS协议)保证每个节点状态的一致性。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig4.png" alt="img"></p>
-<h2 id="How-The-Components-Work-Together"><a href="#How-The-Components-Work-Together" class="headerlink" title="How The Components Work Together"></a>How The Components Work Together</h2><p>ZooKeeper协调集群所有节点的共享信息，在HMaster和HRegionServer连接到ZooKeeper后创建Ephemeral节点，并使用Heartbeat机制维持这个节点的存活状态，如果某个Ephemeral节点实效，则HMaster会收到通知，并做相应的处理。</p>
-<p>另外，HMaster通过监听ZooKeeper中的Ephemeral节点(默认：/hbase/rs/*)来监控HRegionServer的加入和宕机。在第一个HMaster连接到ZooKeeper时会创建Ephemeral节点(默认：/hbasae/master)来表示Active的HMaster，其后加进来的HMaster则监听该Ephemeral节点，如果当前Active的HMaster宕机，则该节点消失，因而其他HMaster得到通知，而将自身转换成Active的HMaster，在变为Active的HMaster之前，它会创建在/hbase/back-masters/下创建自己的Ephemeral节点。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig5.png" alt="img"></p>
-<h3 id="HBase的第一次读写"><a href="#HBase的第一次读写" class="headerlink" title="HBase的第一次读写"></a>HBase的第一次读写</h3><p>在HBase 0.96以前，HBase有两个特殊的Table：-ROOT-和.META.（如BigTable中的设计），其中-ROOT- Table的位置存储在ZooKeeper，它存储了.META. Table的RegionInfo信息，并且它只能存在一个HRegion，而.META. Table则存储了用户Table的RegionInfo信息，它可以被切分成多个HRegion，因而对第一次访问用户Table时，首先从ZooKeeper中读取-ROOT- Table所在HRegionServer；然后从该HRegionServer中根据请求的TableName，RowKey读取.META. Table所在HRegionServer；最后从该HRegionServer中读取.META. Table的内容而获取此次请求需要访问的HRegion所在的位置，然后访问该HRegionSever获取请求的数据，这需要三次请求才能找到用户Table所在的位置，然后第四次请求开始获取真正的数据。当然为了提升性能，客户端会缓存-ROOT- Table位置以及-ROOT-/.META. Table的内容。如下图所示：</p>
-<p><img src="http://syxtt.xin/image0030.jpg" alt="img"></p>
-<p>可是即使客户端有缓存，在初始阶段需要三次请求才能直到用户Table真正所在的位置也是性能低下的，而且真的有必要支持那么多的HRegion吗？或许对Google这样的公司来说是需要的，但是对一般的集群来说好像并没有这个必要。在BigTable的论文中说，每行METADATA存储1KB左右数据，中等大小的Tablet(HRegion)在128MB左右，3层位置的Schema设计可以支持2^34个Tablet(HRegion)。即使去掉-ROOT- Table，也还可以支持2^17(131072)个HRegion， 如果每个HRegion还是128MB，那就是16TB，这个貌似不够大，但是现在的HRegion的最大大小都会设置的比较大，比如我们设置了2GB，此时支持的大小则变成了4PB，对一般的集群来说已经够了，因而在HBase 0.96以后去掉了-ROOT- Table，只剩下这个特殊的目录表叫做Meta Table(hbase:meta)，它存储了集群中所有用户HRegion的位置信息，而ZooKeeper的节点中(/hbase/meta-region-server)存储的则直接是这个Meta Table的位置，并且这个Meta Table如以前的-ROOT- Table一样是不可split的。这样，客户端在第一次访问用户Table的流程就变成了：</p>
-<ol>
-<li>从ZooKeeper(/hbase/meta-region-server)中获取hbase:meta的位置（HRegionServer的位置），缓存该位置信息。</li>
-<li>从HRegionServer中查询用户Table对应请求的RowKey所在的HRegionServer，缓存该位置信息。</li>
-<li>从查询到HRegionServer中读取Row。</li>
-</ol>
-<p>从这个过程中，我们发现客户会缓存这些位置信息，然而第二步它只是缓存当前RowKey对应的HRegion的位置，因而如果下一个要查的RowKey不在同一个HRegion中，则需要继续查询hbase:meta所在的HRegion，然而随着时间的推移，客户端缓存的位置信息越来越多，以至于不需要再次查找hbase:meta Table的信息，除非某个HRegion因为宕机或Split被移动，此时需要重新查询并且更新缓存。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig6.png" alt="img"></p>
-<h3 id="hbase-meta表"><a href="#hbase-meta表" class="headerlink" title="hbase:meta表"></a>hbase:meta表</h3><p>hbase:meta表存储了所有用户HRegion的位置信息，它的RowKey:tableName,regionStartKey,regionId,replicaId等，它只有info列族，这个列族包含三个列，他们分别是：info:regioninfo列是RegionInfo的proto格式：regionId,tableName,startKey,endKey,offline,split,replicaId；info:server格式：HRegionServer对应的server:port；info:serverstartcode格式是HRegionServer的启动时间戳。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig7.png" alt="img"></p>
-<h2 id="HRegionServer详解"><a href="#HRegionServer详解" class="headerlink" title="HRegionServer详解"></a>HRegionServer详解</h2><p>HRegionServer一般和DataNode在同一台机器上运行，实现数据的本地性。HRegionServer包含多个HRegion，由WAL(HLog)、BlockCache、MemStore、HFile组成。</p>
-<ol>
-<li><strong>WAL即Write Ahead Log</strong>，在早期版本中称为HLog，它是HDFS上的一个文件，如其名字所表示的，所有写操作都会先保证将数据写入这个Log文件后，才会真正更新MemStore，最后写入HFile中。采用这种模式，可以保证HRegionServer宕机后，我们依然可以从该Log文件中读取数据，Replay所有的操作，而不至于数据丢失。这个Log文件会定期Roll出新的文件而删除旧的文件(那些已持久化到HFile中的Log可以删除)。WAL文件存储在/hbase/WALs/${HRegionServer_Name}的目录中(在0.94之前，存储在/hbase/.logs/目录中)，一般一个HRegionServer只有一个WAL实例，也就是说一个HRegionServer的所有WAL写都是串行的(就像log4j的日志写也是串行的)，这当然会引起性能问题，因而在HBase 1.0之后，通过<a href="https://issues.apache.org/jira/browse/HBASE-5699" target="_blank" rel="noopener">HBASE-5699</a>实现了多个WAL并行写(MultiWAL)，该实现采用HDFS的多个管道写，以单个HRegion为单位。关于WAL可以参考Wikipedia的<a href="https://en.wikipedia.org/wiki/Write-ahead_logging" target="_blank" rel="noopener">Write-Ahead Logging</a>。顺便吐槽一句，英文版的维基百科竟然能毫无压力的正常访问了，这是某个GFW的疏忽还是以后的常态？</li>
-<li><strong>BlockCache是一个读缓存</strong>，即“引用局部性”原理（也应用于CPU，<a href="http://baike.baidu.com/link?url=Dh2u9KvowXcl2PloHJFTB9vEOoVS3WxPhDCVvbQGL_piyKFQ2iTHYAYf5mLAsFrcBUig6NC7A4-Aki61qnGCTK#3_1" target="_blank" rel="noopener">分空间局部性和时间局部性</a>，空间局部性是指CPU在某一时刻需要某个数据，那么有很大的概率在一下时刻它需要的数据在其附近；时间局部性是指某个数据在被访问过一次后，它有很大的概率在不久的将来会被再次的访问），将数据预读取到内存中，以提升读的性能。HBase中提供两种BlockCache的实现：默认on-heap LruBlockCache和BucketCache(通常是off-heap)。通常BucketCache的性能要差于LruBlockCache，然而由于GC的影响，LruBlockCache的延迟会变的不稳定，而BucketCache由于是自己管理BlockCache，而不需要GC，因而它的延迟通常比较稳定，这也是有些时候需要选用BucketCache的原因。这篇文章<a href="http://www.n10k.com/blog/blockcache-101/" target="_blank" rel="noopener">BlockCache101</a>对on-heap和off-heap的BlockCache做了详细的比较。</li>
-<li><strong>HRegion是一个Table中的一个Region在一个HRegionServer中的表达</strong>。一个Table可以有一个或多个Region，他们可以在一个相同的HRegionServer上，也可以分布在不同的HRegionServer上，一个HRegionServer可以有多个HRegion，他们分别属于不同的Table。HRegion由多个Store(HStore)构成，每个HStore对应了一个Table在这个HRegion中的一个Column Family，即每个Column Family就是一个集中的存储单元，因而最好将具有相近IO特性的Column存储在一个Column Family，以实现高效读取(数据局部性原理，可以提高缓存的命中率)。HStore是HBase中存储的核心，它实现了读写HDFS功能，一个HStore由一个MemStore 和0个或多个StoreFile组成。<ol>
-<li><strong>MemStore是一个写缓存</strong>(In Memory Sorted Buffer)，所有数据的写在完成WAL日志写后，会 写入MemStore中，由MemStore根据一定的算法将数据Flush到地层HDFS文件中(HFile)，通常每个HRegion中的每个 Column Family有一个自己的MemStore。</li>
-<li><strong>HFile(StoreFile) 用于存储HBase的数据(Cell/KeyValue)</strong>。在HFile中的数据是按RowKey、Column Family、Column排序，对相同的Cell(即这三个值都一样)，则按timestamp倒序排列。</li>
-</ol>
-</li>
-</ol>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig8.png" alt="img"></p>
-<p>虽然上面这张图展现的是最新的HRegionServer的架构(但是并不是那么的精确)，但是我一直比较喜欢看以下这张图，即使它展现的应该是0.94以前的架构。</p>
-<p><img src="http://syxtt.xin/image0060.jpg" alt="img"></p>
-<h3 id="HRegionServer中数据写流程图解"><a href="#HRegionServer中数据写流程图解" class="headerlink" title="HRegionServer中数据写流程图解"></a>HRegionServer中数据写流程图解</h3><p>当客户端发起一个Put请求时，首先它从hbase:meta表中查出该Put数据最终需要去的HRegionServer。然后客户端将Put请求发送给相应的HRegionServer，在HRegionServer中它首先会将该Put操作写入WAL日志文件中(Flush到磁盘中)。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig9.png" alt="img"></p>
-<p>写完WAL日志文件后，HRegionServer根据Put中的TableName和RowKey找到对应的HRegion，并根据Column Family找到对应的HStore，并将Put写入到该HStore的MemStore中。此时写成功，并返回通知客户端。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig10.png" alt="img"></p>
-<h3 id="MemStore-Flush"><a href="#MemStore-Flush" class="headerlink" title="MemStore Flush"></a>MemStore Flush</h3><p>MemStore是一个In Memory Sorted Buffer，在每个HStore中都有一个MemStore，即它是一个HRegion的一个Column Family对应一个实例。它的排列顺序以RowKey、Column Family、Column的顺序以及Timestamp的倒序，如下所示：</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig11.png" alt="img"></p>
-<p>每一次Put/Delete请求都是先写入到MemStore中，当MemStore满后会Flush成一个新的StoreFile(底层实现是HFile)，即一个HStore(Column Family)可以有0个或多个StoreFile(HFile)。有以下三种情况可以触发MemStore的Flush动作，</p>
-<p>需要注意的是MemStore的最小Flush单元是HRegion而不是单个MemStore。据说这是Column Family有个数限制的其中一个原因，估计是因为太多的Column Family一起Flush会引起性能问题？具体原因有待考证。</p>
-<ol>
-<li>当一个HRegion中的所有MemStore的大小总和超过了hbase.hregion.memstore.flush.size的大小，默认128MB。此时当前的HRegion中所有的MemStore会Flush到HDFS中。</li>
-<li>当全局MemStore的大小超过了hbase.regionserver.global.memstore.upperLimit的大小，默认40％的内存使用量。此时当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush顺序是MemStore大小的倒序（一个HRegion中所有MemStore总和作为该HRegion的MemStore的大小还是选取最大的MemStore作为参考？有待考证），直到总体的MemStore使用量低于hbase.regionserver.global.memstore.lowerLimit，默认38%的内存使用量。</li>
-<li>当前HRegionServer中WAL的大小超过了hbase.regionserver.hlog.blocksize <em> hbase.regionserver.max.logs的数量，当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush使用时间顺序，最早的MemStore先Flush直到WAL的数量少于hbase.regionserver.hlog.blocksize </em> hbase.regionserver.max.logs。<a href="http://blog.sematext.com/2012/07/16/hbase-memstore-what-you-should-know/" target="_blank" rel="noopener">这里</a>说这两个相乘的默认大小是2GB，查代码，hbase.regionserver.max.logs默认值是32，而hbase.regionserver.hlog.blocksize是HDFS的默认blocksize，32MB。但不管怎么样，因为这个大小超过限制引起的Flush不是一件好事，可能引起长时间的延迟，因而这篇文章给的建议：“<strong>Hint</strong>: keep hbase.regionserver.hlog.blocksize <em> hbase.regionserver.maxlogs just a bit above hbase.regionserver.global.memstore.lowerLimit </em> HBASE_HEAPSIZE.”。并且需要注意，<a href="http://hbase.apache.org/book.html#_memstore_flush" target="_blank" rel="noopener">这里</a>给的描述是有错的(虽然它是官方的文档)。</li>
-</ol>
-<p>在MemStore Flush过程中，还会在尾部追加一些meta数据，其中就包括Flush时最大的WAL sequence值，以告诉HBase这个StoreFile写入的最新数据的序列，那么在Recover时就直到从哪里开始。在HRegion启动时，这个sequence会被读取，并取最大的作为下一次更新时的起始sequence。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig12.png" alt="img"></p>
-<h2 id="HFile格式"><a href="#HFile格式" class="headerlink" title="HFile格式"></a>HFile格式</h2><p>HBase的数据以KeyValue(Cell)的形式顺序的存储在HFile中，在MemStore的Flush过程中生成HFile，由于MemStore中存储的Cell遵循相同的排列顺序，因而Flush过程是顺序写，我们直到磁盘的顺序写性能很高，因为不需要不停的移动磁盘指针。</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig13.png" alt="img"></p>
-<p>HFile参考BigTable的SSTable和Hadoop的TFile实现，从HBase开始到现在，HFile经历了三个版本，其中V2在0.92引入，V3在0.98引入。首先我们来看一下V1的格式：</p>
-<p><img src="http://syxtt.xin/image0080.jpg" alt="img"></p>
-<p>V1的HFile由多个Data Block、Meta Block、FileInfo、Data Index、Meta Index、Trailer组成，其中Data Block是HBase的最小存储单元，在前文中提到的BlockCache就是基于Data Block的缓存的。一个Data Block由一个魔数和一系列的KeyValue(Cell)组成，魔数是一个随机的数字，用于表示这是一个Data Block类型，以快速监测这个Data Block的格式，防止数据的破坏。Data Block的大小可以在创建Column Family时设置(HColumnDescriptor.setBlockSize())，默认值是64KB，大号的Block有利于顺序Scan，小号Block利于随机查询，因而需要权衡。Meta块是可选的，FileInfo是固定长度的块，它纪录了文件的一些Meta信息，例如：AVG_KEY_LEN, AVG_VALUE_LEN, LAST_KEY, COMPARATOR, MAX_SEQ_ID_KEY等。Data Index和Meta Index纪录了每个Data块和Meta块的其实点、未压缩时大小、Key(起始RowKey？)等。Trailer纪录了FileInfo、Data Index、Meta Index块的起始位置，Data Index和Meta Index索引的数量等。其中FileInfo和Trailer是固定长度的。</p>
-<p>HFile里面的每个KeyValue对就是一个简单的byte数组。但是这个byte数组里面包含了很多项，并且有固定的结构。我们来看看里面的具体结构：</p>
-<p><img src="http://syxtt.xin/image0090.jpg" alt="img"></p>
-<p>开始是两个固定长度的数值，分别表示Key的长度和Value的长度。紧接着是Key，开始是固定长度的数值，表示RowKey的长度，紧接着是 RowKey，然后是固定长度的数值，表示Family的长度，然后是Family，接着是Qualifier，然后是两个固定长度的数值，表示Time Stamp和Key Type（Put/Delete）。Value部分没有这么复杂的结构，就是纯粹的二进制数据了。随着HFile版本迁移，KeyValue(Cell)的格式并未发生太多变化，只是在V3版本，尾部添加了一个可选的Tag数组。</p>
-<p>HFileV1版本的在实际使用过程中发现它占用内存多，并且Bloom File和Block Index会变的很大，而引起启动时间变长。其中每个HFile的Bloom Filter可以增长到100MB，这在查询时会引起性能问题，因为每次查询时需要加载并查询Bloom Filter，100MB的Bloom Filer会引起很大的延迟；另一个，Block Index在一个HRegionServer可能会增长到总共6GB，HRegionServer在启动时需要先加载所有这些Block Index，因而增加了启动时间。为了解决这些问题，在0.92版本中引入HFileV2版本：</p>
-<p><img src="http://syxtt.xin/hfilev2.png" alt="img"></p>
-<p>在这个版本中，Block Index和Bloom Filter添加到了Data Block中间，而这种设计同时也减少了写的内存使用量；另外，为了提升启动速度，在这个版本中还引入了延迟读的功能，即在HFile真正被使用时才对其进行解析。</p>
-<p>FileV3版本基本和V2版本相比，并没有太大的改变，它在KeyValue(Cell)层面上添加了Tag数组的支持；并在FileInfo结构中添加了和Tag相关的两个字段。关于具体HFile格式演化介绍，可以参考这里。</p>
-<p>对HFileV2格式具体分析，它是一个多层的类B+树索引，采用这种设计，可以实现查找不需要读取整个文件：</p>
-<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig14.png" alt="img"></p>
-<p>Data Block中的Cell都是升序排列，每个block都有它自己的Leaf-Index，每个Block的最后一个Key被放入Intermediate-Index中，Root-Index指向Intermediate-Index。在HFile的末尾还有Bloom Filter用于快速定位那么没有在某个Data Block中的Row；TimeRange信息用于给那些使用时间查询的参考。在HFile打开时，这些索引信息都被加载并保存在内存中，以增加以后的读取性能。</p>
-<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx" target="_blank" rel="noopener">https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx</a></p>
-<p><a href="http://jimbojw.com/wiki/index.php?title=Understanding_Hbase_and_BigTable" target="_blank" rel="noopener">http://jimbojw.com/wiki/index.php?title=Understanding_Hbase_and_BigTable</a></p>
-<p><a href="http://hbase.apache.org/book.html" target="_blank" rel="noopener">http://hbase.apache.org/book.html</a> </p>
-<p><a href="http://www.searchtb.com/2011/01/understanding-hbase.html" target="_blank" rel="noopener">http://www.searchtb.com/2011/01/understanding-hbase.html</a> </p>
-<p><a href="http://research.google.com/archive/bigtable-osdi06.pdf" target="_blank" rel="noopener">http://research.google.com/archive/bigtable-osdi06.pdf</a></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-01-21T08:33:16.000Z">2019-01-21</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/大数据技术/">大数据技术</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
                     38 分钟 读完 (大约 5717 个字)
                 </span>
                 
@@ -1033,6 +988,156 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-01-21T08:33:16.000Z">2019-01-21</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/大数据技术/">大数据技术</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    37 分钟 读完 (大约 5583 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/01/21/bigdata/hbase/Hbase系列2-Hbase架构深度解析/">Hbase系列2-Hbase架构深度解析</a>
+            
+        </h1>
+        <div class="content">
+            <p>原文：<a href="http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html" target="_blank" rel="noopener">http://www.blogjava.net/DLevin/archive/2015/08/22/426877.html</a></p>
+<h2 id="HBase架构组成"><a href="#HBase架构组成" class="headerlink" title="HBase架构组成"></a>HBase架构组成</h2><p>HBase采用Master/Slave架构搭建集群，它隶属于Hadoop生态系统，由一下类型节点组成：HMaster节点、HRegionServer节点、ZooKeeper集群，而在底层，它将数据存储于HDFS中，因而涉及到HDFS的NameNode、DataNode等，总体结构如下：</p>
+<p><img src="http://syxtt.xin/f762fab9-ad5d-42eb-abe1-ca0601879088.png" alt="img"></p>
+<p>其中HMaster节点用于：</p>
+<ol>
+<li>管理HRegionServer，实现其负载均衡。</li>
+<li>管理和分配HRegion，比如在HRegion split时分配新的HRegion；在HRegionServer退出时迁移其内的HRegion到其他HRegionServer上。</li>
+<li>实现DDL操作（Data Definition Language，namespace和table的增删改，column familiy的增删改等）。</li>
+<li>管理namespace和table的元数据（实际存储在HDFS上）。</li>
+<li>权限控制（ACL）。</li>
+</ol>
+<p>HRegionServer节点用于：</p>
+<ol>
+<li>存放和管理本地HRegion。</li>
+<li>读写HDFS，管理Table中的数据。</li>
+<li>Client直接通过HRegionServer读写数据（从HMaster中获取元数据，找到RowKey所在的HRegion/HRegionServer后）。</li>
+</ol>
+<p>ZooKeeper集群是协调系统用于：</p>
+<ol>
+<li>存放整个 HBase集群的元数据以及集群的状态信息。</li>
+<li>实现HMaster主从节点的failover。</li>
+</ol>
+<p>HBase Client通过RPC方式和HMaster、HRegionServer通信；一个HRegionServer可以存放1000个HRegion；底层Table数据存储于HDFS中，而HRegion所处理的数据尽量和数据所在的DataNode在一起，实现数据的本地化；数据本地化并不是总能实现，比如在HRegion移动(如因Split)时，需要等下一次Compact才能继续回到本地化。</p>
+<p>这个架构图比较清晰的表达了HMaster和NameNode都支持多个热备份，使用ZooKeeper来做协调；ZooKeeper并不是云般神秘，它一般由三台机器组成一个集群，内部使用PAXOS算法支持三台Server中的一台宕机，也有使用五台机器的，此时则可以支持同时两台宕机，既少于半数的宕机，然而随着机器的增加，它的性能也会下降；RegionServer和DataNode一般会放在相同的Server上实现数据的本地化。</p>
+<h2 id="HRegion"><a href="#HRegion" class="headerlink" title="HRegion"></a>HRegion</h2><p>HBase使用RowKey将表水平切割成多个HRegion，从HMaster的角度，每个HRegion都纪录了它的StartKey和EndKey（第一个HRegion的StartKey为空，最后一个HRegion的EndKey为空），由于RowKey是排序的，因而Client可以通过HMaster快速的定位每个RowKey在哪个HRegion中。HRegion由HMaster分配到相应的HRegionServer中，然后由HRegionServer负责HRegion的启动和管理，和Client的通信，负责数据的读(使用HDFS)。每个HRegionServer可以同时管理1000个左右的HRegion（这个数字怎么来的？没有从代码中看到限制，难道是出于经验？超过1000个会引起性能问题？</p>
+<p>来回答这个问题：感觉这个1000的数字是从BigTable的论文中来的（5 Implementation节）：Each tablet server manages a set of tablets(typically we have somewhere between ten to a thousand tablets per tablet server)）。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig2.png" alt="img"></p>
+<h2 id="HMaster"><a href="#HMaster" class="headerlink" title="HMaster"></a>HMaster</h2><p>HMaster没有单点故障问题，可以启动多个HMaster，通过ZooKeeper的Master Election机制保证同时只有一个HMaster出于Active状态，其他的HMaster则处于热备份状态。一般情况下会启动两个HMaster，非Active的HMaster会定期的和Active HMaster通信以获取其最新状态，从而保证它是实时更新的，因而如果启动了多个HMaster反而增加了Active HMaster的负担。前文已经介绍过了HMaster的主要用于HRegion的分配和管理，DDL(Data Definition Language，既Table的新建、删除、修改等)的实现等，既它主要有两方面的职责：</p>
+<ol>
+<li>协调HRegionServer<ol>
+<li>启动时HRegion的分配，以及负载均衡和修复时HRegion的重新分配。</li>
+<li>监控集群中所有HRegionServer的状态(通过Heartbeat和监听ZooKeeper中的状态)。</li>
+</ol>
+</li>
+<li>Admin职能<ol>
+<li>创建、删除、修改Table的定义。</li>
+</ol>
+</li>
+</ol>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig3.png" alt="img"></p>
+<h2 id="ZooKeeper：协调者"><a href="#ZooKeeper：协调者" class="headerlink" title="ZooKeeper：协调者"></a>ZooKeeper：协调者</h2><p>ZooKeeper为HBase集群提供协调服务，它管理着HMaster和HRegionServer的状态(available/alive等)，并且会在它们宕机时通知给HMaster，从而HMaster可以实现HMaster之间的failover，或对宕机的HRegionServer中的HRegion集合的修复(将它们分配给其他的HRegionServer)。ZooKeeper集群本身使用一致性协议(PAXOS协议)保证每个节点状态的一致性。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig4.png" alt="img"></p>
+<h2 id="How-The-Components-Work-Together"><a href="#How-The-Components-Work-Together" class="headerlink" title="How The Components Work Together"></a>How The Components Work Together</h2><p>ZooKeeper协调集群所有节点的共享信息，在HMaster和HRegionServer连接到ZooKeeper后创建Ephemeral节点，并使用Heartbeat机制维持这个节点的存活状态，如果某个Ephemeral节点实效，则HMaster会收到通知，并做相应的处理。</p>
+<p>另外，HMaster通过监听ZooKeeper中的Ephemeral节点(默认：/hbase/rs/*)来监控HRegionServer的加入和宕机。在第一个HMaster连接到ZooKeeper时会创建Ephemeral节点(默认：/hbasae/master)来表示Active的HMaster，其后加进来的HMaster则监听该Ephemeral节点，如果当前Active的HMaster宕机，则该节点消失，因而其他HMaster得到通知，而将自身转换成Active的HMaster，在变为Active的HMaster之前，它会创建在/hbase/back-masters/下创建自己的Ephemeral节点。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig5.png" alt="img"></p>
+<h3 id="HBase的第一次读写"><a href="#HBase的第一次读写" class="headerlink" title="HBase的第一次读写"></a>HBase的第一次读写</h3><p>在HBase 0.96以前，HBase有两个特殊的Table：-ROOT-和.META.（如BigTable中的设计），其中-ROOT- Table的位置存储在ZooKeeper，它存储了.META. Table的RegionInfo信息，并且它只能存在一个HRegion，而.META. Table则存储了用户Table的RegionInfo信息，它可以被切分成多个HRegion，因而对第一次访问用户Table时，首先从ZooKeeper中读取-ROOT- Table所在HRegionServer；然后从该HRegionServer中根据请求的TableName，RowKey读取.META. Table所在HRegionServer；最后从该HRegionServer中读取.META. Table的内容而获取此次请求需要访问的HRegion所在的位置，然后访问该HRegionSever获取请求的数据，这需要三次请求才能找到用户Table所在的位置，然后第四次请求开始获取真正的数据。当然为了提升性能，客户端会缓存-ROOT- Table位置以及-ROOT-/.META. Table的内容。如下图所示：</p>
+<p><img src="http://syxtt.xin/image0030.jpg" alt="img"></p>
+<p>可是即使客户端有缓存，在初始阶段需要三次请求才能直到用户Table真正所在的位置也是性能低下的，而且真的有必要支持那么多的HRegion吗？或许对Google这样的公司来说是需要的，但是对一般的集群来说好像并没有这个必要。在BigTable的论文中说，每行METADATA存储1KB左右数据，中等大小的Tablet(HRegion)在128MB左右，3层位置的Schema设计可以支持2^34个Tablet(HRegion)。即使去掉-ROOT- Table，也还可以支持2^17(131072)个HRegion， 如果每个HRegion还是128MB，那就是16TB，这个貌似不够大，但是现在的HRegion的最大大小都会设置的比较大，比如我们设置了2GB，此时支持的大小则变成了4PB，对一般的集群来说已经够了，因而在HBase 0.96以后去掉了-ROOT- Table，只剩下这个特殊的目录表叫做Meta Table(hbase:meta)，它存储了集群中所有用户HRegion的位置信息，而ZooKeeper的节点中(/hbase/meta-region-server)存储的则直接是这个Meta Table的位置，并且这个Meta Table如以前的-ROOT- Table一样是不可split的。这样，客户端在第一次访问用户Table的流程就变成了：</p>
+<ol>
+<li>从ZooKeeper(/hbase/meta-region-server)中获取hbase:meta的位置（HRegionServer的位置），缓存该位置信息。</li>
+<li>从HRegionServer中查询用户Table对应请求的RowKey所在的HRegionServer，缓存该位置信息。</li>
+<li>从查询到HRegionServer中读取Row。</li>
+</ol>
+<p>从这个过程中，我们发现客户会缓存这些位置信息，然而第二步它只是缓存当前RowKey对应的HRegion的位置，因而如果下一个要查的RowKey不在同一个HRegion中，则需要继续查询hbase:meta所在的HRegion，然而随着时间的推移，客户端缓存的位置信息越来越多，以至于不需要再次查找hbase:meta Table的信息，除非某个HRegion因为宕机或Split被移动，此时需要重新查询并且更新缓存。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig6.png" alt="img"></p>
+<h3 id="hbase-meta表"><a href="#hbase-meta表" class="headerlink" title="hbase:meta表"></a>hbase:meta表</h3><p>hbase:meta表存储了所有用户HRegion的位置信息，它的RowKey:tableName,regionStartKey,regionId,replicaId等，它只有info列族，这个列族包含三个列，他们分别是：info:regioninfo列是RegionInfo的proto格式：regionId,tableName,startKey,endKey,offline,split,replicaId；info:server格式：HRegionServer对应的server:port；info:serverstartcode格式是HRegionServer的启动时间戳。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig7.png" alt="img"></p>
+<h2 id="HRegionServer详解"><a href="#HRegionServer详解" class="headerlink" title="HRegionServer详解"></a>HRegionServer详解</h2><p>HRegionServer一般和DataNode在同一台机器上运行，实现数据的本地性。HRegionServer包含多个HRegion，由WAL(HLog)、BlockCache、MemStore、HFile组成。</p>
+<ol>
+<li><strong>WAL即Write Ahead Log</strong>，在早期版本中称为HLog，它是HDFS上的一个文件，如其名字所表示的，所有写操作都会先保证将数据写入这个Log文件后，才会真正更新MemStore，最后写入HFile中。采用这种模式，可以保证HRegionServer宕机后，我们依然可以从该Log文件中读取数据，Replay所有的操作，而不至于数据丢失。这个Log文件会定期Roll出新的文件而删除旧的文件(那些已持久化到HFile中的Log可以删除)。WAL文件存储在/hbase/WALs/${HRegionServer_Name}的目录中(在0.94之前，存储在/hbase/.logs/目录中)，一般一个HRegionServer只有一个WAL实例，也就是说一个HRegionServer的所有WAL写都是串行的(就像log4j的日志写也是串行的)，这当然会引起性能问题，因而在HBase 1.0之后，通过<a href="https://issues.apache.org/jira/browse/HBASE-5699" target="_blank" rel="noopener">HBASE-5699</a>实现了多个WAL并行写(MultiWAL)，该实现采用HDFS的多个管道写，以单个HRegion为单位。关于WAL可以参考Wikipedia的<a href="https://en.wikipedia.org/wiki/Write-ahead_logging" target="_blank" rel="noopener">Write-Ahead Logging</a>。顺便吐槽一句，英文版的维基百科竟然能毫无压力的正常访问了，这是某个GFW的疏忽还是以后的常态？</li>
+<li><strong>BlockCache是一个读缓存</strong>，即“引用局部性”原理（也应用于CPU，<a href="http://baike.baidu.com/link?url=Dh2u9KvowXcl2PloHJFTB9vEOoVS3WxPhDCVvbQGL_piyKFQ2iTHYAYf5mLAsFrcBUig6NC7A4-Aki61qnGCTK#3_1" target="_blank" rel="noopener">分空间局部性和时间局部性</a>，空间局部性是指CPU在某一时刻需要某个数据，那么有很大的概率在一下时刻它需要的数据在其附近；时间局部性是指某个数据在被访问过一次后，它有很大的概率在不久的将来会被再次的访问），将数据预读取到内存中，以提升读的性能。HBase中提供两种BlockCache的实现：默认on-heap LruBlockCache和BucketCache(通常是off-heap)。通常BucketCache的性能要差于LruBlockCache，然而由于GC的影响，LruBlockCache的延迟会变的不稳定，而BucketCache由于是自己管理BlockCache，而不需要GC，因而它的延迟通常比较稳定，这也是有些时候需要选用BucketCache的原因。这篇文章<a href="http://www.n10k.com/blog/blockcache-101/" target="_blank" rel="noopener">BlockCache101</a>对on-heap和off-heap的BlockCache做了详细的比较。</li>
+<li><strong>HRegion是一个Table中的一个Region在一个HRegionServer中的表达</strong>。一个Table可以有一个或多个Region，他们可以在一个相同的HRegionServer上，也可以分布在不同的HRegionServer上，一个HRegionServer可以有多个HRegion，他们分别属于不同的Table。HRegion由多个Store(HStore)构成，每个HStore对应了一个Table在这个HRegion中的一个Column Family，即每个Column Family就是一个集中的存储单元，因而最好将具有相近IO特性的Column存储在一个Column Family，以实现高效读取(数据局部性原理，可以提高缓存的命中率)。HStore是HBase中存储的核心，它实现了读写HDFS功能，一个HStore由一个MemStore 和0个或多个StoreFile组成。<ol>
+<li><strong>MemStore是一个写缓存</strong>(In Memory Sorted Buffer)，所有数据的写在完成WAL日志写后，会 写入MemStore中，由MemStore根据一定的算法将数据Flush到地层HDFS文件中(HFile)，通常每个HRegion中的每个 Column Family有一个自己的MemStore。</li>
+<li><strong>HFile(StoreFile) 用于存储HBase的数据(Cell/KeyValue)</strong>。在HFile中的数据是按RowKey、Column Family、Column排序，对相同的Cell(即这三个值都一样)，则按timestamp倒序排列。</li>
+</ol>
+</li>
+</ol>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig8.png" alt="img"></p>
+<p>虽然上面这张图展现的是最新的HRegionServer的架构(但是并不是那么的精确)，但是我一直比较喜欢看以下这张图，即使它展现的应该是0.94以前的架构。</p>
+<p><img src="http://syxtt.xin/image0060.jpg" alt="img"></p>
+<h3 id="HRegionServer中数据写流程图解"><a href="#HRegionServer中数据写流程图解" class="headerlink" title="HRegionServer中数据写流程图解"></a>HRegionServer中数据写流程图解</h3><p>当客户端发起一个Put请求时，首先它从hbase:meta表中查出该Put数据最终需要去的HRegionServer。然后客户端将Put请求发送给相应的HRegionServer，在HRegionServer中它首先会将该Put操作写入WAL日志文件中(Flush到磁盘中)。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig9.png" alt="img"></p>
+<p>写完WAL日志文件后，HRegionServer根据Put中的TableName和RowKey找到对应的HRegion，并根据Column Family找到对应的HStore，并将Put写入到该HStore的MemStore中。此时写成功，并返回通知客户端。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig10.png" alt="img"></p>
+<h3 id="MemStore-Flush"><a href="#MemStore-Flush" class="headerlink" title="MemStore Flush"></a>MemStore Flush</h3><p>MemStore是一个In Memory Sorted Buffer，在每个HStore中都有一个MemStore，即它是一个HRegion的一个Column Family对应一个实例。它的排列顺序以RowKey、Column Family、Column的顺序以及Timestamp的倒序，如下所示：</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig11.png" alt="img"></p>
+<p>每一次Put/Delete请求都是先写入到MemStore中，当MemStore满后会Flush成一个新的StoreFile(底层实现是HFile)，即一个HStore(Column Family)可以有0个或多个StoreFile(HFile)。有以下三种情况可以触发MemStore的Flush动作，</p>
+<p>需要注意的是MemStore的最小Flush单元是HRegion而不是单个MemStore。据说这是Column Family有个数限制的其中一个原因，估计是因为太多的Column Family一起Flush会引起性能问题？具体原因有待考证。</p>
+<ol>
+<li>当一个HRegion中的所有MemStore的大小总和超过了hbase.hregion.memstore.flush.size的大小，默认128MB。此时当前的HRegion中所有的MemStore会Flush到HDFS中。</li>
+<li>当全局MemStore的大小超过了hbase.regionserver.global.memstore.upperLimit的大小，默认40％的内存使用量。此时当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush顺序是MemStore大小的倒序（一个HRegion中所有MemStore总和作为该HRegion的MemStore的大小还是选取最大的MemStore作为参考？有待考证），直到总体的MemStore使用量低于hbase.regionserver.global.memstore.lowerLimit，默认38%的内存使用量。</li>
+<li>当前HRegionServer中WAL的大小超过了hbase.regionserver.hlog.blocksize <em> hbase.regionserver.max.logs的数量，当前HRegionServer中所有HRegion中的MemStore都会Flush到HDFS中，Flush使用时间顺序，最早的MemStore先Flush直到WAL的数量少于hbase.regionserver.hlog.blocksize </em> hbase.regionserver.max.logs。<a href="http://blog.sematext.com/2012/07/16/hbase-memstore-what-you-should-know/" target="_blank" rel="noopener">这里</a>说这两个相乘的默认大小是2GB，查代码，hbase.regionserver.max.logs默认值是32，而hbase.regionserver.hlog.blocksize是HDFS的默认blocksize，32MB。但不管怎么样，因为这个大小超过限制引起的Flush不是一件好事，可能引起长时间的延迟，因而这篇文章给的建议：“<strong>Hint</strong>: keep hbase.regionserver.hlog.blocksize <em> hbase.regionserver.maxlogs just a bit above hbase.regionserver.global.memstore.lowerLimit </em> HBASE_HEAPSIZE.”。并且需要注意，<a href="http://hbase.apache.org/book.html#_memstore_flush" target="_blank" rel="noopener">这里</a>给的描述是有错的(虽然它是官方的文档)。</li>
+</ol>
+<p>在MemStore Flush过程中，还会在尾部追加一些meta数据，其中就包括Flush时最大的WAL sequence值，以告诉HBase这个StoreFile写入的最新数据的序列，那么在Recover时就直到从哪里开始。在HRegion启动时，这个sequence会被读取，并取最大的作为下一次更新时的起始sequence。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig12.png" alt="img"></p>
+<h2 id="HFile格式"><a href="#HFile格式" class="headerlink" title="HFile格式"></a>HFile格式</h2><p>HBase的数据以KeyValue(Cell)的形式顺序的存储在HFile中，在MemStore的Flush过程中生成HFile，由于MemStore中存储的Cell遵循相同的排列顺序，因而Flush过程是顺序写，我们直到磁盘的顺序写性能很高，因为不需要不停的移动磁盘指针。</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig13.png" alt="img"></p>
+<p>HFile参考BigTable的SSTable和Hadoop的TFile实现，从HBase开始到现在，HFile经历了三个版本，其中V2在0.92引入，V3在0.98引入。首先我们来看一下V1的格式：</p>
+<p><img src="http://syxtt.xin/image0080.jpg" alt="img"></p>
+<p>V1的HFile由多个Data Block、Meta Block、FileInfo、Data Index、Meta Index、Trailer组成，其中Data Block是HBase的最小存储单元，在前文中提到的BlockCache就是基于Data Block的缓存的。一个Data Block由一个魔数和一系列的KeyValue(Cell)组成，魔数是一个随机的数字，用于表示这是一个Data Block类型，以快速监测这个Data Block的格式，防止数据的破坏。Data Block的大小可以在创建Column Family时设置(HColumnDescriptor.setBlockSize())，默认值是64KB，大号的Block有利于顺序Scan，小号Block利于随机查询，因而需要权衡。Meta块是可选的，FileInfo是固定长度的块，它纪录了文件的一些Meta信息，例如：AVG_KEY_LEN, AVG_VALUE_LEN, LAST_KEY, COMPARATOR, MAX_SEQ_ID_KEY等。Data Index和Meta Index纪录了每个Data块和Meta块的其实点、未压缩时大小、Key(起始RowKey？)等。Trailer纪录了FileInfo、Data Index、Meta Index块的起始位置，Data Index和Meta Index索引的数量等。其中FileInfo和Trailer是固定长度的。</p>
+<p>HFile里面的每个KeyValue对就是一个简单的byte数组。但是这个byte数组里面包含了很多项，并且有固定的结构。我们来看看里面的具体结构：</p>
+<p><img src="http://syxtt.xin/image0090.jpg" alt="img"></p>
+<p>开始是两个固定长度的数值，分别表示Key的长度和Value的长度。紧接着是Key，开始是固定长度的数值，表示RowKey的长度，紧接着是 RowKey，然后是固定长度的数值，表示Family的长度，然后是Family，接着是Qualifier，然后是两个固定长度的数值，表示Time Stamp和Key Type（Put/Delete）。Value部分没有这么复杂的结构，就是纯粹的二进制数据了。随着HFile版本迁移，KeyValue(Cell)的格式并未发生太多变化，只是在V3版本，尾部添加了一个可选的Tag数组。</p>
+<p>HFileV1版本的在实际使用过程中发现它占用内存多，并且Bloom File和Block Index会变的很大，而引起启动时间变长。其中每个HFile的Bloom Filter可以增长到100MB，这在查询时会引起性能问题，因为每次查询时需要加载并查询Bloom Filter，100MB的Bloom Filer会引起很大的延迟；另一个，Block Index在一个HRegionServer可能会增长到总共6GB，HRegionServer在启动时需要先加载所有这些Block Index，因而增加了启动时间。为了解决这些问题，在0.92版本中引入HFileV2版本：</p>
+<p><img src="http://syxtt.xin/hfilev2.png" alt="img"></p>
+<p>在这个版本中，Block Index和Bloom Filter添加到了Data Block中间，而这种设计同时也减少了写的内存使用量；另外，为了提升启动速度，在这个版本中还引入了延迟读的功能，即在HFile真正被使用时才对其进行解析。</p>
+<p>FileV3版本基本和V2版本相比，并没有太大的改变，它在KeyValue(Cell)层面上添加了Tag数组的支持；并在FileInfo结构中添加了和Tag相关的两个字段。关于具体HFile格式演化介绍，可以参考这里。</p>
+<p>对HFileV2格式具体分析，它是一个多层的类B+树索引，采用这种设计，可以实现查找不需要读取整个文件：</p>
+<p><img src="http://syxtt.xin/HBaseArchitecture-Blog-Fig14.png" alt="img"></p>
+<p>Data Block中的Cell都是升序排列，每个block都有它自己的Leaf-Index，每个Block的最后一个Key被放入Intermediate-Index中，Root-Index指向Intermediate-Index。在HFile的末尾还有Bloom Filter用于快速定位那么没有在某个Data Block中的Row；TimeRange信息用于给那些使用时间查询的参考。在HFile打开时，这些索引信息都被加载并保存在内存中，以增加以后的读取性能。</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx" target="_blank" rel="noopener">https://www.mapr.com/blog/in-depth-look-hbase-architecture#.VdNSN6Yp3qx</a></p>
+<p><a href="http://jimbojw.com/wiki/index.php?title=Understanding_Hbase_and_BigTable" target="_blank" rel="noopener">http://jimbojw.com/wiki/index.php?title=Understanding_Hbase_and_BigTable</a></p>
+<p><a href="http://hbase.apache.org/book.html" target="_blank" rel="noopener">http://hbase.apache.org/book.html</a> </p>
+<p><a href="http://www.searchtb.com/2011/01/understanding-hbase.html" target="_blank" rel="noopener">http://www.searchtb.com/2011/01/understanding-hbase.html</a> </p>
+<p><a href="http://research.google.com/archive/bigtable-osdi06.pdf" target="_blank" rel="noopener">http://research.google.com/archive/bigtable-osdi06.pdf</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2018-12-11T15:33:16.000Z">2018-12-11</time>
                 
                 <div class="level-item">
@@ -1130,271 +1235,6 @@
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 基于阻塞队列消费者</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Consumer</span> </span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">cusume</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">while</span> (!Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">            System.out.println(<span class="hljs-string">"消费:"</span> + Productor.blockQueue.take());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test0</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">//创建生产者</span></span><br><span class="line">    Productor productor = <span class="hljs-keyword">new</span> Productor();</span><br><span class="line">    <span class="hljs-comment">//创建消费者</span></span><br><span class="line">    Consumer consumer = <span class="hljs-keyword">new</span> Consumer();</span><br><span class="line">    Thread cusumerThread = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            consumer.cusume();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line">    cusumerThread.start();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">        productor.provide();</span><br><span class="line"></span><br><span class="line">        cusumerThread.interrupt();</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出：</span><br><span class="line">生产:<span class="hljs-number">0</span></span><br><span class="line">消费:<span class="hljs-number">0</span></span><br><span class="line">生产:<span class="hljs-number">1</span></span><br><span class="line">消费:<span class="hljs-number">1</span></span><br><span class="line">生产:<span class="hljs-number">2</span></span><br><span class="line">消费:<span class="hljs-number">2</span></span><br><span class="line">生产:<span class="hljs-number">3</span></span><br><span class="line">消费:<span class="hljs-number">3</span></span><br><span class="line">生产:<span class="hljs-number">4</span></span><br><span class="line">消费:<span class="hljs-number">4</span></span><br><span class="line">生产:<span class="hljs-number">5</span></span><br><span class="line">消费:<span class="hljs-number">5</span></span><br><span class="line">生产:<span class="hljs-number">6</span></span><br><span class="line">消费:<span class="hljs-number">6</span></span><br><span class="line">生产:<span class="hljs-number">7</span></span><br><span class="line">消费:<span class="hljs-number">7</span></span><br><span class="line">消费:<span class="hljs-number">8</span></span><br><span class="line">生产:<span class="hljs-number">8</span></span><br><span class="line">生产:<span class="hljs-number">9</span></span><br><span class="line">消费:<span class="hljs-number">9</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">* 自己实现的简单的阻塞队列</span></span><br><span class="line"><span class="hljs-comment">*/</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyBlockQueue</span>&lt;<span class="hljs-title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> LinkedList&lt;E&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="hljs-comment">//第一种实现方式，采用了Object wait和notify的方式</span></span><br><span class="line">    <span class="hljs-keyword">private</span> Object lock = <span class="hljs-keyword">new</span> Object();</span><br><span class="line">	<span class="hljs-comment">//第二种实现方法，采用了ReentrantLock获取Condition，通过condition await和signal方式实现</span></span><br><span class="line">    <span class="hljs-keyword">private</span> ReentrantLock reentrantLock = <span class="hljs-keyword">new</span> ReentrantLock();</span><br><span class="line">    Condition con = reentrantLock.newCondition();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">offer</span><span class="hljs-params">(E e)</span> </span>&#123;</span><br><span class="line">        queue.offer(e);</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            lock.notifyAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function">E <span class="hljs-title">take</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (queue.size() == <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                lock.wait();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> queue.poll();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">offer1</span><span class="hljs-params">(E e)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            reentrantLock.lockInterruptibly();</span><br><span class="line">            queue.offer(e);</span><br><span class="line">            con.signalAll();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">            reentrantLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function">E <span class="hljs-title">take1</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (queue.size() == <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                reentrantLock.lockInterruptibly();</span><br><span class="line">                con.await();</span><br><span class="line"></span><br><span class="line">            &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">                reentrantLock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> queue.poll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-12-11T15:33:16.000Z">2018-12-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    10 分钟 读完 (大约 1553 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/12/11/java/Java线程基础知识/">Java线程基础知识</a>
-            
-        </h1>
-        <div class="content">
-            <h1 id="Java线程基础"><a href="#Java线程基础" class="headerlink" title="Java线程基础"></a>Java线程基础</h1><p>如下图所示，Java中线程可分为NEW，RUNABLE，RUNING，BLOCKED，WAITING，TIMED_WAITING，TERMINATED 共七个状态，一个状态是如何过渡到另一个状态图中标识的很清楚。</p>
-<p><img src="http://syxtt.xin/%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81.png" alt="img"></p>
-<ul>
-<li><p><strong>初始状态（NEW）</strong><br>实现Runnable接口和继承Thread可以得到一个线程类，new一个实例出来，线程就进入了初始状态。</p>
-</li>
-<li><p><strong>就绪状态（RUNNABLE）</strong><br>就绪状态只是说你资格运行，调度程序没有挑选到你，你就永远是就绪状态。</p>
-<ul>
-<li>调用线程的<strong>start()</strong>方法，此线程进入就绪状态。</li>
-<li>当前线程sleep()方法结束，其他线程join()结束，等待用户输入完毕，某个线程拿到对象锁，这些线程也将进入就绪状态。</li>
-<li>当前线程时间片用完了，调用当前线程的yield()方法，当前线程进入就绪状态。</li>
-<li>锁池里的线程拿到对象锁后，进入就绪状态。</li>
-</ul>
-</li>
-<li><p><strong>运行中状态（RUNNING）</strong><br>线程调度程序从可运行池中选择一个线程作为当前线程时线程所处的状态。这也是线程进入运行状态的唯一一种方式。</p>
-</li>
-<li><p><strong>阻塞状态（BLOCKED）</strong><br>阻塞状态是线程阻塞在进入synchronized关键字（当然也包括ReentrantLock）修饰的方法或代码块(获取锁)时的状态。</p>
-</li>
-<li><p><strong>等待（WAITING）</strong><br>处于这种状态的线程不会被分配CPU执行时间，它们要等待被显式地唤醒，否则会处于无限期等待的状态。</p>
-</li>
-<li><p><strong>超时等待（TIMED_WAITING）</strong><br>处于这种状态的线程不会被分配CPU执行时间，不过无须无限期等待被其他线程显示地唤醒，在达到一定时间后它们会自动唤醒。</p>
-</li>
-<li><p><strong>终止状态（TERMINATED）</strong><br>当线程的run()方法完成时，或者主线程的main()方法完成时，我们就认为它终止了。这个线程对象也许是活的，但是，它已经不是一个单独执行的线程。线程一旦终止了，就不能复生。在一个终止的线程上调用start()方法，会抛出java.lang.IllegalThreadStateException异常。</p>
-</li>
-</ul>
-<h1 id="Java线程常用API"><a href="#Java线程常用API" class="headerlink" title="Java线程常用API"></a>Java线程常用API</h1><p><img src="http://syxtt.xin/Thread%E6%96%B9%E6%B3%95%E9%9B%86%E5%90%88.png" alt="img"></p>
-<p>其中常用的方法为start()，yield()，sleep()，interrupt()，interrupted()，isInterrupted()，isAlive()，join()，</p>
-<p>setDaemon()，setName()，setPriority()，其中stop方法和destroy方法，都是被废弃的方法在日常使用中不建议用。除了Thread类下的API，Object类下的wait()，notify()，notifyAll()，这三个方法也经常在多线程场景中出现。本文的目的，主要讲解的就是这些方法的使用和内部原理。</p>
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th style="text-align:left">方法说明</th>
-<th style="text-align:left">Exception</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Thread.start</td>
-<td style="text-align:left">开启执行线程，由虚拟机负责调用run方法。（Causes this thread to begin execution; the Java Virtual Machine calls the <code>run</code> method of this thread.）</td>
-<td style="text-align:left">IllegalThreadStateException  if the thread was already       started.</td>
-</tr>
-<tr>
-<td>Thread.yield</td>
-<td style="text-align:left">让出CPU，但是仅仅对同线程级别（Yield is a heuristic attempt to improve relative progression between threads that would otherwise over-utilise a CPU）</td>
-<td style="text-align:left">无</td>
-</tr>
-<tr>
-<td>Thread.sleep</td>
-<td style="text-align:left">使得正在执行的当前线程睡眠。敲黑板！但是<strong>不会让出任何锁的所有权</strong>（ The thread does not lose ownership of any monitors.）这个特性很重要，也就是说在同步块中使用Thread.sleep要谨慎。</td>
-<td style="text-align:left">当线程中断会抛出InterruptedException异常，并<strong>同时清空中断标志位</strong></td>
-</tr>
-<tr>
-<td>Thread.interrupt</td>
-<td style="text-align:left">中断线程，但只是设置了中断标志位，此刻调用isInterrupted返回true。例子请参考下面的示例代码testInterrupt0方法。只会打印到0-9循环跳出</td>
-<td style="text-align:left">SecurityException if the current thread cannot modify this thread 请教这个异常什么时候会发生呢？</td>
-</tr>
-<tr>
-<td>Thread.isInterrupted</td>
-<td style="text-align:left">查看线程是否处于中断状态.true为中断。调用之后<strong>不清除</strong>中断标志位。</td>
-<td style="text-align:left">无</td>
-</tr>
-<tr>
-<td>Thread.interrupted</td>
-<td style="text-align:left">查看线程是否处于中断状态.true为中断。调用之后<strong>清除</strong>中断标志位。心细的同学已经发现和isInterrupted的区别了吧。</td>
-<td style="text-align:left">无</td>
-</tr>
-<tr>
-<td>Thread.isAlive</td>
-<td style="text-align:left">线程是否存活，A thread is alive if it has  been started and has not yet died.</td>
-<td style="text-align:left">无</td>
-</tr>
-<tr>
-<td>Thread.join</td>
-<td style="text-align:left">等待线程死亡之后再执行。（Waits for this thread to die）</td>
-<td style="text-align:left">当线程中断会抛出InterruptedException异常，并<strong>同时清空中断标志位</strong></td>
-</tr>
-<tr>
-<td>Thread.setDaemon</td>
-<td style="text-align:left">设置为守护线程。任何非守护线程还在运行，守护线程就不会终止，最典型的守护线程是垃圾回收器的回收线程。</td>
-<td style="text-align:left">IllegalThreadStateException 当线程状态是alive的时候不能调用setDaemon</td>
-</tr>
-<tr>
-<td>Thread.setName</td>
-<td style="text-align:left">设置线程的name</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td>Thread.setPriority</td>
-<td style="text-align:left">设置线程的优先级。MIN_PRIORITY为1，MAX_PRIORITY为10，NORM_PRIORITY为5。</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td>Object.wait</td>
-<td style="text-align:left">如果不指定timeout，则一直阻塞直到其他线程调用notify或者notifyAll。敲黑板！调用wait之后当前线程不在持有对象锁。</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td>Object.notify</td>
-<td style="text-align:left">随机唤醒同一个对象monitor下的某个线程</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td>Object.notifyAll</td>
-<td style="text-align:left">唤醒同一个对象monitor下的所有线程。查看testNotify示例。</td>
-</tr>
-</tbody>
-</table>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testInterrupt0</span><span class="hljs-params">()</span>  Exception </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;</span><br><span class="line">    <span class="hljs-keyword">while</span> (!Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">        System.out.println(<span class="hljs-string">"loop"</span> + i++);</span><br><span class="line">        <span class="hljs-keyword">if</span>(i == <span class="hljs-number">10</span>) &#123;</span><br><span class="line">            Thread.currentThread().interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-comment">//echo true</span></span><br><span class="line">    System.out.println(Thread.currentThread().isInterrupted());</span><br><span class="line">    <span class="hljs-comment">//echo true</span></span><br><span class="line">    System.out.println(Thread.currentThread().interrupted());</span><br><span class="line">    <span class="hljs-comment">//echo false</span></span><br><span class="line">    System.out.println(Thread.currentThread().isInterrupted());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyThread</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> Object lock;</span><br><span class="line">    <span class="hljs-keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MyThread</span><span class="hljs-params">(Object lock, String name)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.lock = lock;</span><br><span class="line">        <span class="hljs-keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                System.out.println(name + <span class="hljs-string">" get lock,interrupt ="</span> + Thread.currentThread().isInterrupted());</span><br><span class="line"></span><br><span class="line">                lock.wait();</span><br><span class="line"></span><br><span class="line">                <span class="hljs-comment">//Thread.sleep(2000);</span></span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                System.out.println(name + <span class="hljs-string">" is interrupt. notify all interrupt ="</span> + Thread.currentThread().isInterrupted());</span><br><span class="line">                lock.notifyAll();</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(name + <span class="hljs-string">":notified..."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testNotify</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    MyThread t1 = <span class="hljs-keyword">new</span> MyThread(lock, <span class="hljs-string">"t1"</span>);</span><br><span class="line">    MyThread t2 = <span class="hljs-keyword">new</span> MyThread(lock, <span class="hljs-string">"t2"</span>);</span><br><span class="line"></span><br><span class="line">    Thread thread1 = <span class="hljs-keyword">new</span> Thread(t1);</span><br><span class="line">    Thread thread2 = <span class="hljs-keyword">new</span> Thread(t2);</span><br><span class="line"></span><br><span class="line">    thread1.start();</span><br><span class="line">    thread2.start();</span><br><span class="line"></span><br><span class="line">    Thread.sleep(<span class="hljs-number">1000</span>);</span><br><span class="line">    <span class="hljs-keyword">long</span> startTime = System.currentTimeMillis();</span><br><span class="line">    <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        System.out.println(<span class="hljs-string">"main get lock"</span>);</span><br><span class="line">        lock.notifyAll();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    thread1.join();</span><br><span class="line">    thread2.join();</span><br><span class="line">    <span class="hljs-keyword">long</span> endTime = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="hljs-string">"notify lock.time ="</span> + (endTime - startTime));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>testNotify执行结果</strong>：</p>
-<p>t1 get lock,interrupt =false<br>t2 get lock,interrupt =false<br>main get lock<br>t2:notified…<br>t1:notified…</p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-12-11T10:33:16.000Z">2018-12-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    7 分钟 读完 (大约 1106 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/12/11/java/java创建对象的流程/">Java对象刨根问底</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="如何创建一个对象"><a href="#如何创建一个对象" class="headerlink" title="如何创建一个对象"></a>如何创建一个对象</h2><p>Java创建一个对象，最简单的方式就是</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object a = new Object();</span><br></pre></td></tr></table></figure>
-<p>可以，大家有没有想过，在JVM中，创建一个对象的流程是如何呢？其实具体流程入下图所示。</p>
-<p><img src="http://syxtt.xin/new%E6%B5%81%E7%A8%8B.png" alt="img"></p>
-<p>###分配内存</p>
-<p>对象所需的内存大小，在类加载完成后便可以完全确认，为对象分配空间的任务等同于把一块确定大小的内存从Java堆中划分出来。那么如何划分，有两种方式：</p>
-<ul>
-<li>指针碰撞（Bump The Pointer）：假设Java堆中的内存是绝对规整的，所有用过的内存都放到一边，空闲的内存放到另一边，中间放着一个指针作为分界点的指示器，那所分配的内存就是朝着空闲的那一边“挪动”与对象大小一样的距离。</li>
-<li>空闲列表（Free List）:如果Java堆中的内存不规整，已使用的内存和未使用的内存相互交错，就没办法简单进行指针碰撞了，需要维护一个列表，记录哪些内存块是可用的，在分配的时候，找一块足够大的空间分配给对象，并更新列表的记录。</li>
-</ul>
-<p>因此，在使用Serial，ParNew等带Compact过程的收集器时，系统采用的分配方式是指针碰撞法，而使用CMS这种基于Mark-Sweep算法的收集器时，通常采用的是空闲列表法。</p>
-<p>除了分配方法外，还需要考虑同步的问题。实际上虚拟机采用了CAS配上失败重试的方式保证更新的原子性，另一种是把内存分配的动作按照线程划分在不同的空间之中，即每个线程在Java堆中预先分配一小块内存，称为本地线程分配缓冲（Thread Local Allocation Buffer, TLAB）,可以通过-XX:+UseTLAB参数来设定。</p>
-<h2 id="对象内存布局"><a href="#对象内存布局" class="headerlink" title="对象内存布局"></a>对象内存布局</h2><p>在HotSpot虚拟机中，对象在内存中存储的布局可以分为3块区域：对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。</p>
-<h3 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h3><p>HotSpot虚拟机对象头包括两部分内容：</p>
-<ul>
-<li>第一部分</li>
-</ul>
-<p><strong>用于存储对象自身的运行数据</strong>，如哈希码，GC分代年龄，锁状态标志，线程持有的锁，偏向线程ID，偏向时间戳等，这部分长度在32bit和64bit虚拟机中分别为32bit和64bit，官方称它为“Mark Word”。</p>
-<table>
-<thead>
-<tr>
-<th>存储内容</th>
-<th>标志位</th>
-<th>状态</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>对象哈希码、对象分代年龄</td>
-<td>01</td>
-<td>未锁定</td>
-</tr>
-<tr>
-<td>指向锁记录的指针</td>
-<td>00</td>
-<td>轻量级锁定</td>
-</tr>
-<tr>
-<td>指向重量级锁的指针</td>
-<td>10</td>
-<td>膨胀（重量级锁定）</td>
-</tr>
-<tr>
-<td>空，不需要记录信息</td>
-<td>11</td>
-<td>GC标记</td>
-</tr>
-<tr>
-<td>偏向线程ID，偏向时间戳，对象分代年龄</td>
-<td>01</td>
-<td>可偏向</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>第二部分</li>
-</ul>
-<p><strong>类型指针</strong>，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。</p>
-<h2 id="对象访问定位"><a href="#对象访问定位" class="headerlink" title="对象访问定位"></a>对象访问定位</h2><p>有两种方式，<strong>句柄访问</strong>和<strong>直接指针访问</strong>。这两种访问方式各有优点，使用句柄的最大好处就是reference中存储的是稳定的句柄地址，在对象被移动（垃圾回收移动对象是很常见的事情）时只会改变句柄中的实例数据指针，而reference本身不需要更新。使用直接指针访问方式最大好处就是速度更快，它节省一次指针定位的时间开销，由于对象访问在Java中非常频繁，这类开销积少成多，将是一个比较可观的提升。HotSpot就是采用直接指针法。</p>
-<p><img src="http://syxtt.xin/%E9%80%9A%E8%BF%87%E5%8F%A5%E6%9F%84%E8%AE%BF%E9%97%AE%E5%AF%B9%E8%B1%A1.png" alt="img"></p>
-<p>​                                                       通过句柄访问对象</p>
-<p><img src="http://syxtt.xin/%E9%80%9A%E8%BF%87%E7%9B%B4%E6%8E%A5%E6%8C%87%E9%92%88%E8%AE%BF%E9%97%AE%E5%AF%B9%E8%B1%A1.png" alt="img"></p>
-<p>​                                            通过直接指针访问对象</p>
 
         </div>
         
@@ -1621,6 +1461,44 @@
         
         <article class="media">
             
+            <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-27T11:33:16.000Z">2019-11-27</time></div>
+                    <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第一讲-应用启动流程总体分析">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T11:33:16.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第一讲-应用启动流程总体分析</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/10/30/spring/springboot/tomcat/SpringBoot可以放心使用Embedded Tomcat/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/logotomcatlogo.jpeg" alt="SpringBoot可以放心使用Embedded Tomcat">
@@ -1676,44 +1554,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring5.jpg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-23T15:33:16.000Z">2019-10-23</time></div>
-                    <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring4.jpg" alt="SpringCloudGateway源码解析(4)- 核心流程">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-22T15:33:16.000Z">2019-10-22</time></div>
-                    <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(4)- 核心流程</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -1724,6 +1564,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/10/">
@@ -1809,17 +1660,6 @@
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="level is-marginless" href="/archives/2018/11/">
-                <span class="level-start">
-                    <span class="level-item">十一月 2018</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -2240,6 +2080,44 @@
         
         <article class="media">
             
+            <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-27T11:33:16.000Z">2019-11-27</time></div>
+                    <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第一讲-应用启动流程总体分析">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T11:33:16.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第一讲-应用启动流程总体分析</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/10/30/spring/springboot/tomcat/SpringBoot可以放心使用Embedded Tomcat/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/logotomcatlogo.jpeg" alt="SpringBoot可以放心使用Embedded Tomcat">
@@ -2295,44 +2173,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring5.jpg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-23T15:33:16.000Z">2019-10-23</time></div>
-                    <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring4.jpg" alt="SpringCloudGateway源码解析(4)- 核心流程">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-22T15:33:16.000Z">2019-10-22</time></div>
-                    <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(4)- 核心流程</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -2343,6 +2183,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/10/">
@@ -2428,17 +2279,6 @@
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="level is-marginless" href="/archives/2018/11/">
-                <span class="level-start">
-                    <span class="level-item">十一月 2018</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>

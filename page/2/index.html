@@ -77,6 +77,135 @@
     
 <div class="card">
     
+    <div class="card-image">
+        <a href="/2019/10/17/spring/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/" class="image is-7by1">
+            <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring1.jpeg" alt="SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱">
+        </a>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-10-17T13:33:16.000Z">2019-10-17</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    9 分钟 读完 (大约 1391 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/10/17/spring/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/">SpringCloudGateway源码解析(1)-揭开SpringCloudGateway神秘面纱</a>
+            
+        </h1>
+        <div class="content">
+            <p>​        Spring Cloud Gateway是Spring官方自己推出的网关组件，基于Spring5，Spring Boot 2.0 和 Project Reactor等技术开发的网关，它旨在为微服务架构提供一种简单有效的API路由管理方式，作为Spring Cloud全家桶替代Zuul的产品。想一探它的神秘面容嘛？学习源码会收获哪些？想知道的话，就跟我走吧</p>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/10/17/spring/springcloud/gateway/SpringCloudGateway源码解析(1)-认识SpringCloudGateway/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-09-15T15:33:16.000Z">2019-09-15</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    5 分钟 读完 (大约 743 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/09/15/spring/springcloud/Spring-cloud技术栈学习-第二章-配置文件映射/">SpringCloud-第二章-配置文件</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="SpringCloud-第二章-配置文件"><a href="#SpringCloud-第二章-配置文件" class="headerlink" title="SpringCloud-第二章-配置文件"></a>SpringCloud-第二章-配置文件</h1><h2 id="1-配置文件"><a href="#1-配置文件" class="headerlink" title="1.配置文件"></a>1.配置文件</h2><p>在SpringBoot构建完之后，会在resource目录下创建一个application.properties文件，这是一个空文件。SpringBoot应用默认就会读取application.properties文件，但我们可以修改为application.yml，个人建议使用yml，因为YMAL的风格会更加适合配置文件。两者的功能上是一致的，只是语法不同，本文不重点介绍语法。</p>
+<p>##2.实战</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="hljs-meta">@Configuration</span></span><br><span class="line"><span class="hljs-meta">@EnableConfigurationProperties</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConditionConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Bean</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> GatewayProperties <span class="hljs-title">gatewayProperties</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> GatewayProperties();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Validated</span></span><br><span class="line"><span class="hljs-meta">@ConfigurationProperties</span>(prefix = <span class="hljs-string">"spring.cloud.gateway"</span>)</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GatewayProperties</span> </span>&#123;</span><br><span class="line">    <span class="hljs-meta">@NotNull</span></span><br><span class="line">    <span class="hljs-meta">@Valid</span></span><br><span class="line">    <span class="hljs-keyword">private</span> List&lt;RouteDefinition&gt; routes = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setRoutes</span><span class="hljs-params">(List&lt;RouteDefinition&gt; routes)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.routes = routes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@PostConstruct</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(JSON.toJSONString(<span class="hljs-keyword">this</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Validated</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PredicateDefinition</span> </span>&#123;</span><br><span class="line">    <span class="hljs-meta">@NotNull</span></span><br><span class="line">    <span class="hljs-keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> Map&lt;String, String&gt; args = <span class="hljs-keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">  </span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">PredicateDefinition</span><span class="hljs-params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">PredicateDefinition</span><span class="hljs-params">(String text)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">int</span> eqIdx = text.indexOf(<span class="hljs-string">'='</span>);</span><br><span class="line">        <span class="hljs-keyword">if</span> (eqIdx &lt;= <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ValidationException(<span class="hljs-string">"Unable to parse PredicateDefinition text '"</span></span><br><span class="line">                    + text + <span class="hljs-string">"'"</span> + <span class="hljs-string">", must be of the form name=value"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        setName(text.substring(<span class="hljs-number">0</span>, eqIdx));</span><br><span class="line"></span><br><span class="line">        String[] args = tokenizeToStringArray(text.substring(eqIdx + <span class="hljs-number">1</span>), <span class="hljs-string">","</span>);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; args.length; i++) &#123;</span><br><span class="line">            <span class="hljs-keyword">this</span>.args.put(NameUtils.generateName(i), args[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setName</span><span class="hljs-params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setArgs</span><span class="hljs-params">(Map&lt;String, String&gt; args)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.args = args;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RouteDefinition</span> </span>&#123;</span><br><span class="line">    <span class="hljs-meta">@NotEmpty</span></span><br><span class="line">    <span class="hljs-keyword">private</span> String id;</span><br><span class="line">  </span><br><span class="line">    <span class="hljs-meta">@NotEmpty</span></span><br><span class="line">    <span class="hljs-meta">@Valid</span></span><br><span class="line">    <span class="hljs-keyword">private</span> List&lt;PredicateDefinition&gt; predicates = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@NotNull</span></span><br><span class="line">    <span class="hljs-keyword">private</span> URI uri;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> order = <span class="hljs-number">0</span>;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RouteDefinition</span><span class="hljs-params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RouteDefinition</span><span class="hljs-params">(String text)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">int</span> eqIdx = text.indexOf(<span class="hljs-string">'='</span>);</span><br><span class="line">        <span class="hljs-keyword">if</span> (eqIdx &lt;= <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ValidationException(<span class="hljs-string">"Unable to parse RouteDefinition text '"</span> + text</span><br><span class="line">                    + <span class="hljs-string">"'"</span> + <span class="hljs-string">", must be of the form name=value"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        setId(text.substring(<span class="hljs-number">0</span>, eqIdx));</span><br><span class="line"></span><br><span class="line">        String[] args = tokenizeToStringArray(text.substring(eqIdx + <span class="hljs-number">1</span>), <span class="hljs-string">","</span>);</span><br><span class="line"></span><br><span class="line">        setUri(URI.create(args[<span class="hljs-number">0</span>]));</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; args.length; i++) &#123;</span><br><span class="line">            <span class="hljs-keyword">this</span>.predicates.add(<span class="hljs-keyword">new</span> PredicateDefinition(args[i]));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setId</span><span class="hljs-params">(String id)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setPredicates</span><span class="hljs-params">(List&lt;PredicateDefinition&gt; predicates)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.predicates = predicates;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setUri</span><span class="hljs-params">(URI uri)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.uri = uri;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setOrder</span><span class="hljs-params">(<span class="hljs-keyword">int</span> order)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.order = order;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-attr">spring:</span></span><br><span class="line"><span class="hljs-attr">  cloud:</span></span><br><span class="line"><span class="hljs-attr">    gateway:</span></span><br><span class="line"><span class="hljs-attr">      routes:</span></span><br><span class="line"><span class="hljs-attr">      - id:</span> <span class="hljs-string">yml-id</span></span><br><span class="line"><span class="hljs-attr">        uri:</span> <span class="hljs-string">www.baidu.com</span></span><br><span class="line"><span class="hljs-attr">        order:</span> <span class="hljs-bullet">-1</span></span><br><span class="line"><span class="hljs-attr">        predicates:</span></span><br><span class="line"><span class="hljs-attr">        - name:</span> <span class="hljs-string">predicatesName</span></span><br><span class="line"><span class="hljs-attr">          args:</span></span><br><span class="line"><span class="hljs-attr">           arg0:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">           arg1:</span> <span class="hljs-number">2</span></span><br><span class="line"><span class="hljs-bullet">        -</span> <span class="hljs-string">Path=/echo</span></span><br></pre></td></tr></table></figure>
+<p>以上代码实现用yml文件，映射到类GatewayProperties中。最终的打印结果是</p>
+<figure class="highlight json hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="hljs-attr">"routes"</span>:[&#123;<span class="hljs-attr">"id"</span>:<span class="hljs-string">"yml-id"</span>,<span class="hljs-attr">"order"</span>:<span class="hljs-number">-1</span>,<span class="hljs-attr">"predicates"</span>:[&#123;<span class="hljs-attr">"args"</span>:&#123;<span class="hljs-attr">"arg0"</span>:<span class="hljs-string">"1"</span>,<span class="hljs-attr">"arg1"</span>:<span class="hljs-string">"2"</span>&#125;,<span class="hljs-attr">"name"</span>:<span class="hljs-string">"predicatesName"</span>&#125;],<span class="hljs-attr">"uri"</span>:<span class="hljs-string">"www.baidu.com"</span>&#125;]&#125;</span><br></pre></td></tr></table></figure>
+<p>细心的同学可能会注意到@EnableConfigurationProperties、@ConfigurationProperties(prefix = “spring.cloud.gateway”)、@Validated 这三个很重要的注解。是的，如果想实现配置文件直接映射成Bean，@EnableConfigurationProperties和@ConfigurationProperties是必须要配置的，prefix=”spring.cloud.gateway”代表从spring.cloud.gateway开始采集配置。</p>
+<p>@Validated 是校验配置的工具注解，除了代码中应用到的注解外，其它常见注解：</p>
+<ul>
+<li>@AssertFalse 校验false</li>
+<li>@AssertTrue 校验true</li>
+<li>@DecimalMax(value=,inclusive=) 小于等于value，inclusive=true，是小于等于</li>
+<li>@DecimalMin(value=,inclusive=) 与上类似</li>
+<li>@Max(value=) 小于等于value</li>
+<li>@Min(value=) 大于等于value</li>
+<li>@NotNull 检查Null</li>
+<li>@Past 检查日期</li>
+<li>@Pattern(regex=,flag=) 正则</li>
+<li>@Size(min=, max=) 字符串，集合，map限制大小</li>
+<li>@Validate 对po实体类进行校验</li>
+</ul>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- Path=/echo</span><br></pre></td></tr></table></figure>
+<p>这行代码有些不好理解，其实就是RouteDefinition 有两个构造函数，这句配置的意思是调用了有参数的构造函数来定义RouteDefinition对象，使得构建网关的配置更加简洁。</p>
+<p>##3.总结</p>
+<p>以上的内容，是通过阅读SpringCloudGateway源代码，发现实现方式很优雅，便总结下来。利用好SpringBoot的配置，可以写出很优雅的代码，提高维护性。</p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
@@ -592,111 +721,6 @@
 
 
 
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-04-23T08:33:16.000Z">2019-04-23</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    3 分钟 读完 (大约 459 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/04/23/search/ElasticSearch集群的搭建/">ElasticSearch集群的搭建</a>
-            
-        </h1>
-        <div class="content">
-            <p>#相关技术点</p>
-<p>in-memory buffer是通过refresh操作写到文件缓冲区的，refresh的过程除了在文件缓冲区生成这个文件以外，还会让底层Lucene的index reader打开这个文件，让新生成的这个文件对搜索可见。</p>
-<p>周五的时候跟同事讨论下了，不知道这样理解对不对–refresh类似于 outputstream flush（此时数据从 java heap 写到 memory buffer），之后（按照大神上面说的）index reader读取新文件，然后等待触发flush（这个则类似于 outputstream close，此时数据从 memory buffer 写到 disk），请大神赐教</p>
-<h1 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h1><p>集群包括3台物理机共12个节点，每台物理机部署1个Master节点，1个Client节点，2个Data节点。</p>
-<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># ---------------------------------- Cluster -----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#集群名称</span></span><br><span class="line"><span class="hljs-string">cluster.name:</span> </span><br><span class="line"><span class="hljs-comment"># ------------------------------------ Node ------------------------------------</span></span><br><span class="line"><span class="hljs-comment">#节点名称</span></span><br><span class="line"><span class="hljs-string">node.name:</span> </span><br><span class="line"><span class="hljs-comment">#是否是Master Node</span></span><br><span class="line"><span class="hljs-string">node.master:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-comment">#是否是Data Node</span></span><br><span class="line"><span class="hljs-string">node.data:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment">#是否是Ingest Node</span></span><br><span class="line"><span class="hljs-string">node.ingest:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-string">node.attr.rack:</span> <span class="hljs-string">first</span></span><br><span class="line"><span class="hljs-comment"># ----------------------------------- Paths ------------------------------------</span></span><br><span class="line"><span class="hljs-comment"># Path to log files:</span></span><br><span class="line"><span class="hljs-comment">#可以指定es的数据存储目录，默认存储在es_home/data目录下</span></span><br><span class="line"><span class="hljs-comment">#path.data: /path/to/data</span></span><br><span class="line"><span class="hljs-comment">#可以指定es的日志存储目录，默认存储在es_home/logs目录下</span></span><br><span class="line"><span class="hljs-comment">#path.logs: /path/to/logs</span></span><br><span class="line"><span class="hljs-comment"># ----------------------------------- Memory -----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#锁定物理内存地址，防止elasticsearch内存被交换出去,也就是避免es使用swap交换分区</span></span><br><span class="line"><span class="hljs-string">bootstrap.memory_lock:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-comment">#CentOS下不支持SecComp，故而需要设置成false</span></span><br><span class="line"><span class="hljs-string">bootstrap.system_call_filter:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment"># ---------------------------------- Network -----------------------------------</span></span><br><span class="line"><span class="hljs-string">network.host:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.97</span></span><br><span class="line"><span class="hljs-string">http.port:</span> <span class="hljs-number">9200</span></span><br><span class="line"><span class="hljs-string">transport.tcp.port:</span> <span class="hljs-number">9300</span></span><br><span class="line"><span class="hljs-comment"># --------------------------------- Discovery ----------------------------------</span></span><br><span class="line"><span class="hljs-comment">#</span></span><br><span class="line"><span class="hljs-string">discovery.zen.ping.unicast.hosts:</span> <span class="hljs-string">["192.168.1.97:9300","192.168.1.98:9300","192.168.1.113:9300"]</span></span><br><span class="line"><span class="hljs-comment">#理论上是 masternum/2+1,防止脑裂</span></span><br><span class="line"><span class="hljs-string">discovery.zen.minimum_master_nodes:</span> <span class="hljs-number">2</span></span><br><span class="line"><span class="hljs-comment"># ---------------------------------- Various -----------------------------------</span></span><br><span class="line"><span class="hljs-string">xpack.security.enabled:</span> <span class="hljs-literal">false</span></span><br><span class="line"><span class="hljs-comment">#支持跨域访问</span></span><br><span class="line"><span class="hljs-string">http.cors.enabled:</span> <span class="hljs-literal">true</span></span><br><span class="line"><span class="hljs-string">http.cors.allow-origin:</span> <span class="hljs-string">"*"</span></span><br></pre></td></tr></table></figure>
-<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="https://www.jianshu.com/p/62ede45cfb2e" target="_blank" rel="noopener">Linux sandboxing机制</a></p>
-<p><a href="https://www.cnblogs.com/huxiao-tee/p/4657851.html" target="_blank" rel="noopener">从内核文件系统看文件读写过程</a></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-04-13T12:33:16.000Z">2019-04-13</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    3 分钟 读完 (大约 498 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/04/13/search/Lucene分词原理研究/">Lucence分词原理研究</a>
-            
-        </h1>
-        <div class="content">
-            <p>#研究背景</p>
-<p>​    近期工作需要优化公司的分词器，需要改写IK源码，故而知其然知其所以然，Lucene分词相关的原理和实现研究透彻之后，可以研究ES IK分词器的源码了。以下源码的研究，是基于Lucene 6.6.0版本，Lucene源码中文档很规范，结合文档和源码学习效率很高。本文的所有内容，均来自于Lucene的文档和代码示例。</p>
-<p>#类图</p>
-<p>​    如类图所示，Lucene中和分词相关的最核心的几个类。Analyzer用于构建TokenStream(用于分析文本)，提供了用于提取文本生成词项（term）的策略。为了定义哪些Analyzer就绪，子类必须实现createComponents方法，组件分词时，调用tokenStream方法。</p>
-<p>​    TokenStream枚举了一系列tokens，它们来自documents.field或者query text。TokenStream是一个抽象类，具体的实现分为Tokenizer和TokenFilter。Tokennizer的输入是Reader，TokenFilter的输入是另一个tokenFilter。</p>
-<p><img src="http://syxtt.xin/lucene%E5%88%86%E8%AF%8D%E7%B1%BB%E5%9B%BE.png" alt="img"></p>
-<h1 id="TokenStream-API工作流程"><a href="#TokenStream-API工作流程" class="headerlink" title="TokenStream API工作流程"></a>TokenStream API工作流程</h1><p>1、初始化TokenStream时添加对应的属性<br>2、客户端调用TokenStream.reset()<br>3、客户端获取需要访问的属性的本地引用<br>4、客户端调用incrementToken()直到返回false,每次调用就可以获取对应的token的属性<br>5、客户端调用end()方法让TokenStream执行扫尾操作<br>6、客户端使用完TokenStream后调用close()释放资源</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Analyzer analyzer = <span class="hljs-keyword">new</span> StandardAnalyzer();</span><br><span class="line">        String str = <span class="hljs-string">"中华人民"</span>;</span><br><span class="line">        TokenStream stream = analyzer.tokenStream(<span class="hljs-string">"content"</span>, <span class="hljs-keyword">new</span> StringReader(str));</span><br><span class="line">        CharTermAttribute attr = stream.addAttribute(CharTermAttribute.class); <span class="hljs-comment">//1,3</span></span><br><span class="line">        PositionIncrementAttribute posIncr = stream.addAttribute(PositionIncrementAttribute.class); <span class="hljs-comment">//1,3</span></span><br><span class="line">        OffsetAttribute offset = stream.addAttribute(OffsetAttribute.class); <span class="hljs-comment">//1,3</span></span><br><span class="line">        TypeAttribute type = stream.addAttribute(TypeAttribute.class); <span class="hljs-comment">//1,3</span></span><br><span class="line">        stream.reset(); <span class="hljs-comment">//2</span></span><br><span class="line">        <span class="hljs-keyword">int</span> position = <span class="hljs-number">0</span>;</span><br><span class="line">        <span class="hljs-keyword">while</span> (stream.incrementToken()) &#123; <span class="hljs-comment">//4</span></span><br><span class="line">            <span class="hljs-keyword">int</span> increment = posIncr.getPositionIncrement();</span><br><span class="line">            <span class="hljs-keyword">if</span> (increment &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">                position = position + increment;</span><br><span class="line">                System.out.print(position + <span class="hljs-string">": "</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            System.out.println(attr.toString() + <span class="hljs-string">","</span> + offset.startOffset() + <span class="hljs-string">"-&gt;"</span> + offset.endOffset() + <span class="hljs-string">","</span> + type.type());</span><br><span class="line">        &#125;</span><br><span class="line">        stream.end(); <span class="hljs-comment">//5</span></span><br><span class="line">        stream.close(); <span class="hljs-comment">//6</span></span><br><span class="line">        analyzer.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">执行结果：</span><br><span class="line"><span class="hljs-number">1</span>: 中,<span class="hljs-number">0</span>-&gt;<span class="hljs-number">1</span>,&lt;IDEOGRAPHIC&gt;</span><br><span class="line"><span class="hljs-number">2</span>: 华,<span class="hljs-number">1</span>-&gt;<span class="hljs-number">2</span>,&lt;IDEOGRAPHIC&gt;</span><br><span class="line"><span class="hljs-number">3</span>: 人,<span class="hljs-number">2</span>-&gt;<span class="hljs-number">3</span>,&lt;IDEOGRAPHIC&gt;</span><br><span class="line"><span class="hljs-number">4</span>: 民,<span class="hljs-number">3</span>-&gt;<span class="hljs-number">4</span>,&lt;IDEOGRAPHIC&gt;</span><br></pre></td></tr></table></figure>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -906,6 +930,44 @@
         
         <article class="media">
             
+            <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-27T11:33:16.000Z">2019-11-27</time></div>
+                    <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第一讲-应用启动流程总体分析">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T11:33:16.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第一讲-应用启动流程总体分析</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/10/30/spring/springboot/tomcat/SpringBoot可以放心使用Embedded Tomcat/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/logotomcatlogo.jpeg" alt="SpringBoot可以放心使用Embedded Tomcat">
@@ -961,44 +1023,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring5.jpg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-23T15:33:16.000Z">2019-10-23</time></div>
-                    <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring4.jpg" alt="SpringCloudGateway源码解析(4)- 核心流程">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-22T15:33:16.000Z">2019-10-22</time></div>
-                    <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(4)- 核心流程</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -1009,6 +1033,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/10/">
@@ -1094,17 +1129,6 @@
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="level is-marginless" href="/archives/2018/11/">
-                <span class="level-start">
-                    <span class="level-item">十一月 2018</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1525,6 +1549,44 @@
         
         <article class="media">
             
+            <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-27T11:33:16.000Z">2019-11-27</time></div>
+                    <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第一讲-应用启动流程总体分析">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T11:33:16.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第一讲-应用启动流程总体分析</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/10/30/spring/springboot/tomcat/SpringBoot可以放心使用Embedded Tomcat/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/logotomcatlogo.jpeg" alt="SpringBoot可以放心使用Embedded Tomcat">
@@ -1580,44 +1642,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring5.jpg" alt="SpringCloudGateway源码解析(5)- 基于配置中心的动态路由">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-23T15:33:16.000Z">2019-10-23</time></div>
-                    <a href="/2019/10/23/spring/springcloud/gateway/SpringCloudGateway源码解析(5)-基于Apollo动态路由/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(5)- 基于配置中心的动态路由</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring4.jpg" alt="SpringCloudGateway源码解析(4)- 核心流程">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-22T15:33:16.000Z">2019-10-22</time></div>
-                    <a href="/2019/10/22/spring/springcloud/gateway/SpringCloudGateway源码解析(4)-核心流程/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(4)- 核心流程</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -1628,6 +1652,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/10/">
@@ -1713,17 +1748,6 @@
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="level is-marginless" href="/archives/2018/11/">
-                <span class="level-start">
-                    <span class="level-item">十一月 2018</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
