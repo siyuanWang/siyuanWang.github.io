@@ -255,6 +255,59 @@
                 <span class="level-item has-text-grey">
                     
                     
+                    2 分钟 读完 (大约 337 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/12/11/design/单例模式/">单例模式</a>
+            
+        </h1>
+        <div class="content">
+            <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式分为了饿汉式和懒汉式，总体来说懒汉式要优于饿汉式，饿汉式不管是否其他线程调用了getInstance，都在类加载阶段创建了实例。而懒汉式则只有在调用的时候，才实例化对象，更加节省系统资源。</p>
+<p>饿汉式：</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span>  </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Singleton INSTANCE = <span class="hljs-keyword">new</span> Singleton();</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>懒汉式-双重检查</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 懒汉式-双重检查</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonLazy</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SingletonLazy instance = <span class="hljs-keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonLazy</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonLazy <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span> (SingletonLazy.class) &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                    instance = <span class="hljs-keyword">new</span> SingletonLazy();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>懒汉式-内部类</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 懒汉式-内部类</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonLazy1</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonLazy1</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InnerSingleton</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> SingletonLazy1 instance = <span class="hljs-keyword">new</span> SingletonLazy1();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonLazy1 <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">return</span> InnerSingleton.instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">helloworld</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="hljs-string">"hello lazy singleton."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行Main方法测试，从输出结果看，只有执行了SingletonLazy1.getInstance()方法，才开始加载内部类SingletonLazy1$InnerSingleton。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Main</span> </span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>&#123;</span><br><span class="line">        SingletonLazy1.helloworld();</span><br><span class="line">        Object lock = <span class="hljs-keyword">new</span> Object();</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            lock.wait(<span class="hljs-number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="hljs-string">"分割线---------------"</span>);</span><br><span class="line">        System.out.println(SingletonLazy1.getInstance());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出结果：</span><br><span class="line">[Loaded sun.nio.cs.US_ASCII$Decoder from /Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar]</span><br><span class="line">分割线---------------</span><br><span class="line">[Loaded sun.misc.VMSupport from /Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar]</span><br><span class="line">[Loaded com.wsy.learn.designmodel.SingletonLazy1$InnerSingleton from file:/Users/wangsiyuan1/workspace/springtest/target/classes/]</span><br><span class="line">com.wsy.learn.designmodel.SingletonLazy1@<span class="hljs-number">27716f</span>4</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-12-11T15:33:16.000Z">2018-12-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
                     8 分钟 读完 (大约 1183 个字)
                 </span>
                 
@@ -290,59 +343,6 @@
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test0</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">//创建生产者</span></span><br><span class="line">    Productor productor = <span class="hljs-keyword">new</span> Productor();</span><br><span class="line">    <span class="hljs-comment">//创建消费者</span></span><br><span class="line">    Consumer consumer = <span class="hljs-keyword">new</span> Consumer();</span><br><span class="line">    Thread cusumerThread = <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            consumer.cusume();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line">    cusumerThread.start();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">        productor.provide();</span><br><span class="line"></span><br><span class="line">        cusumerThread.interrupt();</span><br><span class="line">    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出：</span><br><span class="line">生产:<span class="hljs-number">0</span></span><br><span class="line">消费:<span class="hljs-number">0</span></span><br><span class="line">生产:<span class="hljs-number">1</span></span><br><span class="line">消费:<span class="hljs-number">1</span></span><br><span class="line">生产:<span class="hljs-number">2</span></span><br><span class="line">消费:<span class="hljs-number">2</span></span><br><span class="line">生产:<span class="hljs-number">3</span></span><br><span class="line">消费:<span class="hljs-number">3</span></span><br><span class="line">生产:<span class="hljs-number">4</span></span><br><span class="line">消费:<span class="hljs-number">4</span></span><br><span class="line">生产:<span class="hljs-number">5</span></span><br><span class="line">消费:<span class="hljs-number">5</span></span><br><span class="line">生产:<span class="hljs-number">6</span></span><br><span class="line">消费:<span class="hljs-number">6</span></span><br><span class="line">生产:<span class="hljs-number">7</span></span><br><span class="line">消费:<span class="hljs-number">7</span></span><br><span class="line">消费:<span class="hljs-number">8</span></span><br><span class="line">生产:<span class="hljs-number">8</span></span><br><span class="line">生产:<span class="hljs-number">9</span></span><br><span class="line">消费:<span class="hljs-number">9</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">* 自己实现的简单的阻塞队列</span></span><br><span class="line"><span class="hljs-comment">*/</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyBlockQueue</span>&lt;<span class="hljs-title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> LinkedList&lt;E&gt; queue = <span class="hljs-keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="hljs-comment">//第一种实现方式，采用了Object wait和notify的方式</span></span><br><span class="line">    <span class="hljs-keyword">private</span> Object lock = <span class="hljs-keyword">new</span> Object();</span><br><span class="line">	<span class="hljs-comment">//第二种实现方法，采用了ReentrantLock获取Condition，通过condition await和signal方式实现</span></span><br><span class="line">    <span class="hljs-keyword">private</span> ReentrantLock reentrantLock = <span class="hljs-keyword">new</span> ReentrantLock();</span><br><span class="line">    Condition con = reentrantLock.newCondition();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">offer</span><span class="hljs-params">(E e)</span> </span>&#123;</span><br><span class="line">        queue.offer(e);</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            lock.notifyAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function">E <span class="hljs-title">take</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (queue.size() == <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                lock.wait();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> queue.poll();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">offer1</span><span class="hljs-params">(E e)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            reentrantLock.lockInterruptibly();</span><br><span class="line">            queue.offer(e);</span><br><span class="line">            con.signalAll();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">            reentrantLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function">E <span class="hljs-title">take1</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (queue.size() == <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                reentrantLock.lockInterruptibly();</span><br><span class="line">                con.await();</span><br><span class="line"></span><br><span class="line">            &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">                reentrantLock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> queue.poll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-12-11T15:33:16.000Z">2018-12-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    2 分钟 读完 (大约 337 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/12/11/design/单例模式/">单例模式</a>
-            
-        </h1>
-        <div class="content">
-            <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式分为了饿汉式和懒汉式，总体来说懒汉式要优于饿汉式，饿汉式不管是否其他线程调用了getInstance，都在类加载阶段创建了实例。而懒汉式则只有在调用的时候，才实例化对象，更加节省系统资源。</p>
-<p>饿汉式：</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span>  </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Singleton INSTANCE = <span class="hljs-keyword">new</span> Singleton();</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>懒汉式-双重检查</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 懒汉式-双重检查</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonLazy</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SingletonLazy instance = <span class="hljs-keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonLazy</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonLazy <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span> (SingletonLazy.class) &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                    instance = <span class="hljs-keyword">new</span> SingletonLazy();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>懒汉式-内部类</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 懒汉式-内部类</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingletonLazy1</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">SingletonLazy1</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InnerSingleton</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> SingletonLazy1 instance = <span class="hljs-keyword">new</span> SingletonLazy1();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SingletonLazy1 <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">return</span> InnerSingleton.instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">helloworld</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="hljs-string">"hello lazy singleton."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>执行Main方法测试，从输出结果看，只有执行了SingletonLazy1.getInstance()方法，才开始加载内部类SingletonLazy1$InnerSingleton。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Main</span> </span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException</span>&#123;</span><br><span class="line">        SingletonLazy1.helloworld();</span><br><span class="line">        Object lock = <span class="hljs-keyword">new</span> Object();</span><br><span class="line">        <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            lock.wait(<span class="hljs-number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="hljs-string">"分割线---------------"</span>);</span><br><span class="line">        System.out.println(SingletonLazy1.getInstance());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出结果：</span><br><span class="line">[Loaded sun.nio.cs.US_ASCII$Decoder from /Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar]</span><br><span class="line">分割线---------------</span><br><span class="line">[Loaded sun.misc.VMSupport from /Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar]</span><br><span class="line">[Loaded com.wsy.learn.designmodel.SingletonLazy1$InnerSingleton from file:/Users/wangsiyuan1/workspace/springtest/target/classes/]</span><br><span class="line">com.wsy.learn.designmodel.SingletonLazy1@<span class="hljs-number">27716f</span>4</span><br></pre></td></tr></table></figure>
         </div>
         
         
@@ -822,7 +822,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    4 分钟 读完 (大约 579 个字)
+                    9 分钟 读完 (大约 1380 个字)
                 </span>
                 
                 
@@ -831,27 +831,31 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2018/08/11/java/ThreadLocal原理/">ThreadLocal原理分析</a>
+                <a class="has-link-black-ter" href="/2018/08/11/java/JVM内存区域/">JVM内存区域</a>
             
         </h1>
         <div class="content">
-            <h1 id="ThreadLocal总体介绍"><a href="#ThreadLocal总体介绍" class="headerlink" title="ThreadLocal总体介绍"></a>ThreadLocal总体介绍</h1><p>​        ThreadLocal类在并发编程中，每个线程实例，都有一份独立的副本，采用以空间换时间的方式，处理并发。</p>
-<p>在Thread类中，<code>ThreadLocal.ThreadLocalMap threadLocals = null;</code>ThreadLocal.ThreadLocalMap就是线程变量的容器。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">  <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThreadLocalMap</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">         * The entries in this hash map extend WeakReference, using</span></span><br><span class="line"><span class="hljs-comment">         * its main ref field as the key (which is always a</span></span><br><span class="line"><span class="hljs-comment">         * ThreadLocal object).  Note that null keys (i.e. entry.get()</span></span><br><span class="line"><span class="hljs-comment">         * == null) mean that the key is no longer referenced, so the</span></span><br><span class="line"><span class="hljs-comment">         * entry can be expunged from table.  Such entries are referred to</span></span><br><span class="line"><span class="hljs-comment">         * as "stale entries" in the code that follows.</span></span><br><span class="line"><span class="hljs-comment">         */</span></span><br><span class="line">        <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Entry</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">WeakReference</span>&lt;<span class="hljs-title">ThreadLocal</span>&lt;?&gt;&gt; </span>&#123;</span><br><span class="line">            <span class="hljs-comment">/** The value associated with this ThreadLocal. */</span></span><br><span class="line">            Object value;</span><br><span class="line"></span><br><span class="line">            Entry(ThreadLocal&lt;?&gt; k, Object v) &#123;</span><br><span class="line">                <span class="hljs-keyword">super</span>(k);</span><br><span class="line">                value = v;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​    如上代码可以看到Entry继承了WeakReference，在构造函数中<code>super(key)</code>，key就是指ThreadLocal引用本身this。跟WeakHashMap不同的是，ThreadLocal的构造函数，没有指定ReferenceQueue。ThreadLocal用一种不同的方式，来避免内存泄漏，在下面的章节中，会详细介绍ThreadLocal的方式。</p>
-<p>​    ThreadLocal的API，就不在此阐述，很简单。</p>
-<h1 id="每个线程独立备份"><a href="#每个线程独立备份" class="headerlink" title="每个线程独立备份"></a>每个线程独立备份</h1><p>​    为了达到这个目的，有两个方案。</p>
-<pre><code>## 方案A
-
- ThreadLocal 维护一个 Map，键是 Thread，值是它在该 Thread 内的实例。增加线程与减少线程均需要写 Map，故需保证该 Map 线程安全。线程结束时，需要保证它所访问的所有 ThreadLocal 中对应的映射均删除，否则可能会引起内存泄漏。
-</code></pre><ul>
-<li><strong>结论：加锁势必会降低ThreadLocal的性能。猜测JDK为了性能考虑，没有采用此方案</strong>。    </li>
+            <h1 id="JVM内存区域总体介绍​"><a href="#JVM内存区域总体介绍​" class="headerlink" title="JVM内存区域总体介绍​"></a>JVM内存区域总体介绍​</h1><p>其中VM Stack（虚拟机栈），Native Method Stack（本地方法栈），Program Counter Register（程序计数器），是线程私有的。Method Area（方法区），Heap（堆）是线程共享的。</p>
+<p><strong>注意</strong>：没有特殊说明，本文中所讲的都是基于HotSpot虚拟机。</p>
+<p><img src="http://syxtt.xin/JVM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="img"></p>
+<p>##程序计数器</p>
+<p>程序计数器是线程私有的，是一块较小的内存空间，它可以看作是当前线程所执行的字节码的行号指示器。在虚拟机的概念模型中（也仅是概念模型，各个虚拟机可能通过更高效的方式去实现），字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。</p>
+<p>多线程场景下，为了线程切换后能恢复到正确的位置，所以每个线程需要一个独立的程序计数器。</p>
+<p>如果线程执行的是一个Java方法，这个计数器记录的是正在执行的虚拟机字节码指令的地址。如果正在执行的是Native方法，这个计数器值则为空（Undefined）。次内存区域是唯一一个在Java虚拟机规范中没有规定任何OutOfMemoryError情况的区域。</p>
+<h2 id="Java虚拟机栈"><a href="#Java虚拟机栈" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p>Java虚拟机栈，也是线程私有的，它的生命周期和线程相同。虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行的同时会创建一个<strong>栈帧（Stack Frame）</strong>用于存储局部变量表，操作数栈，动态链接，方法出口等信息。每个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中入栈到出栈的过程。</p>
+<p>局部变量表存放了编译器可知的各种<strong>基本数据类型</strong>（boolean，byte，char，short，int，float，long，double）、<strong>对象引用</strong>（reference类型，它不等同于对象本身，可能是指向对象起始地址的引用指针，也可能是代表对象的句柄）。局部变量表所需的内存空间在编译期间完成分配，方法在帧中分配多大的空间，也是完全确定的。</p>
+<p>这个区域存在两种异常情况：</p>
+<ul>
+<li>当栈的深度超过虚拟机所允许的深度的时候，抛出StackOverflowError。</li>
+<li>如果虚拟机栈允许动态扩展，如果无法申请到足够的内存，则会抛出OutOfMemoryError。</li>
 </ul>
-<h2 id="方案B"><a href="#方案B" class="headerlink" title="方案B"></a>方案B</h2><pre><code>Map 由 Thread 维护，从而使得每个 Thread 只访问自己的 Map，那就不存在多线程写的问题，也就不需要锁。该方案虽然没有锁的问题，但是由于每个线程访问某 ThreadLocal 变量后，都会在自己的 Map 内维护该 ThreadLocal 变量与具体实例的映射，如果不删除这些引用（映射），则这些 ThreadLocal 不能被回收，可能会造成内存泄漏。
-</code></pre><ul>
-<li><strong>结论：JDK采用了B方案，也有对应的方案来解决内存泄漏问题</strong>。    </li>
-</ul>
-<p>#JDK如何解决内存泄漏问题</p>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>本地方法栈的功能和Java虚拟机栈很接近，它们的区别是Java虚拟机栈是为虚拟机执行Java代码（字节码）服务，本地方法栈则为虚拟机使用到的Native方法服务。本地方法栈，也存在StackOverflowError和OutOfMemoryError。</p>
+<h2 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h2><p>对于大多数应用来说，Java堆是Java虚拟机所管理的内存中最大的一块。<strong>Java堆是被所有线程共享的一块内存区域</strong>，在虚拟机启动的时候创建。此内存区域的唯一目的就是存放对象实例，几乎所有对象实例都在这里分配内存。但是随着JIT编译器的发展与逃逸分析技术逐渐成熟，栈上分配、标量替换优化技术将会导致一些微妙的变化发生，所有对象都分配到堆上也变得不那么绝对了。</p>
+<p><strong>Java堆是垃圾收集器管理的主要区域</strong>，从内存回收角度来看，由于现在收集器基本都采用<strong>分代收集算法</strong>，Java堆中还分为了新生代和老年代。当堆无法继续扩展的时候，将会抛出OutOfMemoryError。</p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>方法区（Method Area）也是线程共享区域，它用于存储被虚拟机加载的类元信息、常量、静态变量、及时编译器编译后的代码等数据。JDK8之前，虚拟机采用<strong>永久代</strong>实现方法区，类元信息、常量、静态变量等都存在堆中，和年轻代、老年代是连续的。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-XX:PermSize</span><br><span class="line">方法区初始大小</span><br><span class="line">-XX:MaxPermSize</span><br><span class="line">方法区最大大小</span><br><span class="line">超过这个值将会抛出OutOfMemoryError异常:java.lang.OutOfMemoryError: PermGen</span><br></pre></td></tr></table></figure>
+<p>Jdk8之后，官方废弃了永久代，在本地内存中开辟了一块空间，叫做元空间（MetaSpace）,专门存储类的元数据信息。常量、静态变量存储到了堆上。</p>
+<h2 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h2><p>很多人忽略了直接内存，举一个例子，JDK NIO中，Buffer调用的Native方法直接分配是堆外内存，也就是直接占用系统内存。所以在调整JVM参数的时候，要给系统留一些Buffer。避免内存动态扩展时出现问题。</p>
 
         </div>
         
@@ -930,7 +934,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        48
+                        51
                     </p>
                 </div>
             </div>
@@ -950,7 +954,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        49
+                        51
                     </p>
                 </div>
             </div>
@@ -1002,7 +1006,7 @@
                 <span class="level-item">SpringCloud</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">9</span>
+                <span class="level-item tag">12</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/大数据技术/">
@@ -1055,7 +1059,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 11.43px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 10px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/函数式编程/" style="font-size: 10px;">函数式编程</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
+        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 14.29px;">Spring</a> <a href="/tags/Spring-Spring-Boot-配置文件/" style="font-size: 10px;">Spring - Spring Boot - 配置文件</a> <a href="/tags/Spring-Boot/" style="font-size: 11.43px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/函数式编程/" style="font-size: 10px;">函数式编程</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/工程架构/" style="font-size: 10px;">工程架构</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
     </div>
 </div>
     
@@ -1180,7 +1184,7 @@
                     <span class="level-item">十月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">9</span>
                 </span>
             </a>
         </li>
@@ -1258,6 +1262,17 @@
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1398,14 +1413,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Spring/">
                         <span class="tag">Spring</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Spring-Boot-配置文件/">
+                        <span class="tag">Spring - Spring Boot - 配置文件</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Spring-Boot/">
                         <span class="tag">Spring Boot</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1545,6 +1567,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/工厂模式/">
                         <span class="tag">工厂模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工程架构/">
+                        <span class="tag">工程架构</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -1774,7 +1803,7 @@
                     <span class="level-item">十月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">8</span>
+                    <span class="level-item tag">9</span>
                 </span>
             </a>
         </li>
@@ -1852,6 +1881,17 @@
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1992,14 +2032,21 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Spring/">
                         <span class="tag">Spring</span>
-                        <span class="tag is-grey">2</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Spring-Boot-配置文件/">
+                        <span class="tag">Spring - Spring Boot - 配置文件</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Spring-Boot/">
                         <span class="tag">Spring Boot</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -2139,6 +2186,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/工厂模式/">
                         <span class="tag">工厂模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工程架构/">
+                        <span class="tag">工程架构</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
