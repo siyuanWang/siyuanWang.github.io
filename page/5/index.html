@@ -84,68 +84,6 @@
                 <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    10 分钟 读完 (大约 1449 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/08/11/java/java类加载之ClassLoader/">java类加载之ClassLoader</a>
-            
-        </h1>
-        <div class="content">
-            <h1 id="何为类加载"><a href="#何为类加载" class="headerlink" title="何为类加载"></a>何为类加载</h1><p>大家知道Java是一门编译型语言，源代码文件是以.java结尾的。通过编译器编译之后，会形成一个字节码文件，也就是class文件。在一个应用中，不同的class文件中封装着不同的功能，所以经常要从这个class文件中要调用另外一个class文件中的方法，如果另外一个文件不存在的，则会引发系统异常。而程序在启动的时候，并不会一次性加载程序所要用的所有class文件，而是根据程序的需要，通过Java的类加载机制（ClassLoader）来动态加载某个class文件到内存当中的，从而只有class文件被载入到了内存之后，才能被其它class所引用。所以ClassLoader就是用来动态加载class文件到内存当中用的。</p>
-<h1 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h1><p><strong>BootstrapClassLoader</strong>：称为启动类加载器，是Java类加载层次中最顶层的类加载器，负责加载JDK中的核心类库，如：rt.jar、resources.jar、charsets.jar等，可通过如下程序获得该类加载器从哪些地方加载了相关的jar或class文件：</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">URL[] urls = sun.misc.Launcher.getBootstrapClassPath().getURLs();</span><br><span class="line"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; urls.length; i++) &#123;</span><br><span class="line">	System.out.println(urls[i].toExternalForm());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如下是BootstrapClassLoader加载的类：</p>
-<p>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/resources.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/rt.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/sunrsasign.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jsse.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jce.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/charsets.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/lib/jfr.jar<br>file:/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home/jre/classes</p>
-<p><strong>ExtClassLoader</strong>：</p>
-<p>称为扩展类加载器，负责加载Java的扩展类库，默认加载JAVA_HOME/jre/lib/ext/目下的所有jar。</p>
-<p><strong>AppClassLoader</strong>：</p>
-<p>称为系统类加载器，负责加载应用程序classpath目录下的所有jar和class文件。可以说应用程序自己定义的类，都是由AppClassLoader负责加载。</p>
-<p><strong>CustomClassLoader</strong>：</p>
-<p>除了Java默认提供的三个ClassLoader之外，用户还可以根据需要定义自已的ClassLoader，而这些自定义的ClassLoader都必须继承自java.lang.ClassLoader类，也包括Java提供的另外二个ClassLoader（Extension ClassLoader和App ClassLoader）在内，但是<strong>Bootstrap ClassLoader不继承自ClassLoader</strong>，因为它不是一个普通的Java类，底层由C++编写，已嵌入到了JVM内核当中，当JVM启动后，Bootstrap ClassLoader也随着启动，负责加载完核心类库后，并构造Extension ClassLoader和App ClassLoader类加载器。</p>
-<h1 id="ClassLoader加载类原理"><a href="#ClassLoader加载类原理" class="headerlink" title="ClassLoader加载类原理"></a>ClassLoader加载类原理</h1><p>ClassLoader使用的是<span style="color:red">双亲委托</span>模型来搜索类的，每个ClassLoader实例都有一个父类加载器的引用（不是继承的关系，是一个包含的关系），虚拟机内置的类加载器（Bootstrap ClassLoader）本身没有父类加载器，但可以用作其它ClassLoader实例的的父类加载器。当一个ClassLoader实例需要加载某个类时，它会试图亲自搜索某个类之前，先把这个任务委托给它的父类加载器，这个过程是由上至下依次检查的，首先由最顶层的类加载器Bootstrap ClassLoader试图加载，如果没加载到，则把任务转交给Extension ClassLoader试图加载，如果也没加载到，则转交给App ClassLoader 进行加载，如果它也没有加载得到的话，则返回给委托的发起者，由它到指定的文件系统或网络等URL中加载该类。如果它们都没有加载到这个类时，则抛出ClassNotFoundException异常。否则将这个找到的类生成一个类的定义，并将它加载到内存当中，最后返回这个类在内存中的Class实例对象。</p>
-<p>##为何需要双亲委派</p>
-<p>因为这样可以避免重复加载，当父亲已经加载了该类的时候，就没有必要子ClassLoader再加载一次。考虑到<strong>安全因素</strong>，我们试想一下，如果不使用这种委托模式，那我们就可以随时使用自定义的String来动态替代java核心api中定义的类型，这样会存在非常大的安全隐患，而双亲委托的方式，就可以避免这种情况，因为String已经在启动时就被引导类加载器（Bootstrcp ClassLoader）加载，所以用户自定义的ClassLoader永远也无法加载一个自己写的String，除非你改变JDK中ClassLoader搜索类的默认算法。</p>
-<h2 id="JDK如何判定Class相同"><a href="#JDK如何判定Class相同" class="headerlink" title="JDK如何判定Class相同"></a>JDK如何判定Class相同</h2><p><strong>JVM在判定两个class是否相同时，不仅要判断两个类名是否相同，而且要判断是否由同一个类加载器实例加载的</strong>。只有两者同时满足的情况下，JVM才认为这两个class是相同的。</p>
-<h1 id="如何定义CustomClassLoader"><a href="#如何定义CustomClassLoader" class="headerlink" title="如何定义CustomClassLoader"></a>如何定义CustomClassLoader</h1><p>如下代码，展示了本地目录的类加载器。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FileSystemClassLoader</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ClassLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> String rootDir;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">FileSystemClassLoader</span><span class="hljs-params">(String rootDir)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.rootDir = rootDir;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="hljs-keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        <span class="hljs-keyword">byte</span>[] classData = getClassData(name);</span><br><span class="line">        <span class="hljs-keyword">if</span> (classData == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ClassNotFoundException();</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> defineClass(name, classData, <span class="hljs-number">0</span>, classData.length);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">byte</span>[] getClassData(String className) &#123;</span><br><span class="line">        String path = classNameToPath(className);</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            InputStream ins = <span class="hljs-keyword">new</span> FileInputStream(path);</span><br><span class="line">            ByteArrayOutputStream baos = <span class="hljs-keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">            <span class="hljs-keyword">int</span> bufferSize = <span class="hljs-number">4096</span>;</span><br><span class="line">            <span class="hljs-keyword">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[bufferSize];</span><br><span class="line">            <span class="hljs-keyword">int</span> bytesNumRead = <span class="hljs-number">0</span>;</span><br><span class="line">            <span class="hljs-keyword">while</span> ((bytesNumRead = ins.read(buffer)) != -<span class="hljs-number">1</span>) &#123;</span><br><span class="line">                baos.write(buffer, <span class="hljs-number">0</span>, bytesNumRead);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">return</span> baos.toByteArray();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> String <span class="hljs-title">classNameToPath</span><span class="hljs-params">(String className)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> rootDir + File.separatorChar + className.replace(<span class="hljs-string">'.'</span>, File.separatorChar) + <span class="hljs-string">".class"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
-                
-                <div class="level-item">
                 <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
                 </div>
                 
@@ -178,6 +116,123 @@
 <figure class="highlight hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST 'http://localhost:9200/es_cluster/goods_index/goods/_search?scroll=5m' -d '&#123;</span><br><span class="line">  "size": 20,</span><br><span class="line">  "query": &#123;</span><br><span class="line">    "bool": &#123;</span><br><span class="line">      "filter": [</span><br><span class="line">        &#123;</span><br><span class="line">          "exists": &#123;</span><br><span class="line">            "field": "skuUpTime"</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
 <p>下次查询的时候，就可以直接用scroll_id来查询了</p>
 <figure class="highlight hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST 'http://localhost:9200/es_cluster/scroll' -d '&#123;</span><br><span class="line">  "scroll": "5m",</span><br><span class="line">  "scroll_id": "DnF1ZXJ5VGhlbkZldGNoJgAAAAA8lsqeFjRwN19JcDBKVFd1cy04dkZucUZ4dHcAAAAAPlQH_BZIMUU1VFA2dVIxMk10M0xoWW1sSEtRAAAAADtYOdcWUVBlYXZCNmRTSEtXV2llZTE4dkEwZwAAAAA6dfbHFkdEMS1VY21CVHFhSFpFS1ZrVnBwSVEAAAAAPaL6vBZsZmRFeHRBeFFJaWlVOXNWV2xnZlB3AAAAADy6UDUWRU9NVVRadG5STnV4cThrb2VMdHhqUQAAAAA9V-f6FnNYSV83SHZVVHpDTHVLZWFiNmVwcVEAAAAAPMlOFhY5Zk5ESlBZdFI5bVVEclI4b2paTld3AAAAADn6zjwWZEJ5RU9VOThTUW1HUnB5UzlOT18xUQAAAAA9EBaGFmM4Ykh6SHkxU3JPYkFFRFZMWVRiQUEAAAAAPSKSJxZVUlRzY0luTFJTQzQ3WTZydUxoQVN3AAAAADyw6E4WS21DZHdWX21TRXlkdzVvYUpRcVBKUQAAAAA7sX3BFnh4UC1rMGhDU1FlZFFSdjVDVVc0d3cAAAAAPMIY9RZla0lLajhFQlMtYUVOZDE1U0tXekRnAAAAADtYOdgWUVBlYXZCNmRTSEtXV2llZTE4dkEwZwAAAAA5-s49FmRCeUVPVTk4U1FtR1JweVM5Tk9fMVEAAAAAPMlOFxY5Zk5ESlBZdFI5bVVEclI4b2paTld3AAAAADzjiUkWMll6VHRaUDRUV2VjNXA4LUxfMlFxdwAAAAA8cKq6FndTQ2JfOWlWUXlHNHdNMUZ3ejZVZUEAAAAAPHCquRZ3U0NiXzlpVlF5RzR3TTFGd3o2VWVBAAAAADzx948Wdlk0dzdJWnBRWHEyRWFsVEhsVUdiQQAAAAA9cxFHFnpwdy1EaXFXUmR5REM5ZW5CYTB0ZEEAAAAAPXMRSBZ6cHctRGlxV1JkeURDOWVuQmEwdGRBAAAAAD1DIxMWM0E3dW1PbkVUQzZMSUJXV21LaHNiZwAAAAA9QyMUFjNBN3VtT25FVEM2TElCV1dtS2hzYmcAAAAAPPeZ9hZyY0luUVRFb1RsNmF1YWhZaVEwWUFBAAAAADz3mfcWcmNJblFURW9UbDZhdWFoWWlRMFlBQQAAAAA6pq_PFjRDZjN6XzBSU25DRE5PWlA2RFRUR2cAAAAAOqavzhY0Q2Yzel8wUlNuQ0ROT1pQNkRUVEdnAAAAADzcYCcWQ2xwZk15U01RNk9oelRQR2w2bTRmdwAAAAA84x3vFk8wYjdmdV9aU2E2QzREc045bUx4UUEAAAAAPPTj5RZoYlctclkyblM3cXpDeEZTa05FNlNnAAAAADzrVQEWLU9xeUFOVHRUQTZtd2R2eG5MTF96UQAAAAA861UAFi1PcXlBTlR0VEE2bXdkdnhuTExfelEAAAAAO1D_vBZheEpkUFp4UFNXS19BWDdvMTNkS1BnAAAAADuxfcIWeHhQLWswaENTUWVkUVJ2NUNVVzR3dwAAAAA7ungNFlpqWVViMnZsVDU2LXg4VzBlTlZ0cWcAAAAAPaL6vRZsZmRFeHRBeFFJaWlVOXNWV2xnZlB3"</span><br><span class="line">&#125;'</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 分钟 读完 (大约 211 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/spring/Spring的配置文件管理/">Spring初始化源码分析</a>
+            
+        </h1>
+        <div class="content">
+            <p>spring配置文件，需要关注如下两个类。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.beans.factory.config.PropertiesFactoryBean</span><br><span class="line">org.springframework.context.support.PropertySourcesPlaceholderConfigurer</span><br></pre></td></tr></table></figure>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAo9UxSWkxnmNCy8xB%2Fimage.png?alt=media&amp;token=709211c5-2130-444b-908f-55e5dba42072" alt="img"></p>
+<p>​                                PropertiesFactoryBean类图</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LRAnDiotPvFEt1t9tzV%2F-LRAoO5fKKIeQCNgJdpk%2Fimage.png?alt=media&amp;token=ba3e75b1-89f6-477e-8170-effa329b2e29" alt="img"></p>
+<p>​                            PropertySourcesPlaceholderConfigurer</p>
+<p>如下是配置方式</p>
+<figure class="highlight xml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">context:property-placeholder</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">util:properties</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig1"</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"classpath*:config/*.properties"</span>/&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertySourcesPlaceholderConfigurer的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"spc"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.context.support.PropertySourcesPlaceholderConfigurer"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"ignoreResourceNotFound"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span>/&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br><span class="line"><span class="hljs-comment">&lt;!--使用PropertiesFactoryBean的配置方式--&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"appConfig"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.beans.factory.config.PropertiesFactoryBean"</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"locations"</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">            <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>classpath:config/data1.properties<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span></span><br><span class="line">        <span class="hljs-tag">&lt;/<span class="hljs-name">list</span>&gt;</span></span><br><span class="line">    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span></span><br><span class="line"><span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​                                    使用方式上，用@Value注解</p>
+<p>PropertiesFactoryBean用#{}的方式</p>
+<p>PropertySourcesPlaceholderConfigurer用${}的方式</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Value</span>(value = <span class="hljs-string">"$&#123;driveClass&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String driveClass;</span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"$&#123;url&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String url;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['userName']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String userName;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Value</span>(<span class="hljs-string">"#&#123;appConfig['config1']&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">private</span> String password;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-11T15:33:16.000Z">2018-08-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    5 分钟 读完 (大约 776 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/08/11/spring/Spring初始化/">Spring初始化源码分析</a>
+            
+        </h1>
+        <div class="content">
+            <p>本文主要介绍下Spring的初始化过程。</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LR60TqiCDATv8ALplRv%2F-LR60l8Jm5M7R4z_NK44%2Fimage.png?alt=media&amp;token=05a40745-ac36-447d-97d4-6af519a8ebfc" alt="img"></p>
+<p>​                                    XML方式Spring应用入口</p>
+<p>首先，在web容器启动之后，会加载org.springframework.web.servlet.DispatcherServlet，作为容器的一个Servlet实例，该Servlet也是Spring WEB应用的唯一一个Servlet实例。Servlet初始化，会调用org.springframework.web.servlet.HttpServletBean#init方法，初始化Servlet，见下面源码。<br>​</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * Map config parameters onto bean properties of this servlet, and</span></span><br><span class="line"><span class="hljs-comment"> * invoke subclass initialization.</span></span><br><span class="line"><span class="hljs-comment"> * <span class="hljs-doctag">@throws</span> ServletException if bean properties are invalid (or required</span></span><br><span class="line"><span class="hljs-comment"> * properties are missing), or if subclass initialization fails.</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-meta">@Override</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">   <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">      logger.debug(<span class="hljs-string">"Initializing servlet '"</span> + getServletName() + <span class="hljs-string">"'"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="hljs-comment">// Set bean properties from init parameters.</span></span><br><span class="line">   <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">      PropertyValues pvs = <span class="hljs-keyword">new</span> ServletConfigPropertyValues(getServletConfig(), <span class="hljs-keyword">this</span>.requiredProperties);</span><br><span class="line">      BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(<span class="hljs-keyword">this</span>);</span><br><span class="line">      ResourceLoader resourceLoader = <span class="hljs-keyword">new</span> ServletContextResourceLoader(getServletContext());</span><br><span class="line">      bw.registerCustomEditor(Resource.class, <span class="hljs-keyword">new</span> ResourceEditor(resourceLoader, getEnvironment()));</span><br><span class="line">      initBeanWrapper(bw);</span><br><span class="line">      bw.setPropertyValues(pvs, <span class="hljs-keyword">true</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="hljs-keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">      logger.error(<span class="hljs-string">"Failed to set bean properties on servlet '"</span> + getServletName() + <span class="hljs-string">"'"</span>, ex);</span><br><span class="line">      <span class="hljs-keyword">throw</span> ex;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="hljs-comment">// Let subclasses do whatever initialization they like.</span></span><br><span class="line">   initServletBean();</span><br><span class="line">   <span class="hljs-keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">      logger.debug(<span class="hljs-string">"Servlet '"</span> + getServletName() + <span class="hljs-string">"' configured successfully"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意代码initServletBean，该方法被FrameworkServlet重写。如下代码。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"></span></span><br><span class="line"><span class="hljs-comment">- Overridden method of &#123;<span class="hljs-doctag">@link</span> HttpServletBean&#125;, invoked after any bean properties</span></span><br><span class="line"><span class="hljs-comment">- have been set. Creates this servlet's WebApplicationContext.</span></span><br><span class="line"><span class="hljs-comment">  */</span></span><br><span class="line">  <span class="hljs-meta">@Override</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initServletBean</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">  getServletContext().log(<span class="hljs-string">"Initializing Spring FrameworkServlet '"</span> + getServletName() + <span class="hljs-string">"'"</span>);</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">     <span class="hljs-keyword">this</span>.logger.info(<span class="hljs-string">"FrameworkServlet '"</span> + getServletName() + <span class="hljs-string">"': initialization started"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">long</span> startTime = System.currentTimeMillis();</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">     <span class="hljs-keyword">this</span>.webApplicationContext = initWebApplicationContext();</span><br><span class="line">     initFrameworkServlet();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">catch</span> (ServletException ex) &#123;</span><br><span class="line">     <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">"Context initialization failed"</span>, ex);</span><br><span class="line">     <span class="hljs-keyword">throw</span> ex;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">     <span class="hljs-keyword">this</span>.logger.error(<span class="hljs-string">"Context initialization failed"</span>, ex);</span><br><span class="line">     <span class="hljs-keyword">throw</span> ex;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isInfoEnabled()) &#123;</span><br><span class="line">     <span class="hljs-keyword">long</span> elapsedTime = System.currentTimeMillis() - startTime;</span><br><span class="line">     <span class="hljs-keyword">this</span>.logger.info(<span class="hljs-string">"FrameworkServlet '"</span> + getServletName() + <span class="hljs-string">"': initialization completed in "</span> +</span><br><span class="line">           elapsedTime + <span class="hljs-string">" ms"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  &#125;​</span><br></pre></td></tr></table></figure>
+<p>initWebApplicationContext()方法，最终会调用createWebApplicationContext()方法，来初始化Spring的上下文。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">protected</span> WebApplicationContext <span class="hljs-title">createWebApplicationContext</span><span class="hljs-params">(ApplicationContext parent)</span> </span>&#123;</span><br><span class="line">  Class&lt;?&gt; contextClass = getContextClass();</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.logger.isDebugEnabled()) &#123;</span><br><span class="line">     <span class="hljs-keyword">this</span>.logger.debug(<span class="hljs-string">"Servlet with name '"</span> + getServletName() +</span><br><span class="line">           <span class="hljs-string">"' will try to create custom WebApplicationContext context of class '"</span> +</span><br><span class="line">           contextClass.getName() + <span class="hljs-string">"'"</span> + <span class="hljs-string">", using parent context ["</span> + parent + <span class="hljs-string">"]"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) &#123;</span><br><span class="line">     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ApplicationContextException(</span><br><span class="line">           <span class="hljs-string">"Fatal initialization error in servlet with name '"</span> + getServletName() +</span><br><span class="line">           <span class="hljs-string">"': custom WebApplicationContext class ["</span> + contextClass.getName() +</span><br><span class="line">           <span class="hljs-string">"] is not of type ConfigurableWebApplicationContext"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  ConfigurableWebApplicationContext wac =</span><br><span class="line">        (ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);</span><br><span class="line">  </span><br><span class="line">  wac.setEnvironment(getEnvironment());</span><br><span class="line">  wac.setParent(parent);</span><br><span class="line">  wac.setConfigLocation(getContextConfigLocation());</span><br><span class="line">  </span><br><span class="line">  configureAndRefreshWebApplicationContext(wac);</span><br><span class="line">  </span><br><span class="line">  <span class="hljs-keyword">return</span> wac;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LR60TqiCDATv8ALplRv%2F-LR64pSmB_560UyrXUTb%2Fimage.png?alt=media&amp;token=bd67bf28-79eb-4870-a6d8-9641cfc8f6c6" alt="img"></p>
+<p>​                                WEB容器的方式Spring应用入口</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LR60Ohu6G1Cr-6syQ-Z%2F-LR60TqiCDATv8ALplRv%2F-LR65fZ7rLG-smvyxxC2%2Fimage.png?alt=media&amp;token=26a64d00-487c-4197-af6f-4a059c2c6b5b" alt="img"></p>
+<p>​                                WEB容器的方式Spring Context初始化<br>最后引出最重要的代码，org.springframework.context.support.AbstractApplicationContext#refresh</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">refresh</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">   <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.startupShutdownMonitor) &#123;</span><br><span class="line">      <span class="hljs-comment">// Prepare this context for refreshing.</span></span><br><span class="line">      prepareRefresh();</span><br><span class="line">      <span class="hljs-comment">// Tell the subclass to refresh the internal bean factory.</span></span><br><span class="line">      ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();</span><br><span class="line">      <span class="hljs-comment">// Prepare the bean factory for use in this context.</span></span><br><span class="line">      prepareBeanFactory(beanFactory);</span><br><span class="line">      <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">         <span class="hljs-comment">// Allows post-processing of the bean factory in context subclasses.</span></span><br><span class="line">         postProcessBeanFactory(beanFactory);</span><br><span class="line">         <span class="hljs-comment">// Invoke factory processors registered as beans in the context.</span></span><br><span class="line">         invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line">         <span class="hljs-comment">// Register bean processors that intercept bean creation.</span></span><br><span class="line">         registerBeanPostProcessors(beanFactory);</span><br><span class="line">         <span class="hljs-comment">// Initialize message source for this context.</span></span><br><span class="line">         initMessageSource();</span><br><span class="line">         <span class="hljs-comment">// Initialize event multicaster for this context.</span></span><br><span class="line">         initApplicationEventMulticaster();</span><br><span class="line">         <span class="hljs-comment">// Initialize other special beans in specific context subclasses.</span></span><br><span class="line">         onRefresh();</span><br><span class="line">         <span class="hljs-comment">// Check for listener beans and register them.</span></span><br><span class="line">         registerListeners();</span><br><span class="line">         <span class="hljs-comment">// Instantiate all remaining (non-lazy-init) singletons.</span></span><br><span class="line">         finishBeanFactoryInitialization(beanFactory);</span><br><span class="line">         <span class="hljs-comment">// Last step: publish corresponding event.</span></span><br><span class="line">         finishRefresh();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="hljs-keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">         logger.warn(<span class="hljs-string">"Exception encountered during context initialization - cancelling refresh attempt"</span>, ex);</span><br><span class="line">         <span class="hljs-comment">// Destroy already created singletons to avoid dangling resources.</span></span><br><span class="line">         destroyBeans();</span><br><span class="line">         <span class="hljs-comment">// Reset 'active' flag.</span></span><br><span class="line">         cancelRefresh(ex);</span><br><span class="line">         <span class="hljs-comment">// Propagate exception to caller.</span></span><br><span class="line">         <span class="hljs-keyword">throw</span> ex;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个代码的作用，是初始化整个容器，创建Bean.</p>
 
         </div>
         
@@ -436,52 +491,6 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    几秒 读完 (大约 2 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/07/11/search/elasticSearch-term_vector/">elasticSearch系列笔记(4)-term_vector</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="term-vector"><a href="#term-vector" class="headerlink" title="term_vector"></a>term_vector</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.0/term-vector.html#term-vector" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/2.0/term-vector.html#term-vector</a></p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
                     8 分钟 读完 (大约 1255 个字)
                 </span>
                 
@@ -662,6 +671,52 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 <span class="level-item has-text-grey">
                     
                     
+                    几秒 读完 (大约 2 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/11/search/elasticSearch-term_vector/">elasticSearch系列笔记(4)-term_vector</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="term-vector"><a href="#term-vector" class="headerlink" title="term_vector"></a>term_vector</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.0/term-vector.html#term-vector" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/2.0/term-vector.html#term-vector</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
                     9 分钟 读完 (大约 1368 个字)
                 </span>
                 
@@ -766,59 +821,6 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
 
 
 
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-07-11T15:33:16.000Z">2018-07-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/搜索/">搜索</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    25 分钟 读完 (大约 3753 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/07/11/search/ElasticSearch-相关性实现/">ElasticSearch系列笔记(2)-ElasticSearch 理论基础</a>
-            
-        </h1>
-        <div class="content">
-            <p>本节主要介绍下ElasticSearch 理论基础。知其然知其所以然，如下的理论和算法，就是ElasticSearch的魂！</p>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/07/11/search/ElasticSearch-相关性实现/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -888,7 +890,7 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        51
+                        52
                     </p>
                 </div>
             </div>
@@ -952,7 +954,7 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 <span class="level-item">Java</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">16</span>
+                <span class="level-item tag">17</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/SpringCloud/">
@@ -1013,7 +1015,7 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 15.71px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 12.86px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/函数式编程/" style="font-size: 10px;">函数式编程</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/工程架构/" style="font-size: 10px;">工程架构</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
+        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 17.14px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 12.86px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/函数式编程/" style="font-size: 10px;">函数式编程</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/工程架构/" style="font-size: 10px;">工程架构</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
     </div>
 </div>
     
@@ -1025,6 +1027,25 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/redis.jpg" alt="Jedis集群模式经典实现">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-07T11:33:16.000Z">2019-12-07</time></div>
+                    <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Jedis集群模式经典实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -1102,25 +1123,6 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/10/27/spring/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring6.jpg" alt="SpringCloudGateway源码解析(6)- 常用功能实现">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-27T15:33:16.000Z">2019-10-27</time></div>
-                    <a href="/2019/10/27/spring/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(6)- 常用功能实现</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -1131,6 +1133,17 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/11/">
@@ -1367,7 +1380,7 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Spring/">
                         <span class="tag">Spring</span>
-                        <span class="tag is-grey">5</span>
+                        <span class="tag is-grey">6</span>
                     </a>
                 </div>
                 
@@ -1640,6 +1653,25 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
         
         <article class="media">
             
+            <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/redis.jpg" alt="Jedis集群模式经典实现">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-07T11:33:16.000Z">2019-12-07</time></div>
+                    <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Jedis集群模式经典实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践">
@@ -1714,25 +1746,6 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/10/27/spring/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring6.jpg" alt="SpringCloudGateway源码解析(6)- 常用功能实现">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-27T15:33:16.000Z">2019-10-27</time></div>
-                    <a href="/2019/10/27/spring/springcloud/gateway/SpringCloudGateway源码解析(6)-常用功能实现/" class="title has-link-black-ter is-size-6 has-text-weight-normal">SpringCloudGateway源码解析(6)- 常用功能实现</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -1743,6 +1756,17 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/11/">
@@ -1979,7 +2003,7 @@ curl -XGET &quot;http://localhost:9200/goods_index&quot;
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Spring/">
                         <span class="tag">Spring</span>
-                        <span class="tag is-grey">5</span>
+                        <span class="tag is-grey">6</span>
                     </a>
                 </div>
                 

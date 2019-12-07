@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>Charles搭建网络抓包环境 - Crowley技术博客</title>
+<title>Jedis集群模式经典实现 - Crowley技术博客</title>
 
 
 
@@ -32,7 +32,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="Charles搭建网络抓包环境" height="28">
+                <img src="/images/logo.svg" alt="Jedis集群模式经典实现" height="28">
             
             </a>
         </div>
@@ -60,6 +60,10 @@
             <div class="navbar-end">
                 
                 
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
                 
                 <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
@@ -76,21 +80,27 @@
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
 <div class="card">
     
+    <div class="card-image">
+        <span  class="image is-7by1">
+            <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/redis.jpg" alt="Jedis集群模式经典实现">
+        </span>
+    </div>
+    
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-04-09T02:33:16.000Z">2019-04-09</time>
+                <time class="level-item has-text-grey" datetime="2019-12-07T11:33:16.000Z">2019-12-07</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/开发工具/">开发工具</a>
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    4 分钟 读完 (大约 660 个字)
+                    19 分钟 读完 (大约 2861 个字)
                 </span>
                 
                 
@@ -99,36 +109,84 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                Charles搭建网络抓包环境
+                Jedis集群模式经典实现
             
         </h1>
         <div class="content">
-            <h1 id="Charles搭建网络抓包环境"><a href="#Charles搭建网络抓包环境" class="headerlink" title="Charles搭建网络抓包环境"></a>Charles搭建网络抓包环境</h1><p><a href="http://www.charlesproxy.com/" target="_blank" rel="noopener">Charles</a> 是在 Mac 下常用的网络封包截取工具，在做移动开发时，我们为了调试与服务器端的网络通讯协议，常常需要截取网络封包来分析。Charles 通过将自己设置成系统的网络访问代理服务器，使得所有的网络访问请求都通过它来完成，从而实现了网络封包的截取和分析。除了在做移动开发中调试端口外，Charles 也可以用于分析第三方应用的通讯协议。配合 Charles 的 SSL 功能，Charles 还可以分析 Https 协议。</p>
-<p>Charles 是收费软件，可以免费试用 30 天。试用期过后，未付费的用户仍然可以继续使用，但是每次使用时间不能超过 30 分钟，并且启动时将会有 10 秒种的延时。因此，该付费方案对广大用户还是相当友好的，即使你长期不付费，也能使用完整的软件功能。只是当你需要长时间进行封包调试时，会因为 Charles 强制关闭而遇到影响。</p>
-<p>Charles 主要的功能包括：</p>
-<ol>
-<li>截取 Http 和 Https 网络封包。</li>
-<li>支持重发网络请求，方便后端调试。</li>
-<li>支持修改网络请求参数。</li>
-<li>支持网络请求的截获并动态修改。</li>
-<li>支持模拟慢速网络。</li>
-</ol>
-<p>Charles 4 新增的主要功能包括：</p>
-<ol>
-<li>支持 Http 2。</li>
-<li>支持 IPv6。</li>
-</ol>
-<h2 id="IOS-http抓包"><a href="#IOS-http抓包" class="headerlink" title="IOS http抓包"></a>IOS http抓包</h2><p>需要在设置-&gt;无线局域网-&gt;连接的WIFI下面，设置HTTP代理：</p>
-<p>IP为启动Charles的服务器IP，端口默认是8888，如果端口被重新指定，请在Charles -&gt; Proxy -&gt; Proxy Setting中查看。</p>
-<p>以上设置好之后，手机的网络请求，便可以在Charles中体现出来了。</p>
-<h2 id="IOS-https抓包"><a href="#IOS-https抓包" class="headerlink" title="IOS https抓包"></a>IOS https抓包</h2><p>除了http抓包的设置之外，还需要安装https证书。</p>
-<p>Step1: Charles -&gt; Help -&gt; SSL Proxy -&gt; Install Charles Root Certificate on a mobile device or remote browser</p>
-<p>Step2: step1执行之后，会出现一个弹窗，需要用apple手机safari访问chls.pro/ssl，安装证书。</p>
-<p>Step3: iOS 10.3系统，需要在 <em>设置→通用→关于本机→证书信任设置</em> 里面启用完全信任Charles证书。</p>
-<p>基于以上步骤，Charles就能够正常抓取https的包了。</p>
-<p>#引用</p>
-<p><a href="https://blog.devtang.com/2015/11/14/charles-introduction/" target="_blank" rel="noopener">charles从入门到精通</a></p>
-<p><a href="https://www.jianshu.com/p/5539599c7a25" target="_blank" rel="noopener">Charles抓包(IOS的Http/Https请求)</a></p>
+            <p>Jedis是Redis的Java客户端，本代码是Jedis应用的一个范例。<br><a id="more"></a></p>
+<h1 id="Redis常用模式"><a href="#Redis常用模式" class="headerlink" title="Redis常用模式"></a>Redis常用模式</h1><p>Redis分了了<strong>主从模式</strong>和<strong>集群模式</strong>。</p>
+<h2 id="主从模式"><a href="#主从模式" class="headerlink" title="主从模式"></a>主从模式</h2><p>主从模式即使用一个Redis实例作为主机（Master），其余的实例作为备份机(Slave)，Master支持写入和读取等各种操作，Slave支持读操作和与Master同步数据。主从模式的核心思想是读写分离，数据冗余存储和HA，Master节点出现问题，可以通过Redis Sentinel做到主从切换。</p>
+<p>Sentinel 系统用于管理多个 Redis 服务器（instance）， 该系统执行以下三个任务：</p>
+<ul>
+<li>监控（Monitoring）： Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。</li>
+<li>提醒（Notification）： 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或者其他应用程序发送通知。</li>
+<li>自动故障迁移（Automatic failover）： 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。</li>
+</ul>
+<h2 id="集群模式"><a href="#集群模式" class="headerlink" title="集群模式"></a>集群模式</h2><p>Redis主从模式虽然很强大，但是其单Master的架构，当遇到<strong>单机内存</strong>、<strong>并发</strong>、<strong>流量</strong>等瓶颈时便束手无策，Redis集群的出现就是为了解决主从模式所遇到的问题。在Redis Cluster面世之前，业界为了解决Redis这个问题，也出现了一些优秀的Redis集群解决方案，比如<strong>Twemproxy</strong>和<strong>Codis</strong>，如果大家感兴趣，可以去学习，本文不再比较各自的优劣。</p>
+<h1 id="集群模式数据分布"><a href="#集群模式数据分布" class="headerlink" title="集群模式数据分布"></a>集群模式数据分布</h1><h2 id="数据分布理论"><a href="#数据分布理论" class="headerlink" title="数据分布理论"></a>数据分布理论</h2><p><strong>摘抄自参考文档3</strong>，该文作者已经有了很好的总结。</p>
+<p><strong>分布式数据库</strong>首先要解决把<strong>整个数据集</strong>按照<strong>分区规则</strong>映射到<strong>多个节点</strong>的问题，每个节点负责<strong>整体数据</strong>的一个子集。</p>
+<p>数据分布通常有<strong>哈希分区</strong>和<strong>顺序分区</strong>两种方式，对比如下：</p>
+<table>
+<thead>
+<tr>
+<th>分区方式</th>
+<th>特点</th>
+<th>相关产品</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>哈希分区</td>
+<td>离散程度好，数据分布与业务无关，无法顺序访问</td>
+<td>Redis Cluster，Cassandra，Dynamo</td>
+</tr>
+<tr>
+<td>顺序分区</td>
+<td>离散程度易倾斜，数据分布与业务相关，可以顺序访问</td>
+<td>BigTable，HBase，Hypertable</td>
+</tr>
+</tbody>
+</table>
+<p>由于<strong>Redis Cluster</strong>采用<strong>哈希分区规则</strong>，这里重点讨论<strong>哈希分区</strong>。常见的哈希分区规则有几种：</p>
+<ul>
+<li><p><strong>节点取余分区</strong>：使用特定的数据，如 Redis的键或用户ID，再根据节点数量N使用公式：<code>hash（key）% N</code>计算出 哈希值，用来决定数据 映射 到哪一个节点上。这种方式简单实用，常用语数据库<strong>分库分表</strong>，一般采用预分区的方式，提前按预估的数据量规划好分区数。缺点也很明显，当节点数量发生变化时，比如发生<strong>扩容</strong>或<strong>缩容</strong>时，数据节点的<strong>映射关系</strong>需要重新计算，会导致数据的重新迁移。</p>
+</li>
+<li><p><strong>一致性哈希分区</strong>：<strong>一致性哈希</strong>可以很好的解决稳定性问题，可以将所有的<strong>存储节点</strong>排列在首尾相接的<strong>Hash环</strong>上，每个key在计算Hash后<strong>顺时针</strong>找到临接的存储节点存放。当有节点<strong>加入</strong>或<strong>退出</strong>时，仅影响该节点在hash环上顺时针相邻的后续节点。加入和删除节点，只影响哈希环中顺时针方向的相邻的节点，对其他节点无影响，但是还是会造成哈希环中部分数据无法命中。当使用少量节点时，节点变化将大范围影响哈希环中的数据映射，<strong>不适合少量数据节点的分布式方案</strong>。<strong>普通的一致性哈希分区在增减节点时，需要增加一倍或减去一半节点，才能保证数据和负载的均衡</strong>。</p>
+</li>
+<li><p><strong>虚拟槽分区</strong>：虚拟槽分区巧妙的使用了哈希空间，使用分散度良好的哈希函数把所有数据映射到一个固定范围的整数集合中，整数定义为<strong>槽（slot）</strong>。<strong>这个范围一般远远大于节点数</strong>，比如Redis Cluster的槽范围是0~16383。槽是集群内数据管理和迁移的基本单位。采用大范围槽的主要目的是为了方便数据拆分和集群扩展。每个节点会负责一定数量的槽。<strong>由于从一个节点将哈希槽移动到另一个节点并不会停止服务，所以无论添加删除或者改变某个节点的哈希槽数量，都不会造成集群不可用的状态</strong>。</p>
+<p>Redis虚拟槽分区的特点：</p>
+<ul>
+<li>解耦数据和节点之间的关系，简化了节点扩容和收缩的难度</li>
+<li>节点自身维护槽的映射关系，不需要客户端或者代理服务维护槽分区元数据。</li>
+<li>支持节点、槽、键之间的映射查询，用于数据路由、在线伸缩等场景。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Redis集群的功能限制"><a href="#Redis集群的功能限制" class="headerlink" title="Redis集群的功能限制"></a>Redis集群的功能限制</h2><p><code>Redis</code> 集群相对 <strong>单机</strong> 在功能上存在一些限制，需要 <strong>开发人员</strong> 提前了解，在使用时做好规避。</p>
+<ul>
+<li><code>key</code> <strong>批量操作</strong> 支持有限。</li>
+</ul>
+<p>类似 <code>mset</code>、<code>mget</code> 操作，目前只支持对具有相同 <code>slot</code> 值的 <code>key</code> 执行 <strong>批量操作</strong>。对于 <strong>映射为不同</strong> <code>slot</code> 值的 <code>key</code> 由于执行 <code>mget</code>、<code>mget</code> 等操作可能存在于多个节点上，因此不被支持。</p>
+<ul>
+<li><code>key</code> <strong>事务操作</strong> 支持有限。</li>
+</ul>
+<p>只支持 <strong>多</strong> <code>key</code> 在 <strong>同一节点上</strong> 的 <strong>事务操作</strong>，当多个 <code>key</code> 分布在 <strong>不同</strong> 的节点上时 <strong>无法</strong> 使用事务功能。</p>
+<ul>
+<li><code>key</code> 作为 <strong>数据分区</strong> 的最小粒度</li>
+</ul>
+<p>不能将一个 <strong>大的键值</strong> 对象如 <code>hash</code>、<code>list</code> 等映射到 <strong>不同的节点</strong>。</p>
+<ul>
+<li>不支持 <strong>多数据库空间</strong></li>
+</ul>
+<p><strong>单机</strong> 下的 <code>Redis</code> 可以支持 <code>16</code> 个数据库（<code>db0 ~ db15</code>），<strong>集群模式</strong> 下只能使用 <strong>一个</strong> 数据库空间，即 <code>db0</code>。</p>
+<ul>
+<li><strong>复制结构</strong> 只支持一层</li>
+</ul>
+<p><strong>从节点</strong> 只能复制 <strong>主节点</strong>，不支持 <strong>嵌套树状复制</strong> 结构。</p>
+<h1 id="Jedis经典实现"><a href="#Jedis经典实现" class="headerlink" title="Jedis经典实现"></a>Jedis经典实现</h1><figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> org.apache.ibatis.reflection.MetaObject;</span><br><span class="line"><span class="hljs-keyword">import</span> org.apache.ibatis.reflection.SystemMetaObject;</span><br><span class="line"><span class="hljs-keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="hljs-keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="hljs-keyword">import</span> redis.clients.jedis.*;</span><br><span class="line"><span class="hljs-keyword">import</span> redis.clients.util.JedisClusterCRC16;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisCacheDelegate</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractCache</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">CacheManager</span>, <span class="hljs-title">Cache</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Logger logger = LoggerFactory.getLogger(RedisCacheDelegate.class);</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 集群节点</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-keyword">private</span> String clusterNodes;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 重试次数</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> maxAttempts;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 超时时间，单位是秒</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> timeout;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> JedisCluster jedisCluster;</span><br><span class="line">    <span class="hljs-keyword">private</span> JedisPoolConfig jedisPoolConfig = <span class="hljs-keyword">new</span> JedisPoolConfig();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> RedisCacheDelegate redisCacheDelegate = <span class="hljs-keyword">null</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> JedisClusterInfoCache cache;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> String WARM_KEY = <span class="hljs-string">"warm_key"</span>;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> String WARM_VALUE = <span class="hljs-string">"value"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> RedisCacheDelegate <span class="hljs-title">getInstant</span><span class="hljs-params">(CacheProperties cacheProperties)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (redisCacheDelegate == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">synchronized</span> (RedisCacheDelegate.class) &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (redisCacheDelegate == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                    redisCacheDelegate = <span class="hljs-keyword">new</span> RedisCacheDelegate(cacheProperties.getNodes(), cacheProperties.getTimeout(), cacheProperties.getMaxAttempts());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">return</span> redisCacheDelegate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">RedisCacheDelegate</span><span class="hljs-params">(String clusterNodes, <span class="hljs-keyword">int</span> timeout, <span class="hljs-keyword">int</span> maxAttempts)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.clusterNodes = clusterNodes;</span><br><span class="line">        <span class="hljs-keyword">this</span>.timeout = timeout;</span><br><span class="line">        <span class="hljs-keyword">this</span>.maxAttempts = maxAttempts;</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> JedisPoolConfig <span class="hljs-title">getJedisPoolConfig</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//连接最长等待时间，默认是-1</span></span><br><span class="line">        jedisPoolConfig.setMaxWaitMillis(<span class="hljs-number">200</span>);</span><br><span class="line">        <span class="hljs-comment">//连接池最大数量</span></span><br><span class="line">        jedisPoolConfig.setMaxTotal(<span class="hljs-number">50</span>);</span><br><span class="line">        <span class="hljs-comment">//最小闲置个数 闲置超过最小闲置个数但不超过最大闲置个数，则逐步清理闲置直到最小闲置个数</span></span><br><span class="line">        jedisPoolConfig.setMinIdle(<span class="hljs-number">10</span>);</span><br><span class="line">        <span class="hljs-comment">//最大闲置个数 闲置超过最大闲置个数则直接杀死超过部分</span></span><br><span class="line">        jedisPoolConfig.setMaxIdle(<span class="hljs-number">30</span>);</span><br><span class="line">        <span class="hljs-comment">//连接耗尽等待，等待最长&#123;MaxWaitMillis&#125;毫秒</span></span><br><span class="line">        jedisPoolConfig.setBlockWhenExhausted(<span class="hljs-keyword">true</span>);</span><br><span class="line">        <span class="hljs-comment">//是否开启jmx监控</span></span><br><span class="line">        jedisPoolConfig.setJmxEnabled(<span class="hljs-keyword">true</span>);</span><br><span class="line">        <span class="hljs-comment">//是否开启空闲资源监测</span></span><br><span class="line">        jedisPoolConfig.setTestWhileIdle(<span class="hljs-keyword">true</span>);</span><br><span class="line">        <span class="hljs-comment">//空闲资源的检测周期(单位为毫秒)</span></span><br><span class="line">        jedisPoolConfig.setMinEvictableIdleTimeMillis(<span class="hljs-number">60000</span>);</span><br><span class="line">        <span class="hljs-comment">//资源池中资源最小空闲时间(单位为毫秒)，达到此值后空闲资源将被移除</span></span><br><span class="line">        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(<span class="hljs-number">30000</span>);</span><br><span class="line">        <span class="hljs-comment">//做空闲资源检测时，每次的采样数,如果设置为-1，就是对所有连接做空闲监测</span></span><br><span class="line">        jedisPoolConfig.setNumTestsPerEvictionRun(-<span class="hljs-number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">return</span> jedisPoolConfig;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        String[] serverArray = clusterNodes.split(<span class="hljs-string">","</span>);</span><br><span class="line">        Set&lt;HostAndPort&gt; nodes = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="hljs-keyword">for</span> (String ipPort : serverArray) &#123;</span><br><span class="line">            String[] ipPortPair = ipPort.split(<span class="hljs-string">":"</span>);</span><br><span class="line">            nodes.add(<span class="hljs-keyword">new</span> HostAndPort(ipPortPair[<span class="hljs-number">0</span>].trim(), Integer.valueOf(ipPortPair[<span class="hljs-number">1</span>].trim())));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        jedisCluster = <span class="hljs-keyword">new</span> JedisCluster(nodes, timeout * <span class="hljs-number">1000</span>, maxAttempts, getJedisPoolConfig());</span><br><span class="line">        MetaObject metaObject = SystemMetaObject.forObject(jedisCluster);</span><br><span class="line">        cache = (JedisClusterInfoCache) metaObject.getValue(<span class="hljs-string">"connectionHandler.cache"</span>);</span><br><span class="line">        warm();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * warm the jedis pool</span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">warm</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        set(WARM_KEY, WARM_VALUE, <span class="hljs-number">60</span>);</span><br><span class="line">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; jedisPoolConfig.getMinIdle(); i++) &#123;</span><br><span class="line">            ttl(WARM_KEY);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">set</span><span class="hljs-params">(String key, String value)</span> </span>&#123;</span><br><span class="line">        jedisCluster.set(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">set</span><span class="hljs-params">(String key, String value, <span class="hljs-keyword">int</span> expiredTime)</span> </span>&#123;</span><br><span class="line">        jedisCluster.setex(key, expiredTime, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mSet</span><span class="hljs-params">(Map&lt;String, String&gt; data)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (data != <span class="hljs-keyword">null</span> &amp;&amp; data.size() &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            data.forEach((key, value) -&gt; jedisCluster.set(key, value));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mSetPipLine</span><span class="hljs-params">(Map&lt;String, String&gt; data)</span> </span>&#123;</span><br><span class="line">        setPipLine(data, <span class="hljs-number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setPipLine</span><span class="hljs-params">(Map&lt;String, String&gt; data, <span class="hljs-keyword">int</span> expiredTime)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (data.size() &lt; <span class="hljs-number">1</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//保存地址+端口和命令的映射</span></span><br><span class="line">        Map&lt;JedisPool, Map&lt;String, String&gt;&gt; jedisPoolMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        JedisPool currentJedisPool = <span class="hljs-keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">for</span> (String key : data.keySet()) &#123;</span><br><span class="line">            <span class="hljs-comment">//计算哈希槽</span></span><br><span class="line">            <span class="hljs-keyword">int</span> crc = JedisClusterCRC16.getSlot(key);</span><br><span class="line">            <span class="hljs-comment">//通过哈希槽获取节点的连接</span></span><br><span class="line">            currentJedisPool = cache.getSlotPool(crc);</span><br><span class="line"></span><br><span class="line">            <span class="hljs-keyword">if</span> (jedisPoolMap.containsKey(currentJedisPool)) &#123;</span><br><span class="line">                jedisPoolMap.get(currentJedisPool).put(key, data.get(key));</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">                Map&lt;String, String&gt; inner = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">                inner.put(key, data.get(key));</span><br><span class="line">                jedisPoolMap.put(currentJedisPool, inner);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-comment">//保存结果</span></span><br><span class="line">        Map&lt;String, String&gt; map = <span class="hljs-keyword">null</span>;</span><br><span class="line">        <span class="hljs-comment">//执行</span></span><br><span class="line">        <span class="hljs-keyword">for</span> (Map.Entry&lt;JedisPool, Map&lt;String, String&gt;&gt; entry : jedisPoolMap.entrySet()) &#123;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                currentJedisPool = entry.getKey();</span><br><span class="line">                map = entry.getValue();</span><br><span class="line">                Jedis jedis = currentJedisPool.getResource();</span><br><span class="line">                <span class="hljs-comment">//获取pipeline</span></span><br><span class="line">                Pipeline currentPipeline = jedis.pipelined();</span><br><span class="line">                <span class="hljs-comment">// NX是不存在时才set， XX是存在时才set， EX是秒，PX是毫秒</span></span><br><span class="line">                <span class="hljs-keyword">if</span> (expiredTime &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">                    map.forEach((k, v) -&gt; currentPipeline.setex(k, expiredTime, v));</span><br><span class="line">                &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">                    map.forEach((k, v) -&gt; currentPipeline.set(k, v));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="hljs-comment">//从pipeline中获取结果</span></span><br><span class="line">                currentPipeline.sync();</span><br><span class="line">                currentPipeline.close();</span><br><span class="line">                jedis.close();</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                logger.error(<span class="hljs-string">"setPipline error."</span>, e);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mSet</span><span class="hljs-params">(Map&lt;String, String&gt; data, <span class="hljs-keyword">int</span> expiredTime)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (data != <span class="hljs-keyword">null</span> &amp;&amp; data.size() &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">            data.forEach((key, value) -&gt; jedisCluster.setex(key, expiredTime, value));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mSetPipLine</span><span class="hljs-params">(Map&lt;String, String&gt; data, <span class="hljs-keyword">int</span> expiredTime)</span> </span>&#123;</span><br><span class="line">        setPipLine(data, expiredTime);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">get</span><span class="hljs-params">(String key)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> jedisCluster.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title">mGet</span><span class="hljs-params">(List&lt;String&gt; keys)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (keys.size() &lt; <span class="hljs-number">1</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;String&gt; result = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(keys.size());</span><br><span class="line">        <span class="hljs-keyword">for</span> (String key : keys) &#123;</span><br><span class="line">            result.add(jedisCluster.get(key));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title">mGetPipLine</span><span class="hljs-params">(List&lt;String&gt; key)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> getPipLine(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">long</span> <span class="hljs-title">ttl</span><span class="hljs-params">(String key)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> jedisCluster.ttl(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> List&lt;String&gt; <span class="hljs-title">getPipLine</span><span class="hljs-params">(List&lt;String&gt; keys)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (keys.size() &lt; <span class="hljs-number">1</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;String&gt; result = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(keys.size());</span><br><span class="line">        Map&lt;String, String&gt; resultMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;(keys.size());</span><br><span class="line">        <span class="hljs-keyword">if</span> (keys.size() == <span class="hljs-number">1</span>) &#123;</span><br><span class="line">            result.add(jedisCluster.get(keys.get(<span class="hljs-number">0</span>)));</span><br><span class="line">            <span class="hljs-keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//保存地址+端口和命令的映射</span></span><br><span class="line">        Map&lt;JedisPool, List&lt;String&gt;&gt; jedisPoolMap = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        List&lt;String&gt; keyList = <span class="hljs-keyword">null</span>;</span><br><span class="line">        JedisPool currentJedisPool = <span class="hljs-keyword">null</span>;</span><br><span class="line">        Pipeline currentPipeline = <span class="hljs-keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">for</span> (String key : keys) &#123;</span><br><span class="line">            <span class="hljs-comment">//cuteculate hash</span></span><br><span class="line">            <span class="hljs-keyword">int</span> crc = JedisClusterCRC16.getSlot(key);</span><br><span class="line">            <span class="hljs-comment">//通过哈希槽获取节点的连接</span></span><br><span class="line">            currentJedisPool = cache.getSlotPool(crc);</span><br><span class="line"></span><br><span class="line">            <span class="hljs-keyword">if</span> (jedisPoolMap.containsKey(currentJedisPool)) &#123;</span><br><span class="line">                jedisPoolMap.get(currentJedisPool).add(key);</span><br><span class="line">            &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">                keyList = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                keyList.add(key);</span><br><span class="line">                jedisPoolMap.put(currentJedisPool, keyList);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//保存结果</span></span><br><span class="line">        List&lt;Object&gt; res;</span><br><span class="line">        <span class="hljs-comment">//执行</span></span><br><span class="line">        <span class="hljs-keyword">for</span> (Map.Entry&lt;JedisPool, List&lt;String&gt;&gt; entry : jedisPoolMap.entrySet()) &#123;</span><br><span class="line">            <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">                currentJedisPool = entry.getKey();</span><br><span class="line">                keyList = entry.getValue();</span><br><span class="line">                <span class="hljs-comment">//获取pipeline</span></span><br><span class="line">                Jedis jedis = currentJedisPool.getResource();</span><br><span class="line">                currentPipeline = jedis.pipelined();</span><br><span class="line">                <span class="hljs-keyword">for</span> (String key : keyList) &#123;</span><br><span class="line">                    currentPipeline.get(key);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="hljs-comment">//从pipeline中获取结果</span></span><br><span class="line">                res = currentPipeline.syncAndReturnAll();</span><br><span class="line">                currentPipeline.close();</span><br><span class="line">                jedis.close();</span><br><span class="line">                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; keyList.size(); i++) &#123;</span><br><span class="line">                    resultMap.put(keyList.get(i), res.get(i) == <span class="hljs-keyword">null</span> ? <span class="hljs-keyword">null</span> : res.get(i).toString());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                logger.error(<span class="hljs-string">"getPipLine error."</span>, e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-comment">//sort</span></span><br><span class="line">        <span class="hljs-keyword">for</span> (String key : keys) &#123;</span><br><span class="line">            result.add(resultMap.containsKey(key) ? resultMap.get(key) : <span class="hljs-keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">destroy</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            jedisCluster.close();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p>1、<a href="https://juejin.im/post/5c1bb40a6fb9a049f36211b0#heading-9" target="_blank" rel="noopener">玩转Redis集群之Cluster</a></p>
+<p>2、<a href="https://www.cnblogs.com/chenmh/p/5578376.html" target="_blank" rel="noopener">Redis哨兵模式实现主从切换</a></p>
+<p>3、<a href="https://juejin.im/post/5b8fc5536fb9a05d2d01fb11#heading-30" target="_blank" rel="noopener">深入剖析Redis系列(三) - Redis集群模式搭建与原理详解</a></p>
 
         </div>
         
@@ -136,7 +194,7 @@
             <div class="level-start">
                 <div class="level-item">
                     <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link" href="/tags/开发工具/">开发工具</a>
+                    <a class="has-link-grey -link" href="/tags/Spring/">Spring</a>
                 </div>
             </div>
         </div>
@@ -176,17 +234,10 @@
 <div class="card card-transparent">
     <div class="level post-navigation is-flex-wrap is-mobile">
         
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/04/13/search/Lucene分词原理研究/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">Lucence分词原理研究</span>
-            </a>
-        </div>
-        
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/01/21/ml/阿里巴巴LTR Qcon分享笔记/">
-                <span class="level-item">阿里巴巴LTR Qcon分享笔记</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/">
+                <span class="level-item">跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -205,7 +256,7 @@
  <script src="https://billts.site/js/gitment.js"></script>
  <script>
  var gitment = new Gitment({
- 	id: 'da41f4742d3dfa16cf3173262b3d245b',
+ 	id: 'b34a08049e1fabbb2bdfd867390756b5',
      owner: 'siyuanWang',
      repo: 'blog_issue',
      oauth: {
@@ -312,6 +363,50 @@
 
     
         
+
+    <div class="card widget" id="toc">
+        <div class="card-content">
+            <div class="menu">
+                <h3 class="menu-label">
+                    目录
+                </h3>
+                <ul class="menu-list"><li>
+        <a class="is-flex" href="#Redis常用模式">
+        <span class="has-mr-6">1</span>
+        <span>Redis常用模式</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#主从模式">
+        <span class="has-mr-6">1.1</span>
+        <span>主从模式</span>
+        </a></li><li>
+        <a class="is-flex" href="#集群模式">
+        <span class="has-mr-6">1.2</span>
+        <span>集群模式</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#集群模式数据分布">
+        <span class="has-mr-6">2</span>
+        <span>集群模式数据分布</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#数据分布理论">
+        <span class="has-mr-6">2.1</span>
+        <span>数据分布理论</span>
+        </a></li><li>
+        <a class="is-flex" href="#Redis集群的功能限制">
+        <span class="has-mr-6">2.2</span>
+        <span>Redis集群的功能限制</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#Jedis经典实现">
+        <span class="has-mr-6">3</span>
+        <span>Jedis经典实现</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考文档">
+        <span class="has-mr-6">4</span>
+        <span>参考文档</span>
+        </a></li></ul>
+            </div>
+        </div>
+    </div>
+
     
         
 <div class="card widget">
@@ -1642,7 +1737,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="Charles搭建网络抓包环境" height="28">
+                    <img src="/images/logo.svg" alt="Jedis集群模式经典实现" height="28">
                 
                 </a>
                 <p class="is-size-7">
