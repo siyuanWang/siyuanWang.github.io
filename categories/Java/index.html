@@ -88,6 +88,59 @@
     
 <div class="card">
     
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    22 分钟 读完 (大约 3272 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/12/12/db/Mysql高可用架构总结/">Mysql高可用架构总结</a>
+            
+        </h1>
+        <div class="content">
+            <p>为了创建高可用数据库系统，传统的实现方式是创建一个或多个备用的数据库实例，MySQL5.7新引入了Group Replication，用于搭建更高事务一致性的高可用数据库集群系统。<br></p>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/12/12/db/Mysql高可用架构总结/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
     <div class="card-image">
         <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="image is-7by1">
             <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/redis.jpg" alt="Jedis集群模式经典实现">
@@ -780,90 +833,6 @@
 
 
 
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-12-11T10:33:16.000Z">2018-12-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    13 分钟 读完 (大约 1921 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/12/11/java/java动态代理/">Java动态代理</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>代理模式给某一个对象提供一个代理对象，并由代理对象控制对原对象的引用。通俗的来讲代理模式就是我们生活中常见的中介。</p>
-<p>举一个例子：老师要批作业，可以找学习委员代收，学一委员整理好之后，再送到老师的办公室。这个场景中，学习委员就是一个代理。</p>
-<p>##为什么要用代理模式</p>
-<ul>
-<li><strong>中介隔离作用：</strong>在某些情况下，一个客户类不想或者不能直接引用一个委托对象，而代理类对象可以在客户类和委托对象之间起到中介的作用，其特征是代理类和委托类实现相同的接口。</li>
-<li><strong>开闭原则，增加功能：</strong>代理类除了是客户类和委托类的中介之外，我们还可以通过给代理类增加额外的功能来扩展委托类的功能，这样做我们只需要修改代理类而不需要再修改委托类，符合代码设计的开闭原则。代理类主要负责为委托类预处理消息、过滤消息、把消息转发给委托类，以及事后对返回结果的处理等。代理类本身并不真正实现服务，而是同过调用委托类的相关方法，来提供特定的服务。真正的业务功能还是由委托类来实现，但是可以在业务功能执行的前后加入一些公共的服务。例如我们想给项目加入缓存、日志这些功能，我们就可以使用代理类来完成，而没必要打开已经封装好的委托类。</li>
-</ul>
-<h2 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h2><p>静态代理，就是采用代理模式思想，通过硬编码定义一个代理类，来实现代理的功能。由于静态代理灵活性较弱，在实际应用中，大多数采用动态代理模式。</p>
-<h2 id="动态代理模式"><a href="#动态代理模式" class="headerlink" title="动态代理模式"></a>动态代理模式</h2><h3 id="jdk动态代理"><a href="#jdk动态代理" class="headerlink" title="jdk动态代理"></a>jdk动态代理</h3><p>Jdk动态代理是基于接口的。</p>
-<ul>
-<li>Step1 定义一个interface Hello</li>
-</ul>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sayHello</span><span class="hljs-params">(String str)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Step2 定义HelloImpl</li>
-</ul>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Hello</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span>[] array;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">HelloImpl</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.array = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[<span class="hljs-number">1024</span>*<span class="hljs-number">10</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">sayHello</span><span class="hljs-params">(String str)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="hljs-string">"hello "</span> + str);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Step3 实现InvocationHandler的invoke方法</li>
-</ul>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LogInvocationHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">InvocationHandler</span> </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> Hello hello;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">LogInvocationHandler</span><span class="hljs-params">(Hello hello)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">this</span>.hello = hello;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">invoke</span><span class="hljs-params">(Object proxy, Method method, Object[] args)</span> <span class="hljs-keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">if</span> (<span class="hljs-string">"sayHello"</span>.equals(method.getName())) &#123;</span><br><span class="line">            System.out.println(<span class="hljs-string">"You said: "</span> + Arrays.toString(args));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="hljs-keyword">return</span> method.invoke(hello, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Object proxy = Proxy.newProxyInstance(LogInvocationHandler.class.getClassLoader(), <span class="hljs-comment">// 1. 类加载器</span></span><br><span class="line">                <span class="hljs-keyword">new</span> Class&lt;?&gt;[]&#123;Hello.class&#125;, <span class="hljs-comment">// 2. 代理需要实现的接口，可以有多个</span></span><br><span class="line">                <span class="hljs-keyword">new</span> LogInvocationHandler(<span class="hljs-keyword">new</span> HelloImpl()));<span class="hljs-comment">// 3. 方法调用的实际处理者</span></span><br><span class="line"></span><br><span class="line">        Hello hello = (Hello) proxy;</span><br><span class="line">        hello.sayHello(<span class="hljs-string">"world"</span>);</span><br><span class="line">        System.out.println(hello);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但是Jdk动态代理使用上，有局限性。不能所有的类，都要实现一个interface，这会大大增加代码的冗余。如果使用继承的话，就能够解决这个问题。</p>
-<h3 id="CGLIB"><a href="#CGLIB" class="headerlink" title="CGLIB"></a>CGLIB</h3><p>cglib通过继承来实现动态代理，cglib的底层实现，是基于节码处理框架ASM，来转换字节码并生成新的类。不鼓励直接使用ASM，因为它要求你必须对JVM内部结构包括class文件的格式和指令集都很熟悉。如下是class文件的格式。</p>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">ClassFile &#123; </span><br><span class="line">    u4 magic; </span><br><span class="line">    u2 minor_version; </span><br><span class="line">    u2 major_version; </span><br><span class="line">    u2 constant_pool_count; </span><br><span class="line">    cp_info constant_pool[constant_pool_count-<span class="hljs-number">1</span>]; </span><br><span class="line">    u2 access_flags; </span><br><span class="line">    u2 this_class; </span><br><span class="line">    u2 super_class; </span><br><span class="line">    u2 interfaces_count; </span><br><span class="line">    u2 interfaces[interfaces_count]; </span><br><span class="line">    u2 fields_count; </span><br><span class="line">    field_info fields[fields_count]; </span><br><span class="line">    u2 methods_count; </span><br><span class="line">    method_info methods[methods_count]; </span><br><span class="line">    u2 attributes_count; </span><br><span class="line">    attribute_info attributes[attributes_count]; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">magic： 作为一个魔数，确定这个文件是否是一个能被虚拟机接受的<span class="hljs-class"><span class="hljs-keyword">class</span>文件，值固定为0<span class="hljs-title">xCAFEBABE</span>。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">minor_version</span>，<span class="hljs-title">major_version</span>：分别表示<span class="hljs-title">class</span>文件的副，主版本号，不同版本的虚拟机实现支持的<span class="hljs-title">Class</span>文件版本号不同。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">constant_pool_count</span>：常量池计数器，<span class="hljs-title">constant_pool_count</span>的值等于常量池表中的成员数加1。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">constant_pool</span>：常量池，<span class="hljs-title">constant_pool</span>是一种表结构，包含<span class="hljs-title">class</span>文件结构及其子结构中引用的所有字符常量、类或接口名、字段名和其他常量。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">access_flags</span>：<span class="hljs-title">access_flags</span>是一种访问标志，表示这个类或者接口的访问权限及属性，包括有<span class="hljs-title">ACC_PUBLIC</span>，<span class="hljs-title">ACC_FINAL</span>，<span class="hljs-title">ACC_SUPER</span>等等。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">this_class</span>：类索引，指向常量池表中项的一个索引。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">super_class</span>：父类索引，这个值必须为0或者是对常量池中项的一个有效索引值，如果为0，表示这个<span class="hljs-title">class</span>只能是<span class="hljs-title">Object</span>类，只有它是唯一没有父类的类。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">interfaces_count</span>：接口计算器，表示当前类或者接口的直接父接口数量。</span></span><br><span class="line">interfaces[]：接口表，里面的每个成员的值必须是一个对常量池表中项的一个有效索引值。</span><br><span class="line">fields_count：字段计算器，表示当前<span class="hljs-class"><span class="hljs-keyword">class</span>文件中<span class="hljs-title">fields</span>表的成员个数，每个成员都是一个<span class="hljs-title">field_info</span>。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">fields</span>：字段表，每个成员都是一个完整的<span class="hljs-title">fields_info</span>结构，表示当前类或接口中某个字段的完整描述，不包括父类或父接口的部分。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">methods_count</span>：方法计数器，表示当前<span class="hljs-title">class</span>文件<span class="hljs-title">methos</span>表的成员个数。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">methods</span>：方法表，每个成员都是一个完整的<span class="hljs-title">method_info</span>结构，可以表示类或接口中定义的所有方法，包括实例方法，类方法，以及类或接口初始化方法。</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-title">attributes_count</span>：属性表，其中是每一个<span class="hljs-title">attribute_info</span>，包含以下这些属性，<span class="hljs-title">InnerClasses</span>，<span class="hljs-title">EnclosingMethod</span>，<span class="hljs-title">Synthetic</span>，<span class="hljs-title">Signature</span>，<span class="hljs-title">Annonation</span>等。</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * 动态代理不能是final类</span></span><br><span class="line"><span class="hljs-comment"> * 如果是final类，会抛出异常：java.lang.IllegalArgumentException: Cannot subclass final class com.wsy.learn.jvm.autoproxy.cglib.HelloConcrete</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloConcrete</span> </span>&#123;</span><br><span class="line">    <span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment">     * 注意，此处如果定义的是final方法，则不会进入intercept方法进行方法增强</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> str</span></span><br><span class="line"><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span></span><br><span class="line"><span class="hljs-comment">     */</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> String <span class="hljs-title">sayHello</span><span class="hljs-params">(String str)</span> </span>&#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-string">"HelloConcrete: "</span> + str;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyMethodInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">intercept</span><span class="hljs-params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="hljs-keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        System.out.println(<span class="hljs-string">"You said: "</span> + Arrays.toString(args));</span><br><span class="line">        <span class="hljs-keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Enhancer enhancer = <span class="hljs-keyword">new</span> Enhancer();</span><br><span class="line">        enhancer.setSuperclass(HelloConcrete.class);</span><br><span class="line">        enhancer.setCallback(<span class="hljs-keyword">new</span> MyMethodInterceptor());</span><br><span class="line"></span><br><span class="line">        HelloConcrete hello = (HelloConcrete)enhancer.create();</span><br><span class="line">        System.out.println(hello.sayHello(<span class="hljs-string">"I love you!"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="动态代理最佳实践-SpringAOP"><a href="#动态代理最佳实践-SpringAOP" class="headerlink" title="动态代理最佳实践 - SpringAOP"></a>动态代理最佳实践 - SpringAOP</h1><p>关于什么是SpringAOP，在此不继续阐述。</p>
-<p>springAOP既采用了jdk proxy，也采用了cglib。<br>spring会根据情况，来选择jdk动态代理还是cglib动态代理。</p>
-<ul>
-<li>如果要代理的对象实现了接口，则默认采用jdk proxy。</li>
-<li>如果要代理的对象实现了接口，也可以强制使用cglib。需要配置&lt;aop:aspectj-autoproxy proxy-target-class=”true”/&gt;</li>
-<li>如果要代理的对象没有实现接口，则采用cglib动态代理。</li>
-<li>但是注意，敲黑板！敲黑板！敲黑板！<ul>
-<li>采用cglib的前提下，<strong>final类不能进行动态代理</strong>会抛出异常java.lang.IllegalArgumentException: Cannot subclass final class  xxx（final类不能被继承，所以你懂得）。</li>
-<li>采用cglib的前提下，final方法也不能进行动态代理，不过不会抛出异常，而是直接跳过功能增强。</li>
-<li>采用jdk proxy，final类和final方法都能正常工作。</li>
-</ul>
-</li>
-</ul>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -927,7 +896,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        52
+                        53
                     </p>
                 </div>
             </div>
@@ -947,7 +916,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        50
+                        53
                     </p>
                 </div>
             </div>
@@ -991,7 +960,7 @@
                 <span class="level-item">Java</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">17</span>
+                <span class="level-item tag">18</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/SpringCloud/">
@@ -1052,7 +1021,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 17.14px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 12.86px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/函数式编程/" style="font-size: 10px;">函数式编程</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/工程架构/" style="font-size: 10px;">工程架构</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
+        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/MGR/" style="font-size: 10px;">MGR</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 17.14px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 12.86px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/主从数据库架构/" style="font-size: 10px;">主从数据库架构</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/函数式编程/" style="font-size: 10px;">函数式编程</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/工程架构/" style="font-size: 10px;">工程架构</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
     </div>
 </div>
     
@@ -1064,6 +1033,25 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/12/12/db/Mysql高可用架构总结/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Mysql高可用架构总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time></div>
+                    <a href="/2019/12/12/db/Mysql高可用架构总结/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Mysql高可用架构总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -1141,25 +1129,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/10/28/java/Java函数式编程总结/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/lambda.jpg" alt="Java函数式编程总结">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-28T12:33:16.000Z">2019-10-28</time></div>
-                    <a href="/2019/10/28/java/Java函数式编程总结/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Java函数式编程总结</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -1177,7 +1146,7 @@
                     <span class="level-item">十二月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1408,6 +1377,20 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/MGR/">
+                        <span class="tag">MGR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Mysql/">
+                        <span class="tag">Mysql</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/Nginx/">
                         <span class="tag">Nginx</span>
                         <span class="tag is-grey">1</span>
@@ -1523,6 +1506,13 @@
                     <a class="tags has-addons" href="/tags/webFlux/">
                         <span class="tag">webFlux</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/主从数据库架构/">
+                        <span class="tag">主从数据库架构</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1690,6 +1680,25 @@
         
         <article class="media">
             
+            <a href="/2019/12/12/db/Mysql高可用架构总结/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Mysql高可用架构总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time></div>
+                    <a href="/2019/12/12/db/Mysql高可用架构总结/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Mysql高可用架构总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/redis.jpg" alt="Jedis集群模式经典实现">
@@ -1764,25 +1773,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/10/28/java/Java函数式编程总结/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/lambda.jpg" alt="Java函数式编程总结">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-28T12:33:16.000Z">2019-10-28</time></div>
-                    <a href="/2019/10/28/java/Java函数式编程总结/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Java函数式编程总结</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -1800,7 +1790,7 @@
                     <span class="level-item">十二月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -2031,6 +2021,20 @@
                 </div>
                 
                 <div class="control">
+                    <a class="tags has-addons" href="/tags/MGR/">
+                        <span class="tag">MGR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Mysql/">
+                        <span class="tag">Mysql</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
                     <a class="tags has-addons" href="/tags/Nginx/">
                         <span class="tag">Nginx</span>
                         <span class="tag is-grey">1</span>
@@ -2146,6 +2150,13 @@
                     <a class="tags has-addons" href="/tags/webFlux/">
                         <span class="tag">webFlux</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/主从数据库架构/">
+                        <span class="tag">主从数据库架构</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
