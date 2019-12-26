@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 3.8.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>分布式系统分片方法研究 - Crowley技术博客</title>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="分布式系统分片方法研究" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">Home</a>
+                
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                
+                <a class="navbar-item"
+                href="/categories">分类</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/about">关于</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-12-13T12:33:16.000Z">2019-12-13</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/软件架构/">软件架构</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    31 分钟 读完 (大约 4641 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                分布式系统分片方法研究
+            
+        </h1>
+        <div class="content">
+            <p>数据分片的基本算法介绍，以及数据分片在Redis中是如何运用的。<br><a id="more"></a></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文结合了<a href="https://www.cnblogs.com/xybaby/p/7076731.html#_label_7" target="_blank" rel="noopener">带着问题学习分布式系统之数据分片</a>和翻译了<a href="https://redis.io/topics/partitioning" target="_blank" rel="noopener"> Partitioning: how to split data among multiple Redis instances.</a>，通过对Redis数据分片的学习，举一反三其他的分布式数据分片的实现。</p>
+<h1 id="分片的作用"><a href="#分片的作用" class="headerlink" title="分片的作用"></a>分片的作用</h1><p>可能很多人搞不清楚数据分片和数据冗余的区别，下图便很形象的说明了什么是<strong>数据分片</strong>，什么是<strong>数据冗余</strong>。</p>
+<p>其中，数据集A、B属于数据分片，原始数据被拆分成两个正交子集分布在两个节点上。而数据集C属于数据冗余，同一份完整的数据在两个节点都有存储。当然，在实际的分布式系统中，数据分片和数据冗余一般都是共存的。</p>
+<p><img src="http://syxtt.xin/image/blog/%E6%95%B0%E6%8D%AE%E5%88%86%E7%89%87%E5%92%8C%E6%95%B0%E6%8D%AE%E5%86%97%E4%BD%99.png" alt="数据分片和数据冗余"></p>
+<p>何为数据分片（segment，fragment， shard， partition），就是按照一定的规则，将数据集划分成相互独立、正交的数据子集，然后将数据子集分布到不同的节点上。注意，这里提到，数据分片需要按照一定的规则，不同的分布式应用有不同的规则，但都遵循同样的原则：按照最主要、最频繁使用的访问方式来分片。</p>
+<p>分片在分布式系统中，主要为了解决两大问题：</p>
+<p>1、用多台服务器的内存和磁盘来存储更多的数据。没有分片你的数据需求将受到单机资源的限制。</p>
+<p>2、它允许将计算能力扩展到多核和多台计算机，并将网络带宽扩展到多台计算机和网络适配器。</p>
+<h1 id="分片基础算法"><a href="#分片基础算法" class="headerlink" title="分片基础算法"></a>分片基础算法</h1><p>对于数据分片的任何算法或思想，都需要思考如下几个问题：</p>
+<ul>
+<li>具体如何划分原始数据集</li>
+<li>当原问题的规模变大的时候，能否通过增加节点来动态适应？</li>
+<li>当某个节点故障的时候，能否将该节点上的任务均衡的分摊到其他节点？</li>
+<li>对于可修改的数据（比如数据库数据），如果其节点数据变大，能否以及如何将部分数据迁移到其他负载较小的节点，及达到动态均衡的效果？</li>
+<li>元数据的管理（即数据与节点对应关系）规模？元数据更新的频率及复杂度？元数据的一致性保证？</li>
+</ul>
+<p>　为了后面分析不同的数据分片方式，假设有三个物理节点，编号为N0， N1， N2；有以下几条记录：</p>
+<p>　　R0: {id: 95, name: ‘aa’, tag:’older’}<br>　　R1: {id: 302, name: ‘bb’,}<br>　　R2: {id: 759, name: ‘aa’,}<br>　　R3: {id: 607, name: ‘dd’, age: 18}<br>　　R4: {id: 904, name: ‘ff’,}<br>　　R5: {id: 246, name: ‘gg’,}<br>　　R6: {id: 148, name: ‘ff’,}<br>　　R7: {id: 533, name: ‘kk’,}</p>
+<p>##Range Partitioning</p>
+<p>可以指定N0节点负责id在区间[0,333]，N1节点负责id在区间[334,666]，N3节点负责id在区间[667, 1000]。如下示意图所示，数据分布到三个数据节点上。</p>
+<p><img src="http://syxtt.xin/image/blog/RangePartition%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="Range Partition示意图"></p>
+<p>这种方式的优点是非常的简单，首先选择一个特征键，然后对特征键划分区间，数据只放到满足区间的节点上。但是这种方式的缺点也很多：</p>
+<ul>
+<li>如果数据的特征键在某一个区间内特别密集，在其他的区间内又特别的稀疏，会导致数据倾斜，使得数据多的节点成为瓶颈，其他数据少的节点又不能发挥其作用。</li>
+<li>扩容缩容平衡数据（rebalance）成本高，有可能需要移动全部分片的数据。</li>
+</ul>
+<p>##Hash Partitioning</p>
+<p>Hash分区跟Range Partitioning其实比较相似，只不过把区间，换成了哈希函数取余，<code>hash(key)%mod</code>，mod是节点的数量，取余的值就代表数据要放入到哪个节点中。</p>
+<p>Hash分区的优点也是比较简单，缺点同Range Partitioning一致，只不过如果成倍增加节点数量的话，这样概率上来讲至多有50%的数据迁移。</p>
+<h2 id="Consistent-Hashing"><a href="#Consistent-Hashing" class="headerlink" title="Consistent Hashing"></a>Consistent Hashing</h2><p><a href="https://en.wikipedia.org/wiki/Consistent_hashing" target="_blank" rel="noopener">一致性hash</a>是将数据按照特征值映射到一个首尾相接的hash环上，同时也将节点（按照IP地址或者机器名hash）映射到这个环上。对于数据，从数据在环上的位置开始，顺时针找到的第一个节点即为数据的存储节点。这里仍然以上述的数据为例，假设id的范围为［0， 1000］，N0， N1， N2在环上的位置分别是100， 400， 800，那么hash环示意图与数据的分布如下：</p>
+<p><img src="http://syxtt.xin/image/blog/%E4%B8%80%E8%87%B4%E6%80%A7hash%E7%8E%AF.png" alt="一致性hash环"></p>
+<p><img src="http://syxtt.xin/image/blog/%E4%B8%80%E8%87%B4%E6%80%A7hash%E7%BB%93%E6%9E%9C.png" alt="一致性hash环处理结果"></p>
+<p>可以看到相比于上述的hash方式，一致性hash方式需要维护的元数据额外包含了节点在环上的位置，但这个数据量也是非常小的。</p>
+<p>一致性hash在增加或者删除节点的时候，受到影响的数据是比较有限的，比如这里增加一个节点N3，其在环上的位置为600，因此，原来N2负责的范围段（400， 800］现在由N3（400， 600] N2(600, 800]负责，因此只需要将记录R7(id:533) 从N2,迁移到N3:</p>
+<p>不难发现一致性hash方式在增删的时候只会影响到hash环上相邻的节点，不会发生大规模的数据迁移。</p>
+<p>但是，一致性hash方式在增加节点的时候，只能分摊一个已存在节点的压力；同样，在其中一个节点挂掉的时候，该节点的压力也会被全部转移到下一个节点。我们希望的是“一方有难，八方支援”，因此需要在增删节点的时候，已存在的所有节点都能参与响应，达到新的均衡状态。</p>
+<p>因此，在实际工程中，一般会引入虚拟节点（virtual node）的概念。即不是将物理节点映射在hash换上，而是将虚拟节点映射到hash环上。虚拟节点的数目远大于物理节点，因此一个物理节点需要负责多个虚拟节点的真实存储。操作数据的时候，先通过hash环找到对应的虚拟节点，再通过虚拟节点与物理节点的映射关系找到对应的物理节点。</p>
+<p>引入虚拟节点后的一致性hash需要维护的元数据也会增加：第一，虚拟节点在hash环上的问题，且虚拟节点的数目又比较多；第二，虚拟节点与物理节点的映射关系。但带来的好处是明显的，当一个物理节点失效时，hash环上多个虚拟节点失效，对应的压力也就会发散到多个其余的虚拟节点，事实上也就是多个其余的物理节点。在增加物理节点的时候同样如此。</p>
+<p>工程中，<a href="http://cloudgroup.neu.edu.cn/papers/cloud data storage/dynamo-sosp-2007.pdf" target="_blank" rel="noopener">Dynamo</a>、<a href="https://cassandra.apache.org/" target="_blank" rel="noopener">Cassandra</a>都使用了一致性hash算法，且在比较高的版本中都使用了虚拟节点的概念。在这些系统中，需要考虑综合考虑数据分布方式和数据副本，当引入数据副本之后，一致性hash方式也需要做相应的调整， 可以参加cassandra的相关文档。</p>
+<h2 id="Hash-Slot"><a href="#Hash-Slot" class="headerlink" title="Hash Slot"></a>Hash Slot</h2><p>虚拟槽就是在物理机的基础上，有虚拟出了远远大于物理机数量的虚拟槽位，数据是保存在虚拟槽位中的。如下图所示。</p>
+<p><img src="http://syxtt.xin/image/blog/%E8%99%9A%E6%8B%9F%E6%A7%BD%E5%92%8C%E8%8A%82%E7%82%B9%E5%85%B3%E7%B3%BB%E5%9B%BE.png" alt="虚拟槽示意图"></p>
+<p>虚拟槽的好处是当增加节点或者删除节点的时候，数据的压力能分布在多个虚拟槽中，而多个虚拟槽又分布到多个物理机中，这样会把压力均匀的分散到其他物理节点上。</p>
+<h2 id="Range-base"><a href="#Range-base" class="headerlink" title="Range base"></a>Range base</h2><p>简单来说，就是按照关键值划分成不同的区间，每个物理节点负责一个或者多个区间。其实这种方式跟一致性hash有点像，可以理解为物理节点在hash环上的位置是动态变化的。</p>
+<p>还是以上面的数据举例，三个节点的数据区间分别是N0(0, 200]， N1(200, 500]， N2(500, 1000]。那么数据分布如下：</p>
+<p><img src="http://syxtt.xin/image/blog/RangeBase%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="RangeBase示意图"></p>
+<p>注意，区间的大小不是固定的，每个数据区间的数据量与区间的大小也是没有关系的。比如说，一部分数据非常集中，那么区间大小应该是比较小的，即以数据量的大小为片段标准。在实际工程中，一个节点往往负责多个区间，每个区间成为一个块（chunk、block），每个块有一个阈值，当达到这个阈值之后就会分裂成两个块。这样做的目的在于当有节点加入的时候，可以快速达到均衡的目的。</p>
+<p>不知道读者有没有发现，如果一个节点负责的数据只有一个区间，range based与没有虚拟节点概念的一致性hash很类似；如果一个节点负责多个区间，range based与有虚拟节点概念的一致性hash很类似。</p>
+<p>range based的元数据管理相对复杂一些，需要记录每个节点的数据区间范围，特别单个节点对于多个区间的情况。而且，在数据可修改的情况下，如果块进行分裂，那么元数据中的区间信息也需要同步修改。</p>
+<p>range based这种数据分片方式应用非常广泛，比如MongoDB, PostgreSQL， HDFS。</p>
+<p>##总结</p>
+<p>对以上提到的分片方式进行简单总结，主要是针对提出的几个问题：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>映射难度</th>
+<th>元数据</th>
+<th>节点增删</th>
+<th>数据动态均衡</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Range partition</td>
+<td>简单</td>
+<td>非常简单，几乎不用修改</td>
+<td>需要迁移的数据比较多</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>hash方式</td>
+<td>简单</td>
+<td>非常简单，几乎不用修改</td>
+<td>需要迁移的数据比较多</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>consistent hash without virtual node</td>
+<td>简单</td>
+<td>比较简单，取决于节点规模，几乎不用修改</td>
+<td>增删节点的时候只影响hash环上相邻节点，但不能使所有节点都参与数据迁移过程</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>consistent hash  with virtual node</td>
+<td>中等</td>
+<td>稍微复杂一些，主要取决于虚拟节点规模，很少修改</td>
+<td>需要迁移的数据比较少，且所有节点都能贡献部分数据</td>
+<td>若支持（修改虚拟节点与物理节点映射关系）</td>
+</tr>
+<tr>
+<td>range based</td>
+<td>较为复杂</td>
+<td>取决于每个块的大小，一般来说规模较大；且修改频率较高</td>
+<td>需要迁移的数据比较少，且所有节点都能贡献部分数据</td>
+<td>支持，且比较容易</td>
+</tr>
+</tbody>
+</table>
+<p>上面的数据动态均衡，值得是上述问题的第4点，即如果某节点数据量变大，能否以及如何将部分数据迁移到其他负载较小的节点</p>
+<h1 id="不同的分片实现"><a href="#不同的分片实现" class="headerlink" title="不同的分片实现"></a>不同的分片实现</h1><h2 id="客户端分区-Client-side-partitioning"><a href="#客户端分区-Client-side-partitioning" class="headerlink" title="客户端分区(Client side partitioning)"></a>客户端分区(Client side partitioning)</h2><p>客户端直接选择出正确的节点（node）读或者写。Redis Cluster是客户端分区的一种实现。</p>
+<h2 id="代理分区-Proxy-assisted-partitioning"><a href="#代理分区-Proxy-assisted-partitioning" class="headerlink" title="代理分区(Proxy assisted partitioning)"></a>代理分区(Proxy assisted partitioning)</h2><p>客户端发送请求到Proxy服务，由代理服务端负责选择正确的节点并实现数据存储Server端的通信协议，代理把请求发送到数据存储Server端并返回数据给客户端（Client）。<a href="https://github.com/twitter/twemproxy" target="_blank" rel="noopener">twemproxy</a>实现了代理分区这种方式。</p>
+<p>##Query routing分区</p>
+<p>客户端发送请求到随机的节点B（node）上，接受到请求的实例负责确定正确的存储节点A，并把请求转发到A节点上，A节点处理完毕之后，返回结果到B，B返回结果到客户端。</p>
+<h1 id="分片的不利条件"><a href="#分片的不利条件" class="headerlink" title="分片的不利条件"></a>分片的不利条件</h1><p>1、事务处理异常的困难</p>
+<p>2、多个Key（multiple keys）同时操作讲很难支持。例如Redis Pipline功能，在Cluster模式默认是不支持的，当然如果能够知道每个key属于的具体节点，是可以实现多pipline同时更新的。</p>
+<p>3、分区的粒度是基于key的选定，如果这个key下是大数据结构，比如Set，List，Hash表，那么就很难利用分区的优势，数据将产生倾斜。</p>
+<p>4、数据处理更加复杂（is more complex）。数据分布到多个节点上，数据的维护工作将变得困难，并且数据恢复（recover）和备份（backup）的算法变得更加复杂，且空间复杂度和时间复杂度都会提升。比如，在Redis集群中，将持有更多的RDB/AOF文件，当备份数据时，需要聚合多个实例的文件。</p>
+<p>5、扩容和缩容变得很复杂（can be complex）。例如Redis Cluster支持大多数的增加或减少节点的数据平衡（rebalancing）问题，并对用户透明，但是客户端分区或者代理分区不支持动态透明的数据平衡，可以用<code>Pre-sharding</code>来讨巧的实现数据平衡。</p>
+<h1 id="数据存储还是缓存"><a href="#数据存储还是缓存" class="headerlink" title="数据存储还是缓存"></a>数据存储还是缓存</h1><p>尽管无论将Redis用作数据存储还是用作缓存，Redis中的分区在概念上都是相同的，但将其用作数据存储时存在很大的限制。 当Redis用作数据存储时，给定的Key必须始终映射到相同的Redis实例。 当Redis用作缓存时，如果给定的节点不可用，则使用不同的节点并不是什么大问题，因为我们希望提高系统的可用性（缓存穿透时系统来响应请求即可）。</p>
+<p>如果给定的key首选节点不可用，则一致性哈希实现通常可以切换到其他节点。同样，如果添加新节点，则部分key将开始存储在新节点上。</p>
+<p>这里主要的概念如下:</p>
+<ul>
+<li>如果Redis用作缓存扩容(scaling up)和缩容(scaling down)使用一致性hash是容易实现的</li>
+<li>如果将Redis用作存储，则使用固定的“key-node”映射(a fixed keys-to-nodes map )，因此节点数必须固定并且不能变化。 否则，需要一个能够在添加或删除节点时在节点之间重新平衡key的系统，并且目前只有Redis Cluster能够做到这一点-Redis Cluster于2015年4月1日全面可用并投入生产。</li>
+</ul>
+<h1 id="Redis分片实现方案总结"><a href="#Redis分片实现方案总结" class="headerlink" title="Redis分片实现方案总结"></a>Redis分片实现方案总结</h1><p>##Redis集群（Redis Cluster）</p>
+<p>Redis集群是最推荐的方式来实现数据分片和高可用。它已经在2015年就具备生产环境的要求。可以阅读<a href="https://redis.io/topics/cluster-tutorial" target="_blank" rel="noopener">官方文档</a>来了解更多信息。一旦Redis Cluster可用，并且如果兼容Redis Cluster的客户端可用于您的语言，则Redis Cluster将成为Redis分区的事实上的标准。</p>
+<p><strong>Redis Cluster分片的实现介于<em>query routing</em> 和 <em>client side partitioning</em>.</strong>Redis Cluster客户端是直连集群中的节点的（没有通过任何的其他代理，这点比Twemproxy要优），Redis Cluster在客户端的帮助下实现了混合形式的查询路由（请求不会从Redis实例直接转发到另一个实例，而是会将客户端重定向到正确的节点）。这种实现方式，使得Redis Cluster的情况下的性能不亚于单实例Redis。</p>
+<h2 id="Twemproxy"><a href="#Twemproxy" class="headerlink" title="Twemproxy"></a>Twemproxy</h2><p><a href="https://github.com/twitter/twemproxy" target="_blank" rel="noopener">Twemproxy</a>是Twitter开源的一款Redis主从代理中间件。在Redis Cluster出现之前，很多人和组织使用这款中间件。它跟Redis Cluster相比，不能满足在线的扩缩容(scaling up &amp; down)，并且每次请求都要经过一层代理，对性能也是有一定损耗的。</p>
+<h2 id="客户端一致性Hash"><a href="#客户端一致性Hash" class="headerlink" title="客户端一致性Hash"></a>客户端一致性Hash</h2><p>作为Twemproxy的替代方案，可以在客户端实现一致性hash路由算法，实现客户端路由，还可以使用其他的类似于一致性hash的其他算法。已经有很多Redis clients支持一致性hash的客户端路由，比如 <a href="https://github.com/redis/redis-rb" target="_blank" rel="noopener">Redis-rb</a> 和 <a href="https://github.com/nrk/predis" target="_blank" rel="noopener">Predis</a>.请参考所有的<a href="https://redis.io/clients" target="_blank" rel="noopener">客户端路由</a>来找到适合你的编程语言的选项。</p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a href="https://www.cnblogs.com/xybaby/p/7076731.html#_label_7" target="_blank" rel="noopener">带着问题学习分布式系统之数据分片</a></p>
+<p><a href="https://redis.io/topics/partitioning" target="_blank" rel="noopener"> Partitioning: how to split data among multiple Redis instances.</a></p>
+<p><a href="https://www.cnblogs.com/kevingrace/p/7955725.html" target="_blank" rel="noopener">Redis Cluster集群知识学习总结</a></p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/range-based/">range based</a>, <a class="has-link-grey -link" href="/tags/一致性Hash/">一致性Hash</a>, <a class="has-link-grey -link" href="/tags/数据分片/">数据分片</a>, <a class="has-link-grey -link" href="/tags/虚拟槽/">虚拟槽</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        <div class="social-share"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css">
+<script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="http://syxtt.xin/WechatIMG4.jpeg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/12/12/db/Mysql高可用架构总结/">
+                <span class="level-item">Mysql高可用架构总结</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+ <div id="gitment-container"></div>
+ <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
+ <script src="https://billts.site/js/gitment.js"></script>
+ <script>
+ var gitment = new Gitment({
+ 	id: '401638344be44ecfeb4c6d25e53b8997',
+     owner: 'siyuanWang',
+     repo: 'blog_issue',
+     oauth: {
+         client_id: 'e3e1d2680a4935081163',
+         client_secret: '364eb18119bda5afd5daa7c6fa7129c792c36650',
+     },
+ });
+ gitment.render('gitment-container');
+ </script>
+
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                    <figure class="image is-128x128 has-mb-6">
+                        <img class="" src="http://syxtt.xin/image/blog/logo/%E5%8D%9A%E5%AE%A2Logo.jpg" alt="Mr.Crowley">
+                    </figure>
+                    
+                    <p class="is-size-4 is-block">
+                        Mr.Crowley
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        搜索架构师，微服务架构师
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>中国 北京</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        54
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        7
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        57
+                    </p>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/siyuanWang" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Github" href="https://github.com/siyuanWang">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+
+    
+        
+
+    <div class="card widget" id="toc">
+        <div class="card-content">
+            <div class="menu">
+                <h3 class="menu-label">
+                    目录
+                </h3>
+                <ul class="menu-list"><li>
+        <a class="is-flex" href="#前言">
+        <span class="has-mr-6">1</span>
+        <span>前言</span>
+        </a></li><li>
+        <a class="is-flex" href="#分片的作用">
+        <span class="has-mr-6">2</span>
+        <span>分片的作用</span>
+        </a></li><li>
+        <a class="is-flex" href="#分片基础算法">
+        <span class="has-mr-6">3</span>
+        <span>分片基础算法</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Consistent-Hashing">
+        <span class="has-mr-6">3.1</span>
+        <span>Consistent Hashing</span>
+        </a></li><li>
+        <a class="is-flex" href="#Hash-Slot">
+        <span class="has-mr-6">3.2</span>
+        <span>Hash Slot</span>
+        </a></li><li>
+        <a class="is-flex" href="#Range-base">
+        <span class="has-mr-6">3.3</span>
+        <span>Range base</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#不同的分片实现">
+        <span class="has-mr-6">4</span>
+        <span>不同的分片实现</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#客户端分区-Client-side-partitioning">
+        <span class="has-mr-6">4.1</span>
+        <span>客户端分区(Client side partitioning)</span>
+        </a></li><li>
+        <a class="is-flex" href="#代理分区-Proxy-assisted-partitioning">
+        <span class="has-mr-6">4.2</span>
+        <span>代理分区(Proxy assisted partitioning)</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#分片的不利条件">
+        <span class="has-mr-6">5</span>
+        <span>分片的不利条件</span>
+        </a></li><li>
+        <a class="is-flex" href="#数据存储还是缓存">
+        <span class="has-mr-6">6</span>
+        <span>数据存储还是缓存</span>
+        </a></li><li>
+        <a class="is-flex" href="#Redis分片实现方案总结">
+        <span class="has-mr-6">7</span>
+        <span>Redis分片实现方案总结</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Twemproxy">
+        <span class="has-mr-6">7.1</span>
+        <span>Twemproxy</span>
+        </a></li><li>
+        <a class="is-flex" href="#客户端一致性Hash">
+        <span class="has-mr-6">7.2</span>
+        <span>客户端一致性Hash</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#引用">
+        <span class="has-mr-6">8</span>
+        <span>引用</span>
+        </a></li></ul>
+            </div>
+        </div>
+    </div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Java/">
+            <span class="level-start">
+                <span class="level-item">Java</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">18</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/SpringCloud/">
+            <span class="level-start">
+                <span class="level-item">SpringCloud</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">12</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/大数据技术/">
+            <span class="level-start">
+                <span class="level-item">大数据技术</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/开发工具/">
+            <span class="level-start">
+                <span class="level-item">开发工具</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/搜索/">
+            <span class="level-start">
+                <span class="level-item">搜索</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">13</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/">
+            <span class="level-start">
+                <span class="level-item">机器学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/软件架构/">
+            <span class="level-start">
+                <span class="level-item">软件架构</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/6entinel/" style="font-size: 10px;">6entinel</a> <a href="/tags/APR/" style="font-size: 10px;">APR</a> <a href="/tags/Apollo/" style="font-size: 10px;">Apollo</a> <a href="/tags/BM25/" style="font-size: 10px;">BM25</a> <a href="/tags/ElasticSearch/" style="font-size: 18.57px;">ElasticSearch</a> <a href="/tags/Embedded-Tomcat/" style="font-size: 10px;">Embedded Tomcat</a> <a href="/tags/HAProxy/" style="font-size: 10px;">HAProxy</a> <a href="/tags/Hbase/" style="font-size: 17.14px;">Hbase</a> <a href="/tags/IK/" style="font-size: 10px;">IK</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/LTR/" style="font-size: 10px;">LTR</a> <a href="/tags/LVS/" style="font-size: 10px;">LVS</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/MGR/" style="font-size: 10px;">MGR</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 17.14px;">Spring</a> <a href="/tags/Spring-Boot/" style="font-size: 12.86px;">Spring Boot</a> <a href="/tags/Spring-Cloud/" style="font-size: 15.71px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 17.14px;">Spring Cloud Gateway</a> <a href="/tags/SpringCloud/" style="font-size: 10px;">SpringCloud</a> <a href="/tags/TF-IDF/" style="font-size: 10px;">TF-IDF</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/jenkins/" style="font-size: 10px;">jenkins</a> <a href="/tags/jmeter/" style="font-size: 10px;">jmeter</a> <a href="/tags/lucene/" style="font-size: 12.86px;">lucene</a> <a href="/tags/range-based/" style="font-size: 10px;">range based</a> <a href="/tags/reactor/" style="font-size: 10px;">reactor</a> <a href="/tags/spring/" style="font-size: 11.43px;">spring</a> <a href="/tags/spring-boot/" style="font-size: 11.43px;">spring-boot</a> <a href="/tags/spring-cloud/" style="font-size: 11.43px;">spring-cloud</a> <a href="/tags/webFlux/" style="font-size: 11.43px;">webFlux</a> <a href="/tags/一致性Hash/" style="font-size: 10px;">一致性Hash</a> <a href="/tags/主从数据库架构/" style="font-size: 10px;">主从数据库架构</a> <a href="/tags/倒排索引/" style="font-size: 10px;">倒排索引</a> <a href="/tags/函数式编程/" style="font-size: 10px;">函数式编程</a> <a href="/tags/分词/" style="font-size: 10px;">分词</a> <a href="/tags/反应式编程/" style="font-size: 14.29px;">反应式编程</a> <a href="/tags/向量空间模型/" style="font-size: 10px;">向量空间模型</a> <a href="/tags/工厂模式/" style="font-size: 10px;">工厂模式</a> <a href="/tags/工程架构/" style="font-size: 10px;">工程架构</a> <a href="/tags/布尔模型/" style="font-size: 10px;">布尔模型</a> <a href="/tags/建造者模式/" style="font-size: 10px;">建造者模式</a> <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a> <a href="/tags/微服务/" style="font-size: 11.43px;">微服务</a> <a href="/tags/搜索/" style="font-size: 10px;">搜索</a> <a href="/tags/数据分片/" style="font-size: 10px;">数据分片</a> <a href="/tags/相关性/" style="font-size: 10px;">相关性</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/网关/" style="font-size: 12.86px;">网关</a> <a href="/tags/自动部署/" style="font-size: 10px;">自动部署</a> <a href="/tags/虚拟槽/" style="font-size: 10px;">虚拟槽</a> <a href="/tags/设计模式/" style="font-size: 17.14px;">设计模式</a> <a href="/tags/负载均衡/" style="font-size: 10px;">负载均衡</a> <a href="/tags/责任链模式/" style="font-size: 10px;">责任链模式</a> <a href="/tags/配置中心/" style="font-size: 10px;">配置中心</a>
+    </div>
+</div>
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/12/13/distributed/分布式系统分片方法研究/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="分布式系统分片方法研究">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T12:33:16.000Z">2019-12-13</time></div>
+                    <a href="/2019/12/13/distributed/分布式系统分片方法研究/" class="title has-link-black-ter is-size-6 has-text-weight-normal">分布式系统分片方法研究</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/软件架构/">软件架构</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/12/12/db/Mysql高可用架构总结/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Mysql高可用架构总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time></div>
+                    <a href="/2019/12/12/db/Mysql高可用架构总结/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Mysql高可用架构总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/redis.jpg" alt="Jedis集群模式经典实现">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-07T11:33:16.000Z">2019-12-07</time></div>
+                    <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Jedis集群模式经典实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-27T11:33:16.000Z">2019-11-27</time></div>
+                    <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第一讲-应用启动流程总体分析">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T11:33:16.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第一讲-应用启动流程总体分析</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/6entinel/">
+                        <span class="tag">6entinel</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/APR/">
+                        <span class="tag">APR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Apollo/">
+                        <span class="tag">Apollo</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BM25/">
+                        <span class="tag">BM25</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ElasticSearch/">
+                        <span class="tag">ElasticSearch</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Embedded-Tomcat/">
+                        <span class="tag">Embedded Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAProxy/">
+                        <span class="tag">HAProxy</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Hbase/">
+                        <span class="tag">Hbase</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/IK/">
+                        <span class="tag">IK</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JVM/">
+                        <span class="tag">JVM</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LTR/">
+                        <span class="tag">LTR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LVS/">
+                        <span class="tag">LVS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lambda/">
+                        <span class="tag">Lambda</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MGR/">
+                        <span class="tag">MGR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Mysql/">
+                        <span class="tag">Mysql</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Nginx/">
+                        <span class="tag">Nginx</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Boot/">
+                        <span class="tag">Spring Boot</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud/">
+                        <span class="tag">Spring Cloud</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud-Gateway/">
+                        <span class="tag">Spring Cloud Gateway</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/SpringCloud/">
+                        <span class="tag">SpringCloud</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/TF-IDF/">
+                        <span class="tag">TF-IDF</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Tomcat/">
+                        <span class="tag">Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jenkins/">
+                        <span class="tag">jenkins</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jmeter/">
+                        <span class="tag">jmeter</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lucene/">
+                        <span class="tag">lucene</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/range-based/">
+                        <span class="tag">range based</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactor/">
+                        <span class="tag">reactor</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring/">
+                        <span class="tag">spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-boot/">
+                        <span class="tag">spring-boot</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-cloud/">
+                        <span class="tag">spring-cloud</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/webFlux/">
+                        <span class="tag">webFlux</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/一致性Hash/">
+                        <span class="tag">一致性Hash</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/主从数据库架构/">
+                        <span class="tag">主从数据库架构</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/倒排索引/">
+                        <span class="tag">倒排索引</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/函数式编程/">
+                        <span class="tag">函数式编程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/分词/">
+                        <span class="tag">分词</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/反应式编程/">
+                        <span class="tag">反应式编程</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/向量空间模型/">
+                        <span class="tag">向量空间模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工厂模式/">
+                        <span class="tag">工厂模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工程架构/">
+                        <span class="tag">工程架构</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/布尔模型/">
+                        <span class="tag">布尔模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/建造者模式/">
+                        <span class="tag">建造者模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/开发工具/">
+                        <span class="tag">开发工具</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/微服务/">
+                        <span class="tag">微服务</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/搜索/">
+                        <span class="tag">搜索</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/数据分片/">
+                        <span class="tag">数据分片</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/相关性/">
+                        <span class="tag">相关性</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/线程/">
+                        <span class="tag">线程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/网关/">
+                        <span class="tag">网关</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/自动部署/">
+                        <span class="tag">自动部署</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/虚拟槽/">
+                        <span class="tag">虚拟槽</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/设计模式/">
+                        <span class="tag">设计模式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/负载均衡/">
+                        <span class="tag">负载均衡</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/责任链模式/">
+                        <span class="tag">责任链模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/配置中心/">
+                        <span class="tag">配置中心</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/12/13/distributed/分布式系统分片方法研究/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="分布式系统分片方法研究">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-13T12:33:16.000Z">2019-12-13</time></div>
+                    <a href="/2019/12/13/distributed/分布式系统分片方法研究/" class="title has-link-black-ter is-size-6 has-text-weight-normal">分布式系统分片方法研究</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/软件架构/">软件架构</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/12/12/db/Mysql高可用架构总结/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Mysql高可用架构总结">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time></div>
+                    <a href="/2019/12/12/db/Mysql高可用架构总结/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Mysql高可用架构总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/redis.jpg" alt="Jedis集群模式经典实现">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-07T11:33:16.000Z">2019-12-07</time></div>
+                    <a href="/2019/12/07/java/Jedis集群模式经典实现/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Jedis集群模式经典实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-27T11:33:16.000Z">2019-11-27</time></div>
+                    <a href="/2019/11/27/spring/springboot/跟我学springboot第二讲-加载Environment源码解析&最佳实践/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第二讲-加载Environment源码解析&amp;最佳实践</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/spring/spring2.jpg" alt="跟我学springboot第一讲-应用启动流程总体分析">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-26T11:33:16.000Z">2019-11-26</time></div>
+                    <a href="/2019/11/26/spring/springboot/跟我学Springboot第一讲-应用启动流程总体分析/" class="title has-link-black-ter is-size-6 has-text-weight-normal">跟我学springboot第一讲-应用启动流程总体分析</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/SpringCloud/">SpringCloud</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/6entinel/">
+                        <span class="tag">6entinel</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/APR/">
+                        <span class="tag">APR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Apollo/">
+                        <span class="tag">Apollo</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/BM25/">
+                        <span class="tag">BM25</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ElasticSearch/">
+                        <span class="tag">ElasticSearch</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Embedded-Tomcat/">
+                        <span class="tag">Embedded Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAProxy/">
+                        <span class="tag">HAProxy</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Hbase/">
+                        <span class="tag">Hbase</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/IK/">
+                        <span class="tag">IK</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JVM/">
+                        <span class="tag">JVM</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LTR/">
+                        <span class="tag">LTR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/LVS/">
+                        <span class="tag">LVS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lambda/">
+                        <span class="tag">Lambda</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MGR/">
+                        <span class="tag">MGR</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Mysql/">
+                        <span class="tag">Mysql</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Nginx/">
+                        <span class="tag">Nginx</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring/">
+                        <span class="tag">Spring</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Boot/">
+                        <span class="tag">Spring Boot</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud/">
+                        <span class="tag">Spring Cloud</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Spring-Cloud-Gateway/">
+                        <span class="tag">Spring Cloud Gateway</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/SpringCloud/">
+                        <span class="tag">SpringCloud</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/TF-IDF/">
+                        <span class="tag">TF-IDF</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Tomcat/">
+                        <span class="tag">Tomcat</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/java/">
+                        <span class="tag">java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jenkins/">
+                        <span class="tag">jenkins</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jmeter/">
+                        <span class="tag">jmeter</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/lucene/">
+                        <span class="tag">lucene</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/range-based/">
+                        <span class="tag">range based</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/reactor/">
+                        <span class="tag">reactor</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring/">
+                        <span class="tag">spring</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-boot/">
+                        <span class="tag">spring-boot</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/spring-cloud/">
+                        <span class="tag">spring-cloud</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/webFlux/">
+                        <span class="tag">webFlux</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/一致性Hash/">
+                        <span class="tag">一致性Hash</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/主从数据库架构/">
+                        <span class="tag">主从数据库架构</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/倒排索引/">
+                        <span class="tag">倒排索引</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/函数式编程/">
+                        <span class="tag">函数式编程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/分词/">
+                        <span class="tag">分词</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/反应式编程/">
+                        <span class="tag">反应式编程</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/向量空间模型/">
+                        <span class="tag">向量空间模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工厂模式/">
+                        <span class="tag">工厂模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/工程架构/">
+                        <span class="tag">工程架构</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/布尔模型/">
+                        <span class="tag">布尔模型</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/建造者模式/">
+                        <span class="tag">建造者模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/开发工具/">
+                        <span class="tag">开发工具</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/微服务/">
+                        <span class="tag">微服务</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/搜索/">
+                        <span class="tag">搜索</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/数据分片/">
+                        <span class="tag">数据分片</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/相关性/">
+                        <span class="tag">相关性</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/线程/">
+                        <span class="tag">线程</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/网关/">
+                        <span class="tag">网关</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/自动部署/">
+                        <span class="tag">自动部署</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/虚拟槽/">
+                        <span class="tag">虚拟槽</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/设计模式/">
+                        <span class="tag">设计模式</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/负载均衡/">
+                        <span class="tag">负载均衡</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/责任链模式/">
+                        <span class="tag">责任链模式</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/配置中心/">
+                        <span class="tag">配置中心</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="分布式系统分片方法研究" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 crowley&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'true'
+        }
+    }
+};
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+
+
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
