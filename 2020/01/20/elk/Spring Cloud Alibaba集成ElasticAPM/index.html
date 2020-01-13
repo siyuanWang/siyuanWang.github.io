@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-<title>标签: 并发编程 - Crowley技术博客</title>
+<title>Spring Cloud Alibaba集成ElasticAPM实战 - Crowley技术博客</title>
 
 
 
@@ -32,7 +32,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="Crowley技术博客" height="28">
+                <img src="/images/logo.svg" alt="Spring Cloud Alibaba集成ElasticAPM实战" height="28">
             
             </a>
         </div>
@@ -60,6 +60,10 @@
             <div class="navbar-end">
                 
                 
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
                 
                 <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
@@ -73,41 +77,30 @@
     <section class="section">
         <div class="container">
             <div class="columns">
-                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
-    <div class="card-content">
-        <nav class="breadcrumb" aria-label="breadcrumbs">
-        <ul>
-            <li><a href="/tags">标签</a></li>
-            <li class="is-active"><a href="#" aria-current="page">并发编程</a></li>
-        </ul>
-        </nav>
-    </div>
-</div>
-
-    
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
 <div class="card">
     
     <div class="card-image">
-        <a href="/2019/12/12/java/Java并发-锁的应用与原理，看这一篇就够了/" class="image is-7by1">
-            <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/javalock.jpg" alt="Java并发-锁的应用与原理，看这一篇就够了">
-        </a>
+        <span  class="image is-7by1">
+            <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Spring Cloud Alibaba集成ElasticAPM实战">
+        </span>
     </div>
     
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time>
+                <time class="level-item has-text-grey" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    1 小时 读完 (大约 12014 个字)
+                    14 分钟 读完 (大约 2131 个字)
                 </span>
                 
                 
@@ -116,33 +109,144 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2019/12/12/java/Java并发-锁的应用与原理，看这一篇就够了/">Java并发-锁的应用与原理，看这一篇就够了</a>
+                Spring Cloud Alibaba集成ElasticAPM实战
             
         </h1>
         <div class="content">
-            <p>通过对锁原理的分析，重点分析ReentrantLock和ReentrantReadWriteLock的源码，通过锁的实现更深入的理解AQS。<br></p>
+            <p>在微服务大行其道的今天，Spring Cloud Alibaba作为优秀的微服务实现，却不能很容易的集成ElasticAPM。本文就将解决的思路和实现，呈现给大家，希望能帮助大家。</p>
+<a id="more"></a>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>继上一篇<a href="https://juejin.im/post/5e15a07f6fb9a0484d690b5d" target="_blank" rel="noopener">ElasticAPM初体验</a>我们知道了什么是<strong>可观察性</strong>，并领略了<strong>ElasticAPM</strong>的强大功能，但是仅仅是上篇文章中单机模式的使用时远远不够的。还记得上一篇最后提出的两个问题：</p>
+<blockquote>
+<p>1、本文在单机版的环境中，测试通过，但是在分布式环境中，请求会串联起很多应用，那服务跟踪能否实现？实现的原理是什么？</p>
+<p>2、Elastic APM可以自动采集http请求，在PRC分布式环境中，Elastic APM能否正常工作？是否必须采用 <code>public API</code>来实现？</p>
+</blockquote>
+<p>重点是<strong>分布式</strong>和<strong>RPC</strong>，即在分布式情况下，ElasticAPM能否良好工作？在RPC环境下，ElasticAPM是不是也能正常工作呢？</p>
+<p>先说答案：<strong>在默认情况下，ElasticAPM能够支持分布式的Http方式调用，但是不支持RPC协议</strong>。但是很多公司都采用RPC协议作为其内部系统的通信协议，比如我司就采用Spring Cloud Alibaba作为搜索服务的框架，框架内应用的通信是借助RPC框架Dubbo来实现的。所以问题就变成了如何把<strong>ElasticAPM</strong>集成进Spring Cloud Alibaba中。</p>
+<h1 id="架构讲解-amp-问题分析"><a href="#架构讲解-amp-问题分析" class="headerlink" title="架构讲解&amp;问题分析"></a>架构讲解&amp;问题分析</h1><p>首先，我先大概图示下Spring Cloud Alibaba和ElasticAPM的架构和工作流程。</p>
+<p>如架构图所示，搜索系统分为了<strong>网关应用(Gateway)</strong>，<strong>US应用</strong>，<strong>AS应用</strong>，<strong>BS应用</strong>，用户的请求会先到达网关，网关会把请求，以Http协议转发给US应用，US应用会采用Dubbo协议调用AS应用，AS应用采用Dubbo协议调用BS应用。</p>
+<p><strong>Request</strong> —<em>http</em>—&gt;<strong>US</strong>—<em>RPC</em>—-&gt;<strong>AS</strong>—–<em>RPC</em>——&gt;<strong>BS</strong></p>
+<p>每一个应用启动的时候都已经集成了Apm-agent（如果不知道怎么集成请参考<a href="https://juejin.im/post/5e15a07f6fb9a0484d690b5d" target="_blank" rel="noopener">ElasticAPM初体验</a>），如果APM-agent默认支持<strong>Dubbo</strong>就完美了（但是并没有）。所以整个链路追踪，到了US之后，就没有上报之后应用的锚点数据。在查看ElasticAPM官方文档的时候，我注意到了<a href="https://www.elastic.co/guide/en/apm/agent/java/current/public-api.html" target="_blank" rel="noopener">Public API</a>，文档中交代了这样一件事情：</p>
+<blockquote>
+<p>The public API of the Elastic APM Java agent lets you customize and manually create spans and transactions, as well as track errors.</p>
+</blockquote>
+<p>没错，你可以自定义<code>Span</code>和<code>Transaction</code>，如果不懂什么是<code>Span</code>和<code>Transaction</code>请参考<a href="https://juejin.im/post/5e15a07f6fb9a0484d690b5d" target="_blank" rel="noopener">ElasticAPM初体验</a>或直接读一遍<a href="https://www.elastic.co/guide/en/apm/get-started/current/index.html" target="_blank" rel="noopener">官方文档</a>。既然Agent默认不支持Dubbo，那么我们使用Public API来实现功能。</p>
+<p><img src="http://syxtt.xin/image/blog/%E6%90%9C%E7%B4%A2APM.jpg" alt="搜索系统集成APM架构图"></p>
+<h1 id="设计思想"><a href="#设计思想" class="headerlink" title="设计思想"></a>设计思想</h1><p>基于Spring Cloud Alibaba的架构，我们可以如下图方式实现。</p>
+<ul>
+<li>首先用户的请求一定要经过微服务网关，在网关的过滤器中，首先埋入父级<code>Transaction</code>。</li>
+<li>请求经过网关，会被网关转发到第一层应用中，注意这次转发是<code>http</code>请求，如果是用SpringMVC实现的话，需要在<code>Controller</code>处，上报<code>子Transaction</code>。</li>
+<li>请求被第一层应用处理之后，下层的应用全部是<code>Dubbo</code>协议的。这时可以采用Dubbo的过滤器机制，对<code>Concumer</code>和<code>Provider</code>都进行拦截，通过这种方式做到不侵入业务代码。</li>
+<li>最终，请求返回到微服务网关，调用<code>transaction.end()</code>上报根<code>Transaction</code>。</li>
+<li>所有流程完毕。</li>
+</ul>
+<p><img src="http://syxtt.xin/image/blog/SpringCloudAlibaba%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg" alt="Spring Cloud Alibaba链路追踪流程图"></p>
+<h1 id="核心实现讲解"><a href="#核心实现讲解" class="headerlink" title="核心实现讲解"></a>核心实现讲解</h1><h2 id="微服务网关"><a href="#微服务网关" class="headerlink" title="微服务网关"></a>微服务网关</h2><p>微服务网关需要做这样几件事情：</p>
+<ul>
+<li>开启根<code>Transaction</code></li>
+<li><code>POST</code>请求body中增加追踪ID，<code>GET</code>请求<code>Parameter</code>中增加追踪ID</li>
+<li>在请求返回之后调用<code>transaction.end()</code>完成上报</li>
+</ul>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title">filter</span><span class="hljs-params">(ServerWebExchange exchange, GatewayFilterChain chain)</span> </span>&#123;</span><br><span class="line">        HttpMethod httpMethod = exchange.getRequest().getMethod();</span><br><span class="line">				<span class="hljs-comment">//第一步 开启一个Transaction</span></span><br><span class="line">        Transaction transaction = ElasticApm.startTransaction();</span><br><span class="line">        transaction.setName(<span class="hljs-string">"mainSearch"</span>);</span><br><span class="line">        transaction.setType(Transaction.TYPE_REQUEST);</span><br><span class="line">				<span class="hljs-comment">//第二步 创建Span</span></span><br><span class="line">        Span span = transaction.startSpan(<span class="hljs-string">"gateway"</span>, <span class="hljs-string">"filter"</span>, <span class="hljs-string">"gateway action"</span>);</span><br><span class="line">        span.setName(<span class="hljs-string">"com.mfw.search.gateway.filter.PostBodyCacheFilter#filter"</span>);</span><br><span class="line"></span><br><span class="line">        LOGGER.info(<span class="hljs-string">"APM埋点成功transactionId:&#123;&#125;"</span>, transaction.getId());</span><br><span class="line">        <span class="hljs-comment">//第三步 判定Http请求是POST还是GET</span></span><br><span class="line">        <span class="hljs-keyword">if</span> (HttpMethod.POST.equals(httpMethod)) &#123;</span><br><span class="line">            ServerRequest serverRequest = ServerRequest.create(exchange, messageReaders);</span><br><span class="line">            MediaType mediaType = exchange.getRequest().getHeaders().getContentType();</span><br><span class="line">            <span class="hljs-comment">//第四步 定义Http body的处理逻辑</span></span><br><span class="line">            Mono&lt;String&gt; modifiedBody = serverRequest.bodyToMono(String.class).flatMap(body -&gt; &#123;            <span class="hljs-comment">//判定body类型</span></span><br><span class="line">                <span class="hljs-keyword">if</span> (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="hljs-comment">//重要！获取到了body的数据，传给callback函数，做业务逻辑处理</span></span><br><span class="line">                    Map&lt;String, String&gt; bodyMap = decodeBody(body);</span><br><span class="line">                    <span class="hljs-comment">//设置最新的bodyMap进入exchange</span></span><br><span class="line">                    exchange.getAttributes().put(GatewayConstant.CACHE_POST_BODY, bodyMap);</span><br><span class="line">                    <span class="hljs-comment">//重点！动态增加body的transaction标记，为下游应用Controller使用</span></span><br><span class="line">                    span.injectTraceHeaders((name, value) -&gt; &#123;</span><br><span class="line">                        bodyMap.put(name, value);</span><br><span class="line">                        LOGGER.info(<span class="hljs-string">"APM埋点 key:&#123;&#125;, transactionId:&#123;&#125;"</span>, name, value);</span><br><span class="line">                    &#125;);</span><br><span class="line">                    <span class="hljs-comment">//不要忘记span.end()否则会丢失上报</span></span><br><span class="line">                    span.end();</span><br><span class="line">                    <span class="hljs-keyword">return</span> Mono.just(encodeBody(bodyMap));</span><br><span class="line">                &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) &#123;</span><br><span class="line">                    <span class="hljs-comment">// origin body map</span></span><br><span class="line">                    Map&lt;String, String&gt; bodyMap = decodeJsonBody(body);</span><br><span class="line">                    exchange.getAttributes().put(GatewayConstant.CACHE_POST_BODY, bodyMap);</span><br><span class="line">                    <span class="hljs-comment">//重点！动态增加body的transaction标记，为下游应用Controller使用</span></span><br><span class="line">                    span.injectTraceHeaders((name, value) -&gt; &#123;</span><br><span class="line">                        bodyMap.put(name, value);</span><br><span class="line">                        LOGGER.info(<span class="hljs-string">"APM埋点 key:&#123;&#125;, transactionId:&#123;&#125;"</span>, name, value);</span><br><span class="line">                    &#125;);</span><br><span class="line">                    span.end();</span><br><span class="line">                    <span class="hljs-keyword">return</span> Mono.just(encodeJsonBody(bodyMap));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="hljs-keyword">return</span> Mono.empty();</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            BodyInserter bodyInserter = BodyInserters.fromPublisher(modifiedBody, String.class);</span><br><span class="line">            HttpHeaders headers = <span class="hljs-keyword">new</span> HttpHeaders();</span><br><span class="line">            headers.putAll(exchange.getRequest().getHeaders());</span><br><span class="line"></span><br><span class="line">            <span class="hljs-comment">// the new content type will be computed by bodyInserter</span></span><br><span class="line">            <span class="hljs-comment">// and then set in the request decorator</span></span><br><span class="line">            headers.remove(HttpHeaders.CONTENT_LENGTH);</span><br><span class="line"></span><br><span class="line">            CachedBodyOutputMessage outputMessage = <span class="hljs-keyword">new</span> CachedBodyOutputMessage(exchange, headers);</span><br><span class="line">            <span class="hljs-keyword">return</span> bodyInserter.insert(outputMessage, <span class="hljs-keyword">new</span> BodyInserterContext()).then(Mono.defer(() -&gt; &#123;</span><br><span class="line">                ServerHttpRequestDecorator decorator = <span class="hljs-keyword">new</span> ServerHttpRequestDecorator(exchange.getRequest()) &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="hljs-function"><span class="hljs-keyword">public</span> HttpHeaders <span class="hljs-title">getHeaders</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">                        <span class="hljs-keyword">long</span> contentLength = headers.getContentLength();</span><br><span class="line">                        HttpHeaders httpHeaders = <span class="hljs-keyword">new</span> HttpHeaders();</span><br><span class="line">                        httpHeaders.putAll(<span class="hljs-keyword">super</span>.getHeaders());</span><br><span class="line">                        <span class="hljs-keyword">if</span> (contentLength &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">                            httpHeaders.setContentLength(contentLength);</span><br><span class="line">                        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">                            httpHeaders.set(HttpHeaders.TRANSFER_ENCODING, <span class="hljs-string">"chunked"</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="hljs-keyword">return</span> httpHeaders;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="hljs-function"><span class="hljs-keyword">public</span> Flux&lt;DataBuffer&gt; <span class="hljs-title">getBody</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">                        <span class="hljs-keyword">return</span> outputMessage.getBody();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;;</span><br><span class="line">                <span class="hljs-comment">//第五步 在请求返回之后，上报transaction</span></span><br><span class="line">                <span class="hljs-keyword">return</span> chain.filter(exchange.mutate().request(decorator).build()).then(Mono.fromRunnable(() -&gt; transaction.end()));</span><br><span class="line">            &#125;));</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (HttpMethod.GET.equals(httpMethod)) &#123;</span><br><span class="line">            span.injectTraceHeaders((name, value) -&gt; &#123;</span><br><span class="line">                exchange.getRequest().getQueryParams().set(name, transaction.getId());</span><br><span class="line">                LOGGER.info(<span class="hljs-string">"APM埋点 key:&#123;&#125;, transactionId:&#123;&#125;"</span>, name, value);</span><br><span class="line">            &#125;);</span><br><span class="line">            <span class="hljs-keyword">return</span> chain.filter(exchange).then(Mono.fromRunnable(() -&gt; &#123;</span><br><span class="line">                span.end();</span><br><span class="line">                transaction.end();</span><br><span class="line">                LOGGER.info(<span class="hljs-string">"APM买点完成,transactionId:&#123;&#125;"</span>, transaction.getId());</span><br><span class="line">            &#125;));</span><br><span class="line">        &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">            <span class="hljs-comment">//not support other Http Method</span></span><br><span class="line">            exchange.getResponse().setStatusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE);</span><br><span class="line">            <span class="hljs-keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h2><p>Controller层的实现采用了SpringAOP方式实现，这样的好处是对业务代码不侵入，可扩展性高，对想要监控的方法直接配置上<code>@TransactionWithRemoteParent()</code>即可。</p>
+<p>如下代码是通过<code>@TransactionWithRemoteParent()</code>实现对Controller方法的上报。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@PostMapping</span>(value = <span class="hljs-string">"/search"</span>, consumes = <span class="hljs-string">"application/json"</span>, produces = <span class="hljs-string">"application/json"</span>)</span><br><span class="line"><span class="hljs-meta">@TransactionWithRemoteParent</span>()</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">searchForm</span><span class="hljs-params">(@RequestBody String req)</span> </span>&#123;</span><br><span class="line">    String result = asService.helloAs(req);</span><br><span class="line">    <span class="hljs-keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AOP实现</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Aspect</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ApmAspect</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(ApmAspect.class);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@PostConstruct</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> </span>&#123;</span><br><span class="line">        LOGGER.info(<span class="hljs-string">"ApmAspect加载完毕"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Pointcut</span>(value = <span class="hljs-string">"@annotation(transactionWithRemoteParent)"</span>, argNames = <span class="hljs-string">"transactionWithRemoteParent"</span>)</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">pointcut</span><span class="hljs-params">(TransactionWithRemoteParent transactionWithRemoteParent)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Around</span>(value = <span class="hljs-string">"pointcut(transactionWithRemoteParent)"</span>, argNames = <span class="hljs-string">"joinPoint,transactionWithRemoteParent"</span>)</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">around</span><span class="hljs-params">(ProceedingJoinPoint joinPoint, TransactionWithRemoteParent transactionWithRemoteParent)</span> <span class="hljs-keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        Transaction transaction = <span class="hljs-keyword">null</span>;</span><br><span class="line">        <span class="hljs-keyword">try</span> &#123;</span><br><span class="line">            MethodSignature signature = (MethodSignature) joinPoint.getSignature();</span><br><span class="line">            transaction = ElasticApm.startTransactionWithRemoteParent(key -&gt; &#123;</span><br><span class="line">                String httpRequest = (String) joinPoint.getArgs()[<span class="hljs-number">0</span>];</span><br><span class="line">                JSONObject json = JSON.parseObject(httpRequest);</span><br><span class="line">                String traceId = json.getString(key);</span><br><span class="line">                LOGGER.info(<span class="hljs-string">"切面添加了子Transaction，key=&#123;&#125;,value=&#123;&#125;"</span>, key, traceId);</span><br><span class="line">                RpcContext.getContext().setAttachment(key, traceId);</span><br><span class="line">                <span class="hljs-keyword">return</span> traceId;</span><br><span class="line">            &#125;);</span><br><span class="line">            transaction.setName(StringUtils.isNotBlank(transactionWithRemoteParent.name())</span><br><span class="line">                    ? transactionWithRemoteParent.name() : signature.getName());</span><br><span class="line">            transaction.setType(Transaction.TYPE_REQUEST);</span><br><span class="line">            <span class="hljs-keyword">return</span> joinPoint.proceed();</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Throwable throwable) &#123;</span><br><span class="line">            <span class="hljs-keyword">if</span> (transaction != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                transaction.captureException(throwable);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="hljs-keyword">throw</span> throwable;</span><br><span class="line">        &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">            <span class="hljs-keyword">if</span> (transaction != <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">                LOGGER.info(<span class="hljs-string">"切面执行完毕，上报Transaction:&#123;&#125;"</span>, transaction.getId());</span><br><span class="line">                transaction.end();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Dubbo过滤器"><a href="#Dubbo过滤器" class="headerlink" title="Dubbo过滤器"></a>Dubbo过滤器</h2><p>如下代码是DubboConsumer过滤器，专门用于处理APM。DubboProvider的实现类似。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">@Activate</span>(group = <span class="hljs-string">"consumer"</span>)</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DubboConsumerApmFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Filter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(DubboConsumerApmFilter.class);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Result <span class="hljs-title">invoke</span><span class="hljs-params">(Invoker&lt;?&gt; invoker, Invocation invocation)</span> <span class="hljs-keyword">throws</span> RpcException </span>&#123;</span><br><span class="line">        Transaction transaction = ElasticApm.startTransactionWithRemoteParent(key -&gt; &#123;</span><br><span class="line">            String traceId = invocation.getAttachment(key);</span><br><span class="line">            LOGGER.info(<span class="hljs-string">"key=&#123;&#125;,value=&#123;&#125;"</span>, key, traceId);</span><br><span class="line">            <span class="hljs-keyword">return</span> traceId;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="hljs-keyword">try</span> (<span class="hljs-keyword">final</span> Scope scope = transaction.activate()) &#123;</span><br><span class="line">            String name = <span class="hljs-string">"consumer:"</span> + invocation.getInvoker().getInterface().getName() + <span class="hljs-string">"#"</span> + invocation.getMethodName();</span><br><span class="line">            transaction.setName(name);</span><br><span class="line">            transaction.setType(Transaction.TYPE_REQUEST);</span><br><span class="line"></span><br><span class="line">            Result result = invoker.invoke(invocation);</span><br><span class="line"></span><br><span class="line">            <span class="hljs-keyword">return</span> result;</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            transaction.captureException(e);</span><br><span class="line">            <span class="hljs-keyword">throw</span> e;</span><br><span class="line">        &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">            transaction.end();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-meta">@Activate</span>(group = <span class="hljs-string">"provider"</span>)</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DubboProviderApmFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Filter</span> </span>&#123;</span><br><span class="line">    <span class="hljs-meta">@Override</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> Result <span class="hljs-title">invoke</span><span class="hljs-params">(Invoker&lt;?&gt; invoker, Invocation invocation)</span> <span class="hljs-keyword">throws</span> RpcException </span>&#123;</span><br><span class="line">        <span class="hljs-comment">// use startTransactionWithRemoteParent to create transaction with parent, which id from prc context</span></span><br><span class="line">        Transaction transaction = ElasticApm.startTransactionWithRemoteParent(key -&gt; invocation.getAttachment(key));</span><br><span class="line"></span><br><span class="line">        <span class="hljs-keyword">try</span> (<span class="hljs-keyword">final</span> Scope scope = transaction.activate()) &#123;</span><br><span class="line">            String name = <span class="hljs-string">"provider:"</span> + invocation.getInvoker().getInterface().getName() + <span class="hljs-string">"#"</span> + invocation.getMethodName();</span><br><span class="line">            transaction.setName(name);</span><br><span class="line">            transaction.setType(Transaction.TYPE_REQUEST);</span><br><span class="line">            <span class="hljs-keyword">return</span> invoker.invoke(invocation);</span><br><span class="line">        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            transaction.captureException(e);</span><br><span class="line">            <span class="hljs-keyword">throw</span> e;</span><br><span class="line">        &#125; <span class="hljs-keyword">finally</span> &#123;</span><br><span class="line">            transaction.end();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h1><p><img src="http://syxtt.xin/image/blog/ElasticAPM%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%E6%95%88%E6%9E%9C.png" alt="链路追踪效果"></p>
+<h1 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h1><p><a href="https://github.com/siyuanWang/springCloudAlibabaAPMDemo" target="_blank" rel="noopener">https://github.com/siyuanWang/springCloudAlibabaAPMDemo</a></p>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="https://discuss.elastic.co/t/java-agent-how-to-manually-instrument-an-rpc-framework-which-is-not-already-supported/172730" target="_blank" rel="noopener">ElasticAPM集成Dubbo的讨论</a></p>
+
         </div>
         
-        
-        <div class="level is-mobile">
+        <div class="level is-size-7 is-uppercase">
             <div class="level-start">
                 <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2019/12/12/java/Java并发-锁的应用与原理，看这一篇就够了/#more">阅读更多</a>
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/APM/">APM</a>, <a class="has-link-grey -link" href="/tags/ElasticAPM/">ElasticAPM</a>, <a class="has-link-grey -link" href="/tags/可观察性/">可观察性</a>, <a class="has-link-grey -link" href="/tags/链路追踪/">链路追踪</a>
                 </div>
             </div>
         </div>
         
+        
+        
+        <div class="social-share"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css">
+<script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script>
         
     </div>
 </div>
 
 
 
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="http://syxtt.xin/WechatIMG4.jpeg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
 
 
 
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/01/20/elk/Elastic-APM实战/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">Elastic APM实战</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/12/13/distributed/分布式系统分片方法研究/">
+                <span class="level-item">分布式系统分片方法研究</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
 
 
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+ <div id="gitment-container"></div>
+ <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
+ <script src="https://billts.site/js/gitment.js"></script>
+ <script>
+ var gitment = new Gitment({
+ 	id: 'd6315200508460086e4a5168aa78c0b9',
+     owner: 'siyuanWang',
+     repo: 'blog_issue',
+     oauth: {
+         client_id: 'e3e1d2680a4935081163',
+         client_secret: '364eb18119bda5afd5daa7c6fa7129c792c36650',
+     },
+ });
+ gitment.render('gitment-container');
+ </script>
+
+
+    </div>
+</div>
 </div>
                 
 
@@ -236,6 +340,58 @@
 
     
         
+
+    <div class="card widget" id="toc">
+        <div class="card-content">
+            <div class="menu">
+                <h3 class="menu-label">
+                    目录
+                </h3>
+                <ul class="menu-list"><li>
+        <a class="is-flex" href="#前言">
+        <span class="has-mr-6">1</span>
+        <span>前言</span>
+        </a></li><li>
+        <a class="is-flex" href="#架构讲解-amp-问题分析">
+        <span class="has-mr-6">2</span>
+        <span>架构讲解&amp;问题分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#设计思想">
+        <span class="has-mr-6">3</span>
+        <span>设计思想</span>
+        </a></li><li>
+        <a class="is-flex" href="#核心实现讲解">
+        <span class="has-mr-6">4</span>
+        <span>核心实现讲解</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#微服务网关">
+        <span class="has-mr-6">4.1</span>
+        <span>微服务网关</span>
+        </a></li><li>
+        <a class="is-flex" href="#Controller">
+        <span class="has-mr-6">4.2</span>
+        <span>Controller</span>
+        </a></li><li>
+        <a class="is-flex" href="#Dubbo过滤器">
+        <span class="has-mr-6">4.3</span>
+        <span>Dubbo过滤器</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#效果">
+        <span class="has-mr-6">5</span>
+        <span>效果</span>
+        </a></li><li>
+        <a class="is-flex" href="#源代码">
+        <span class="has-mr-6">6</span>
+        <span>源代码</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考文档">
+        <span class="has-mr-6">7</span>
+        <span>参考文档</span>
+        </a></li></ul>
+            </div>
+        </div>
+    </div>
+
     
         
 <div class="card widget">
@@ -1834,7 +1990,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="Crowley技术博客" height="28">
+                    <img src="/images/logo.svg" alt="Spring Cloud Alibaba集成ElasticAPM实战" height="28">
                 
                 </a>
                 <p class="is-size-7">
