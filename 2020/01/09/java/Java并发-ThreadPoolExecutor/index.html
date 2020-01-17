@@ -60,6 +60,10 @@
             <div class="navbar-end">
                 
                 
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
                 
                 <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
@@ -75,6 +79,12 @@
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
 <div class="card">
+    
+    <div class="card-image">
+        <span  class="image is-7by1">
+            <img class="thumbnail" src="http://syxtt.xin/线程池图片.jpg" alt="Java并发-ThreadPoolExecutor深度解析">
+        </span>
+    </div>
     
     <div class="card-content article ">
         
@@ -396,9 +406,9 @@
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/01/20/elk/Spring Cloud Alibaba集成ElasticAPM/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/01/20/elk/Elastic-APM实战/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">Spring Cloud Alibaba集成ElasticAPM实战</span>
+                <span class="level-item">Elastic APM实战</span>
             </a>
         </div>
         
@@ -531,6 +541,158 @@
 
     
         
+
+    <div class="card widget" id="toc">
+        <div class="card-content">
+            <div class="menu">
+                <h3 class="menu-label">
+                    目录
+                </h3>
+                <ul class="menu-list"><li>
+        <a class="is-flex" href="#前言">
+        <span class="has-mr-6">1</span>
+        <span>前言</span>
+        </a></li><li>
+        <a class="is-flex" href="#提出问题">
+        <span class="has-mr-6">2</span>
+        <span>提出问题</span>
+        </a></li><li>
+        <a class="is-flex" href="#前置知识复习">
+        <span class="has-mr-6">3</span>
+        <span>前置知识复习</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#线程状态">
+        <span class="has-mr-6">3.1</span>
+        <span>线程状态</span>
+        </a></li><li>
+        <a class="is-flex" href="#线程池的作用">
+        <span class="has-mr-6">3.2</span>
+        <span>线程池的作用</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#ThreadPoolExecutor的原理">
+        <span class="has-mr-6">4</span>
+        <span>ThreadPoolExecutor的原理</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#类的设计">
+        <span class="has-mr-6">4.1</span>
+        <span>类的设计</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Executor">
+        <span class="has-mr-6">4.1.1</span>
+        <span>Executor</span>
+        </a></li><li>
+        <a class="is-flex" href="#ExecutorService">
+        <span class="has-mr-6">4.1.2</span>
+        <span>ExecutorService</span>
+        </a></li><li>
+        <a class="is-flex" href="#Futrue">
+        <span class="has-mr-6">4.1.3</span>
+        <span>Futrue</span>
+        </a></li><li>
+        <a class="is-flex" href="#AbstractExecutorService">
+        <span class="has-mr-6">4.1.4</span>
+        <span>AbstractExecutorService</span>
+        </a></li><li>
+        <a class="is-flex" href="#ThreadPoolExecutor">
+        <span class="has-mr-6">4.1.5</span>
+        <span>ThreadPoolExecutor</span>
+        </a></li><li>
+        <a class="is-flex" href="#总结">
+        <span class="has-mr-6">4.1.6</span>
+        <span>总结</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#线程池状态">
+        <span class="has-mr-6">4.2</span>
+        <span>线程池状态</span>
+        </a></li><li>
+        <a class="is-flex" href="#核心流程">
+        <span class="has-mr-6">4.3</span>
+        <span>核心流程</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#任务提交核心流程">
+        <span class="has-mr-6">4.3.1</span>
+        <span>任务提交核心流程</span>
+        </a></li><li>
+        <a class="is-flex" href="#创建工作线程核心流程">
+        <span class="has-mr-6">4.3.2</span>
+        <span>创建工作线程核心流程</span>
+        </a></li><li>
+        <a class="is-flex" href="#任务执行核心流程">
+        <span class="has-mr-6">4.3.3</span>
+        <span>任务执行核心流程</span>
+        </a></li><li>
+        <a class="is-flex" href="#线程池关闭核心流程">
+        <span class="has-mr-6">4.3.4</span>
+        <span>线程池关闭核心流程</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#ThreadPoolExecutor源码分析">
+        <span class="has-mr-6">5</span>
+        <span>ThreadPoolExecutor源码分析</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#关键属性">
+        <span class="has-mr-6">5.1</span>
+        <span>关键属性</span>
+        </a></li><li>
+        <a class="is-flex" href="#状态控制">
+        <span class="has-mr-6">5.2</span>
+        <span>状态控制</span>
+        </a></li><li>
+        <a class="is-flex" href="#核心方法总体概括">
+        <span class="has-mr-6">5.3</span>
+        <span>核心方法总体概括</span>
+        </a></li><li>
+        <a class="is-flex" href="#execute方法源码分析">
+        <span class="has-mr-6">5.4</span>
+        <span>execute方法源码分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#addWorker方法源码分析">
+        <span class="has-mr-6">5.5</span>
+        <span>addWorker方法源码分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#工作线程内部类Worker源码分析">
+        <span class="has-mr-6">5.6</span>
+        <span>工作线程内部类Worker源码分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#runWorker源码分析">
+        <span class="has-mr-6">5.7</span>
+        <span>runWorker源码分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#getTask方法源码分析">
+        <span class="has-mr-6">5.8</span>
+        <span>getTask方法源码分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#processWorkerExit方法源码分析">
+        <span class="has-mr-6">5.9</span>
+        <span>processWorkerExit方法源码分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#tryTerminate方法源码分析">
+        <span class="has-mr-6">5.10</span>
+        <span>tryTerminate方法源码分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#关闭线程池方法源码分析">
+        <span class="has-mr-6">5.11</span>
+        <span>关闭线程池方法源码分析</span>
+        </a></li><li>
+        <a class="is-flex" href="#reject方法源码分析">
+        <span class="has-mr-6">5.12</span>
+        <span>reject方法源码分析</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#场景举例">
+        <span class="has-mr-6">6</span>
+        <span>场景举例</span>
+        </a></li><li>
+        <a class="is-flex" href="#总结-1">
+        <span class="has-mr-6">7</span>
+        <span>总结</span>
+        </a></li><li>
+        <a class="is-flex" href="#参考文档">
+        <span class="has-mr-6">8</span>
+        <span>参考文档</span>
+        </a></li></ul>
+            </div>
+        </div>
+    </div>
+
     
         
 <div class="card widget">
@@ -630,25 +792,6 @@
         
         <article class="media">
             
-            <a href="/2020/01/20/elk/Elastic-APM实战/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Elastic APM实战">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time></div>
-                    <a href="/2020/01/20/elk/Elastic-APM实战/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Elastic APM实战</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
             <a href="/2020/01/20/elk/Spring Cloud Alibaba集成ElasticAPM/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Spring Cloud Alibaba集成ElasticAPM实战">
@@ -668,9 +811,28 @@
         
         <article class="media">
             
+            <a href="/2020/01/20/elk/Elastic-APM实战/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Elastic APM实战">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time></div>
+                    <a href="/2020/01/20/elk/Elastic-APM实战/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Elastic APM实战</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2020/01/09/java/Java并发-ThreadPoolExecutor/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Java并发-ThreadPoolExecutor深度解析">
+                    <img class="thumbnail" src="http://syxtt.xin/线程池图片.jpg" alt="Java并发-ThreadPoolExecutor深度解析">
                 </p>
             </a>
             
@@ -1390,25 +1552,6 @@
         
         <article class="media">
             
-            <a href="/2020/01/20/elk/Elastic-APM实战/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Elastic APM实战">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time></div>
-                    <a href="/2020/01/20/elk/Elastic-APM实战/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Elastic APM实战</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
             <a href="/2020/01/20/elk/Spring Cloud Alibaba集成ElasticAPM/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Spring Cloud Alibaba集成ElasticAPM实战">
@@ -1428,9 +1571,28 @@
         
         <article class="media">
             
+            <a href="/2020/01/20/elk/Elastic-APM实战/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Elastic APM实战">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time></div>
+                    <a href="/2020/01/20/elk/Elastic-APM实战/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Elastic APM实战</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2020/01/09/java/Java并发-ThreadPoolExecutor/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Java并发-ThreadPoolExecutor深度解析">
+                    <img class="thumbnail" src="http://syxtt.xin/线程池图片.jpg" alt="Java并发-ThreadPoolExecutor深度解析">
                 </p>
             </a>
             
