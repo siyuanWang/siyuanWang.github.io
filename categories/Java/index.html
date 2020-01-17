@@ -92,6 +92,59 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-01-09T11:33:16.000Z">2020-01-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 10758 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2020/01/09/java/Java并发-ThreadPoolExecutor/">Java并发-ThreadPoolExecutor深度解析</a>
+            
+        </h1>
+        <div class="content">
+            <p>ThreadPoolExecutor搞不懂？看这篇就够了<br></p>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2020/01/09/java/Java并发-ThreadPoolExecutor/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+    
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time>
                 
                 <div class="level-item">
@@ -685,114 +738,6 @@
 
 
 
-    
-<div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-12-11T10:33:16.000Z">2018-12-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    7 分钟 读完 (大约 1106 个字)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/12/11/java/java创建对象的流程/">Java对象刨根问底</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="如何创建一个对象"><a href="#如何创建一个对象" class="headerlink" title="如何创建一个对象"></a>如何创建一个对象</h2><p>Java创建一个对象，最简单的方式就是</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object a = new Object();</span><br></pre></td></tr></table></figure>
-<p>可以，大家有没有想过，在JVM中，创建一个对象的流程是如何呢？其实具体流程入下图所示。</p>
-<p><img src="http://syxtt.xin/new%E6%B5%81%E7%A8%8B.png" alt="img"></p>
-<p>###分配内存</p>
-<p>对象所需的内存大小，在类加载完成后便可以完全确认，为对象分配空间的任务等同于把一块确定大小的内存从Java堆中划分出来。那么如何划分，有两种方式：</p>
-<ul>
-<li>指针碰撞（Bump The Pointer）：假设Java堆中的内存是绝对规整的，所有用过的内存都放到一边，空闲的内存放到另一边，中间放着一个指针作为分界点的指示器，那所分配的内存就是朝着空闲的那一边“挪动”与对象大小一样的距离。</li>
-<li>空闲列表（Free List）:如果Java堆中的内存不规整，已使用的内存和未使用的内存相互交错，就没办法简单进行指针碰撞了，需要维护一个列表，记录哪些内存块是可用的，在分配的时候，找一块足够大的空间分配给对象，并更新列表的记录。</li>
-</ul>
-<p>因此，在使用Serial，ParNew等带Compact过程的收集器时，系统采用的分配方式是指针碰撞法，而使用CMS这种基于Mark-Sweep算法的收集器时，通常采用的是空闲列表法。</p>
-<p>除了分配方法外，还需要考虑同步的问题。实际上虚拟机采用了CAS配上失败重试的方式保证更新的原子性，另一种是把内存分配的动作按照线程划分在不同的空间之中，即每个线程在Java堆中预先分配一小块内存，称为本地线程分配缓冲（Thread Local Allocation Buffer, TLAB）,可以通过-XX:+UseTLAB参数来设定。</p>
-<h2 id="对象内存布局"><a href="#对象内存布局" class="headerlink" title="对象内存布局"></a>对象内存布局</h2><p>在HotSpot虚拟机中，对象在内存中存储的布局可以分为3块区域：对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。</p>
-<h3 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h3><p>HotSpot虚拟机对象头包括两部分内容：</p>
-<ul>
-<li>第一部分</li>
-</ul>
-<p><strong>用于存储对象自身的运行数据</strong>，如哈希码，GC分代年龄，锁状态标志，线程持有的锁，偏向线程ID，偏向时间戳等，这部分长度在32bit和64bit虚拟机中分别为32bit和64bit，官方称它为“Mark Word”。</p>
-<table>
-<thead>
-<tr>
-<th>存储内容</th>
-<th>标志位</th>
-<th>状态</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>对象哈希码、对象分代年龄</td>
-<td>01</td>
-<td>未锁定</td>
-</tr>
-<tr>
-<td>指向锁记录的指针</td>
-<td>00</td>
-<td>轻量级锁定</td>
-</tr>
-<tr>
-<td>指向重量级锁的指针</td>
-<td>10</td>
-<td>膨胀（重量级锁定）</td>
-</tr>
-<tr>
-<td>空，不需要记录信息</td>
-<td>11</td>
-<td>GC标记</td>
-</tr>
-<tr>
-<td>偏向线程ID，偏向时间戳，对象分代年龄</td>
-<td>01</td>
-<td>可偏向</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>第二部分</li>
-</ul>
-<p><strong>类型指针</strong>，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。</p>
-<h2 id="对象访问定位"><a href="#对象访问定位" class="headerlink" title="对象访问定位"></a>对象访问定位</h2><p>有两种方式，<strong>句柄访问</strong>和<strong>直接指针访问</strong>。这两种访问方式各有优点，使用句柄的最大好处就是reference中存储的是稳定的句柄地址，在对象被移动（垃圾回收移动对象是很常见的事情）时只会改变句柄中的实例数据指针，而reference本身不需要更新。使用直接指针访问方式最大好处就是速度更快，它节省一次指针定位的时间开销，由于对象访问在Java中非常频繁，这类开销积少成多，将是一个比较可观的提升。HotSpot就是采用直接指针法。</p>
-<p><img src="http://syxtt.xin/%E9%80%9A%E8%BF%87%E5%8F%A5%E6%9F%84%E8%AE%BF%E9%97%AE%E5%AF%B9%E8%B1%A1.png" alt="img"></p>
-<p>​                                                       通过句柄访问对象</p>
-<p><img src="http://syxtt.xin/%E9%80%9A%E8%BF%87%E7%9B%B4%E6%8E%A5%E6%8C%87%E9%92%88%E8%AE%BF%E9%97%AE%E5%AF%B9%E8%B1%A1.png" alt="img"></p>
-<p>​                                            通过直接指针访问对象</p>
-
-        </div>
-        
-        
-        
-    </div>
-</div>
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -1004,6 +949,25 @@
         
         <article class="media">
             
+            <a href="/2020/01/20/elk/Elastic-APM实战/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Elastic APM实战">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time></div>
+                    <a href="/2020/01/20/elk/Elastic-APM实战/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Elastic APM实战</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2020/01/20/elk/Spring Cloud Alibaba集成ElasticAPM/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Spring Cloud Alibaba集成ElasticAPM实战">
@@ -1023,18 +987,18 @@
         
         <article class="media">
             
-            <a href="/2020/01/20/elk/Elastic-APM实战/" class="media-left">
+            <a href="/2020/01/09/java/Java并发-ThreadPoolExecutor/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Elastic APM实战">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Java并发-ThreadPoolExecutor深度解析">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time></div>
-                    <a href="/2020/01/20/elk/Elastic-APM实战/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Elastic APM实战</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-09T11:33:16.000Z">2020-01-09</time></div>
+                    <a href="/2020/01/09/java/Java并发-ThreadPoolExecutor/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Java并发-ThreadPoolExecutor深度解析</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
                     </p>
                 </div>
             </div>
@@ -1078,25 +1042,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/12/12/java/Java并发-锁的应用与原理，看这一篇就够了/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/javalock.jpg" alt="Java并发-锁的应用与原理，看这一篇就够了">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time></div>
-                    <a href="/2019/12/12/java/Java并发-锁的应用与原理，看这一篇就够了/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Java并发-锁的应用与原理，看这一篇就够了</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
         
@@ -1114,7 +1059,7 @@
                     <span class="level-item">一月 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">2</span>
+                    <span class="level-item tag">3</span>
                 </span>
             </a>
         </li>
@@ -1225,17 +1170,6 @@
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="level is-marginless" href="/archives/2018/11/">
-                <span class="level-start">
-                    <span class="level-item">十一月 2018</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">1</span>
                 </span>
             </a>
         </li>
@@ -1775,6 +1709,25 @@
         
         <article class="media">
             
+            <a href="/2020/01/20/elk/Elastic-APM实战/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Elastic APM实战">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time></div>
+                    <a href="/2020/01/20/elk/Elastic-APM实战/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Elastic APM实战</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2020/01/20/elk/Spring Cloud Alibaba集成ElasticAPM/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Spring Cloud Alibaba集成ElasticAPM实战">
@@ -1794,18 +1747,18 @@
         
         <article class="media">
             
-            <a href="/2020/01/20/elk/Elastic-APM实战/" class="media-left">
+            <a href="/2020/01/09/java/Java并发-ThreadPoolExecutor/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/elastic-logo-V-full_color.jpg" alt="Elastic APM实战">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Java并发-ThreadPoolExecutor深度解析">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-20T11:33:16.000Z">2020-01-20</time></div>
-                    <a href="/2020/01/20/elk/Elastic-APM实战/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Elastic APM实战</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-01-09T11:33:16.000Z">2020-01-09</time></div>
+                    <a href="/2020/01/09/java/Java并发-ThreadPoolExecutor/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Java并发-ThreadPoolExecutor深度解析</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/ELK/">ELK</a>
+                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
                     </p>
                 </div>
             </div>
@@ -1849,25 +1802,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/12/12/java/Java并发-锁的应用与原理，看这一篇就够了/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="http://syxtt.xin/image/blog/logo/javalock.jpg" alt="Java并发-锁的应用与原理，看这一篇就够了">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-12T12:33:16.000Z">2019-12-12</time></div>
-                    <a href="/2019/12/12/java/Java并发-锁的应用与原理，看这一篇就够了/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Java并发-锁的应用与原理，看这一篇就够了</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Java/">Java</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
     
@@ -1885,7 +1819,7 @@
                     <span class="level-item">一月 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">2</span>
+                    <span class="level-item tag">3</span>
                 </span>
             </a>
         </li>
@@ -1996,17 +1930,6 @@
                 </span>
                 <span class="level-end">
                     <span class="level-item tag">6</span>
-                </span>
-            </a>
-        </li>
-        
-        <li>
-            <a class="level is-marginless" href="/archives/2018/11/">
-                <span class="level-start">
-                    <span class="level-item">十一月 2018</span>
-                </span>
-                <span class="level-end">
-                    <span class="level-item tag">1</span>
                 </span>
             </a>
         </li>
